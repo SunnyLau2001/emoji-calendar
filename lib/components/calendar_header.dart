@@ -22,7 +22,7 @@ class CalendarHeader extends ConsumerWidget {
           ),
           Text(
             CustomDateString.monthsLong[headerDate.month - 1],
-            style: FontSettings.primaryFont,
+            style: FontSettings.primaryFont.copyWith(fontSize: 16),
           ),
         ],
       ),

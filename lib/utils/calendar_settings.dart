@@ -1,3 +1,3 @@
 class CalendarSettings {
-  static double cellHeight = 180;
+  static double cellHeight = 160;
 }

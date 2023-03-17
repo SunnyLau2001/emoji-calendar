@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/providers/providers.dart';
@@ -7,7 +8,7 @@ class CustomOverlay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isSelecting = ref.watch(isSelectingProvider);
+    final isSelecting = ref.watch(isSelectingDateRangeProvider);
     return AnimatedOpacity(
       duration: Duration(milliseconds: 200),
       opacity: isSelecting ? 0.6 : 0,
