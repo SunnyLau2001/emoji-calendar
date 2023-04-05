@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';
 import 'package:fyp_our_sky_new/providers/providers.dart';
 import 'package:fyp_our_sky_new/utils/app_settings.dart';
 import 'package:fyp_our_sky_new/utils/date_string.dart';
@@ -189,14 +190,15 @@ class _MonthViewCellState extends ConsumerState<MonthViewCell> {
 
   @override
   Widget build(BuildContext context) {
+    final isToday = widget.cellDate.isAtSameMomentAs(ref.read(currentDateProvider));
     final isSelectingDateRange = ref.watch(isSelectingDateRangeProvider);
-    final dateRangeSelected = ref.watch(dateRangeSelectedProvider);
+    final dateRangeSelected = ref.watch(multidayEventDetailProvider).dateRange;
     isSelected = selectingBehavior(dateRangeSelected);
 
     return GestureDetector(
       onTap: () {
         if (isSelectingDateRange) {
-          ref.read(dateRangeSelectedProvider.notifier).toggleDate(widget.cellDate);
+          ref.read(multidayEventDetailProvider.notifier).toggleDate(widget.cellDate);
         }
       },
       child: AnimatedScale(
@@ -215,14 +217,18 @@ class _MonthViewCellState extends ConsumerState<MonthViewCell> {
                 ? isSelected
                     ? Colors.tealAccent.shade100.withOpacity(.1)
                     : Colors.tealAccent.shade100.withOpacity(.1)
-                : Colors.transparent,
+                : isToday
+                    ? Colors.lightBlueAccent.shade100.withOpacity(.1)
+                    : Colors.transparent,
             border: Border.all(
               width: 1,
               color: isSelectingDateRange
                   ? isSelected
                       ? Colors.tealAccent.shade200
                       : Colors.tealAccent.shade200.withOpacity(.2)
-                  : Colors.transparent,
+                  : isToday
+                      ? Colors.white54
+                      : Colors.transparent,
             ),
             boxShadow: [
               BoxShadow(
@@ -230,7 +236,9 @@ class _MonthViewCellState extends ConsumerState<MonthViewCell> {
                       ? isSelected
                           ? Colors.tealAccent.shade200
                           : Colors.transparent
-                      : Colors.transparent,
+                      : isToday
+                          ? Colors.white54
+                          : Colors.transparent,
                   offset: const Offset(
                     0,
                     0,

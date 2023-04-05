@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/utils/app_settings.dart';
 
+
 import '../utils/calendar_settings.dart';
 
 final isSelectingDateRangeProvider = StateProvider<bool>((ref) {
@@ -39,5 +40,14 @@ final showBackToCurrentProvider = Provider<bool>((ref) {
 });
 
 final showSideMenuProvider = StateProvider<bool>((ref) {
+  return false;
+});
+
+final currentDateProvider = Provider<DateTime>((ref) {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, now.day);
+});
+
+final showMonthViewDatePickerProvider = StateProvider<bool>((ref) {
   return false;
 });

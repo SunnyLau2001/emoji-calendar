@@ -28,4 +28,14 @@ class CustomDateString {
     'Nov',
     'Dec',
   ];
+
+  static List<String> weekdayShort = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thur',
+    'Fri',
+    'Sat',
+    'Sun',
+  ];
 }

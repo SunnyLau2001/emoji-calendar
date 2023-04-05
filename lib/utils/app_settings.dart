@@ -3,7 +3,7 @@ class AppSettings {
   static DateTime calendarEndDate = DateTime(2030, 12, 31);
 
   static DateTime get startDate => adjustedStartDate(calendarStartDate);
-  static DateTime get endDate => adjustedStartDate(calendarStartDate);
+  static DateTime get endDate => adjustedEndDate(calendarEndDate);
 
   static DateTime adjustedStartDate(DateTime date) {
     final numOfDayBack = date.weekday % 7; // ensure minus 1 to 6 not 7

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/providers/providers.dart';
@@ -12,19 +14,46 @@ class CalendarHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final headerDate = ref.watch(headerDateProvider);
     // Divide by the height of cell/row
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            headerDate.year.toString(),
-            style: FontSettings.primaryFont.copyWith(fontSize: 20),
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(
+          sigmaX: 5.0,
+          sigmaY: 5.0,
+        ),
+        child: Container(
+          clipBehavior: Clip.antiAlias,
+          height: 80,
+          width: 120,
+          decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.white24),
+            borderRadius: BorderRadius.circular(8),
           ),
-          Text(
-            CustomDateString.monthsLong[headerDate.month - 1],
-            style: FontSettings.primaryFont.copyWith(fontSize: 16),
+          child: Material(
+            clipBehavior: Clip.none,
+            type: MaterialType.transparency,
+            child: InkWell(
+              onTap: () {
+                final show = ref.read(showMonthViewDatePickerProvider.notifier).state;
+                ref.read(showMonthViewDatePickerProvider.notifier).state = !show;
+              },
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      headerDate.year.toString(),
+                      style: FontSettings.primaryFont.copyWith(fontSize: 20),
+                    ),
+                    Text(
+                      CustomDateString.monthsLong[headerDate.month - 1],
+                      style: FontSettings.primaryFont.copyWith(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-        ],
+        ),
       ),
     );
   }

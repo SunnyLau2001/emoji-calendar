@@ -37,7 +37,6 @@ class DateRangeSelected extends _$DateRangeSelected {
           : compare == 1
               ? [date, ...state]
               : [];
-      print(state);
       return;
     }
 
@@ -68,7 +67,6 @@ class DateRangeSelected extends _$DateRangeSelected {
         state = [state[0], date];
         return;
       }
-      print(state);
       return;
     }
   }

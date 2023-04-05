@@ -1,0 +1,66 @@
+{
+	"lastUpdate": "2023-04-02",
+	"stickerType": "default",
+	"sticker":[
+		{	
+			"filename": "bicycle_512x512.png",
+			"stringId": "default_1",
+			"mainTag": "Bicycle"
+		},
+		{
+			"filename": "birthday_512x512.png",
+			"stringId": "default_2",
+			"mainTag": "Birthday"
+		},
+		{
+			"filename": "bus_512x512.png",
+			"stringId": "default_3",
+			"mainTag": "Bus"
+		},
+		{
+			"filename": "camping_512x512.png",
+			"stringId": "default_4",
+			"mainTag": "Camping"
+		},
+		{
+			"filename": "clinic_512x512.png",
+			"stringId": "default_5",
+			"mainTag": "Clinic"
+		},
+		{
+			"filename": "fastfood_512x512.png",
+			"stringId": "default_6",
+			"mainTag": "Fastfood"
+		},
+		{
+			"filename": "flashlight_512x512.png",
+			"stringId": "default_7",
+			"mainTag": "Flashlight"
+		},
+		{
+			"filename": "mcdonald_512x512.png",
+			"stringId": "default_8",
+			"mainTag": "McDonald"
+		},
+		{
+			"filename": "meal_512x512.png",
+			"stringId": "default_9",
+			"mainTag": "Meal"
+		},
+		{
+			"filename": "photo_512x512.png",
+			"stringId": "default_10",
+			"mainTag": "Photo"
+		},
+		{
+			"filename": "train_512x512.png",
+			"stringId": "default_11",
+			"mainTag": "Train"
+		},
+		{
+			"filename": "hiking_512x512.png",
+			"stringId": "default_12",
+			"mainTag": "Hiking"
+		}
+	]
+}

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fyp_our_sky_new/components/multiday_event_detail_dialog.dart';
 import 'package:fyp_our_sky_new/providers/date_range_selected_notifier.dart';
+import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';
 import 'package:fyp_our_sky_new/providers/providers.dart';
+import 'package:fyp_our_sky_new/utils/app_settings.dart';
+import 'package:go_router/go_router.dart';
 
 import 'calendar_header.dart';
 
@@ -23,6 +27,7 @@ class TopBar extends ConsumerWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
+            // Side menu button
             Consumer(builder: (context, ref, child) {
               final showSideMenu = ref.watch(showSideMenuProvider);
               return AnimatedPositioned(
@@ -46,8 +51,8 @@ class TopBar extends ConsumerWidget {
                         child: Material(
                           type: MaterialType.transparency,
                           child: InkWell(
-                            onTap: () {
-                              ref.read(showSideMenuProvider.notifier).state = !showSideMenu;
+                            onTap: () async {
+                              // ref.read(showSideMenuProvider.notifier).state = !showSideMenu;
                             },
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
@@ -59,6 +64,7 @@ class TopBar extends ConsumerWidget {
                 ),
               );
             }),
+            // Cancel multiday event date range selection
             Positioned(
               left: 14,
               top: 14,
@@ -90,6 +96,7 @@ class TopBar extends ConsumerWidget {
                 ),
               ),
             ),
+            // Enter multiday event date range selection
             Positioned(
               right: 14,
               top: 14,
@@ -110,7 +117,7 @@ class TopBar extends ConsumerWidget {
                       type: MaterialType.transparency,
                       child: InkWell(
                         onTap: () {
-                          ref.read(dateRangeSelectedProvider.notifier).initDateRange();
+                          ref.read(multidayEventDetailProvider.notifier).initDateRange();
                           ref.read(isSelectingDateRangeProvider.notifier).state = true;
                         },
                         child: Icon(
@@ -123,6 +130,7 @@ class TopBar extends ConsumerWidget {
                 ),
               ),
             ),
+            // Confirm date range and route to multidayEventEdit page
             Positioned(
               right: 14,
               top: 14,
@@ -142,9 +150,11 @@ class TopBar extends ConsumerWidget {
                     child: Material(
                       type: MaterialType.transparency,
                       child: InkWell(
-                        onTap: () {
-                          // ref.read(dateRangeSelectedProvider.notifier).initDateRange();
-                          // ref.read(isSelectingDateRangeProvider.notifier).state = true;
+                        onTap: () async {
+                          setMultidayEventEventDetail(context: context);
+                          // context.go('/multidayEventEdit');
+
+                          // ref.read(isSelectingDateRangeProvider.notifier).state = false;
                         },
                         child: Icon(
                           Icons.check_circle_outline_outlined,
@@ -156,8 +166,9 @@ class TopBar extends ConsumerWidget {
                 ),
               ),
             ),
+
             SizedBox(
-              height: height,
+              // height: height - 20,
               child: CalendarHeader(),
             ),
           ],

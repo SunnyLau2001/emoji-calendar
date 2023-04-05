@@ -9,15 +9,16 @@ import '../utils/app_settings.dart';
 import '../utils/calendar_settings.dart';
 import 'custom_overlay.dart';
 import 'custom_side_menu.dart';
+import 'month_view_date_picker.dart';
 
-class ScreenFrame extends ConsumerStatefulWidget {
-  const ScreenFrame({super.key});
+class MainPage extends ConsumerStatefulWidget {
+  const MainPage({super.key});
 
   @override
-  ConsumerState<ScreenFrame> createState() => _ScreenFrameState();
+  ConsumerState<MainPage> createState() => _MainPageState();
 }
 
-class _ScreenFrameState extends ConsumerState<ScreenFrame> {
+class _MainPageState extends ConsumerState<MainPage> {
   late DateTime calendarStartDate;
   late DateTime calendarEndDate;
   late DateTime currentDate;
@@ -63,6 +64,7 @@ class _ScreenFrameState extends ConsumerState<ScreenFrame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           SizedBox(
@@ -73,8 +75,10 @@ class _ScreenFrameState extends ConsumerState<ScreenFrame> {
               alignment: Alignment(0.4, 1),
             ),
           ),
+          // Overlay when select date range for multiday event
           CustomOverlay(),
-          TopBar(height: 120),
+
+          // Month view
           Positioned(
             bottom: 0,
             child: SizedBox(
@@ -85,6 +89,14 @@ class _ScreenFrameState extends ConsumerState<ScreenFrame> {
               ),
             ),
           ),
+          // Float button for back to current date
+
+          // Positioned(
+          //   top: 120,
+          //   child: MonthViewDatePicker(),
+          // ),
+          TopBar(height: 120),
+
           Positioned(
             bottom: 14,
             right: 14,
@@ -92,6 +104,7 @@ class _ScreenFrameState extends ConsumerState<ScreenFrame> {
               monthViewController: monthViewController,
             ),
           ),
+          // Side menu
           Consumer(
             builder: (context, ref, child) {
               final showSideMenu = ref.watch(showSideMenuProvider);
@@ -102,7 +115,7 @@ class _ScreenFrameState extends ConsumerState<ScreenFrame> {
                 child: CustomSideMenu(),
               );
             },
-          )
+          ),
         ],
       ),
     );
