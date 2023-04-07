@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart';
 
 import 'multiday_event_detail_prop.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -22,8 +23,10 @@ class MultidayEventDetail extends _$MultidayEventDetail {
   }
 
   void initDateRange() {
-    final current = DateTime.now();
-    state = state.copyWith(dateRange: [DateTime(current.year, current.month, current.day)]);
+    if (state.dateRange.isEmpty) {
+      final current = DateTime.now();
+      state = state.copyWith(dateRange: [DateTime(current.year, current.month, current.day)]);
+    }
   }
 
   void clearTitle() {
@@ -100,5 +103,17 @@ class MultidayEventDetail extends _$MultidayEventDetail {
       }
       return;
     }
+  }
+
+  void setDateList() {
+    final dateRange = state.dateRange;
+    int step = 0;
+    if (dateRange.length == 1) {
+      step = 1;
+    }
+    if (dateRange.length == 2) {
+      step = dateRange[0].difference(dateRange[1]).inDays.abs() + 1;
+    }
+    ref.watch(multidayEventDateListProvider.notifier).setMultidayEventDateList(dateRange[0], step);
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/utils/app_settings.dart';
 
-
 import '../utils/calendar_settings.dart';
 
 final isSelectingDateRangeProvider = StateProvider<bool>((ref) {
@@ -50,4 +49,8 @@ final currentDateProvider = Provider<DateTime>((ref) {
 
 final showMonthViewDatePickerProvider = StateProvider<bool>((ref) {
   return false;
+});
+
+final focusedDateEventsListProvider = StateProvider<String>((ref) {
+  return '';
 });

@@ -5,9 +5,11 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';
+import 'package:fyp_our_sky_new/providers/providers.dart';
 import 'package:fyp_our_sky_new/providers/sticker_provider.dart';
 import 'package:fyp_our_sky_new/utils/date_string.dart';
 import 'package:fyp_our_sky_new/utils/font_settings.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models/sticker.dart';
 import 'edit_bookmark_dialog.dart';
@@ -47,6 +49,7 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
           borderRadius: BorderRadius.circular(4),
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               CustomDateString.monthsShort[date.month - 1],
@@ -111,7 +114,7 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       onChanged: (value) {
-        ref.read(multidayEventDetailProvider.notifier).setTitle(value);
+        // ref.read(multidayEventDetailProvider.notifier).setTitle(value);
       },
     );
   }
@@ -193,49 +196,54 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
     );
   }
 
-  Widget _buildBookmarkColorField(BuildContext context, int color) {
+  Widget _buildActionButton() {
     return Container(
+      padding: EdgeInsets.all(8),
       height: 60,
-      decoration: BoxDecoration(
-        border: Border.all(width: 1, color: Colors.white24),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Material(
-        type: MaterialType.transparency,
-        child: InkWell(
-          onTap: () async {
-            final color = await showColorPickerDialog(
-              context,
-              dialogSelectColor,
-              backgroundColor: Colors.white,
-              dialogElevation: 0,
-              borderRadius: 4,
-              elevation: 0,
-            );
-            ref.read(multidayEventDetailProvider.notifier).setBookmarkStickerColor(color.value);
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 1, color: Colors.white60),
-                  color: color == -1 ? Colors.white : Color(color),
-                  shape: BoxShape.circle,
-                ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Container(
+            clipBehavior: Clip.antiAlias,
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(width: 1, color: Colors.white54),
+            ),
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Icon(Icons.close_rounded, color: Colors.white),
               ),
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "Color",
-                style: FontSettings.primaryFont.copyWith(color: Colors.white),
-              ),
-            ],
+            ),
           ),
-        ),
+          Container(
+            clipBehavior: Clip.antiAlias,
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(width: 1, color: Colors.white54),
+            ),
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () {
+                  ref.read(multidayEventDetailProvider.notifier).setTitle(_controller.text);
+                  ref.read(multidayEventDetailProvider.notifier).setDateList();
+                  Navigator.pop(context);
+                  ref.read(isSelectingDateRangeProvider.notifier).state = false;
+                  context.go('/multidayEventEdit');
+                },
+                child: Icon(Icons.check_rounded, color: Colors.white),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -277,6 +285,8 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
                       return _buildBookmarkStickerField();
                     },
                   ),
+                  SizedBox(height: 10),
+                  _buildActionButton(),
                 ],
               ),
             ),

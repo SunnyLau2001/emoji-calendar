@@ -52,7 +52,7 @@ class TopBar extends ConsumerWidget {
                           type: MaterialType.transparency,
                           child: InkWell(
                             onTap: () async {
-                              // ref.read(showSideMenuProvider.notifier).state = !showSideMenu;
+                              ref.read(showSideMenuProvider.notifier).state = !showSideMenu;
                             },
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
@@ -78,6 +78,7 @@ class TopBar extends ConsumerWidget {
                       clipBehavior: Clip.antiAlias,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
+                        border: Border.all(width: 1, color: Colors.white54),
                       ),
                       width: 40,
                       height: 40,
@@ -88,7 +89,7 @@ class TopBar extends ConsumerWidget {
                             if (isSelecting) ref.read(isSelectingDateRangeProvider.notifier).state = false;
                           },
                           child: Icon(
-                            Icons.cancel_outlined,
+                            Icons.close_rounded,
                             color: Colors.white,
                           ),
                         ),
@@ -144,6 +145,7 @@ class TopBar extends ConsumerWidget {
                     clipBehavior: Clip.antiAlias,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
+                      border: Border.all(width: 1, color: Colors.white54),
                     ),
                     width: 40,
                     height: 40,
@@ -157,7 +159,7 @@ class TopBar extends ConsumerWidget {
                           // ref.read(isSelectingDateRangeProvider.notifier).state = false;
                         },
                         child: Icon(
-                          Icons.check_circle_outline_outlined,
+                          Icons.check_outlined,
                           color: Colors.white,
                         ),
                       ),
@@ -167,9 +169,12 @@ class TopBar extends ConsumerWidget {
               ),
             ),
 
-            SizedBox(
-              // height: height - 20,
-              child: CalendarHeader(),
+            Positioned(
+              top: 10,
+              child: SizedBox(
+                // height: height - 20,
+                child: CalendarHeader(),
+              ),
             ),
           ],
         ),

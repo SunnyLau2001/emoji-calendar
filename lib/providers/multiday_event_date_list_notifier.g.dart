@@ -1,26 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'multiday_event_detail_notifier.dart';
+part of 'multiday_event_date_list_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$multidayEventDetailHash() =>
-    r'3d684a6e1140f03cfebd1a8cd5fdc5e396a8434d';
+String _$multidayEventDateListHash() =>
+    r'8da4b28f753846a4e692733cf4956cec0508b79b';
 
-/// See also [MultidayEventDetail].
-@ProviderFor(MultidayEventDetail)
-final multidayEventDetailProvider = AutoDisposeNotifierProvider<
-    MultidayEventDetail, MultidayEventDetailProp>.internal(
-  MultidayEventDetail.new,
-  name: r'multidayEventDetailProvider',
+/// See also [MultidayEventDateList].
+@ProviderFor(MultidayEventDateList)
+final multidayEventDateListProvider = AutoDisposeNotifierProvider<
+    MultidayEventDateList, List<MultidayEventDateListProp>>.internal(
+  MultidayEventDateList.new,
+  name: r'multidayEventDateListProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$multidayEventDetailHash,
+      : _$multidayEventDateListHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$MultidayEventDetail = AutoDisposeNotifier<MultidayEventDetailProp>;
+typedef _$MultidayEventDateList
+    = AutoDisposeNotifier<List<MultidayEventDateListProp>>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

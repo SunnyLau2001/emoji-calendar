@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:fyp_our_sky_new/components/main_page.dart';
-import 'package:fyp_our_sky_new/components/multiday_event_edit.dart';
+import 'package:fyp_our_sky_new/pages/main_page.dart';
+import 'package:fyp_our_sky_new/pages/multiday_event_edit_page.dart';
 import 'package:fyp_our_sky_new/services/isar_service.dart';
 import 'package:fyp_our_sky_new/services/sticker_service.dart';
 import 'package:go_router/go_router.dart';
-import 'package:isar/isar.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'models/sticker.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

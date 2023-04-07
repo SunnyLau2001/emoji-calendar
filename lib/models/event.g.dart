@@ -61,6 +61,11 @@ const EventSchema = CollectionSchema(
       id: 8,
       name: r'title',
       type: IsarType.string,
+    ),
+    r'weather': PropertySchema(
+      id: 9,
+      name: r'weather',
+      type: IsarType.string,
     )
   },
   estimateSize: _eventEstimateSize,
@@ -100,6 +105,12 @@ int _eventEstimateSize(
   bytesCount += 3 + object.startHourMinute.length * 8;
   bytesCount += 3 + object.stickerId.length * 3;
   bytesCount += 3 + object.title.length * 3;
+  {
+    final value = object.weather;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   return bytesCount;
 }
 
@@ -118,6 +129,7 @@ void _eventSerialize(
   writer.writeLongList(offsets[6], object.startHourMinute);
   writer.writeString(offsets[7], object.stickerId);
   writer.writeString(offsets[8], object.title);
+  writer.writeString(offsets[9], object.weather);
 }
 
 Event _eventDeserialize(
@@ -137,6 +149,7 @@ Event _eventDeserialize(
   object.startHourMinute = reader.readLongList(offsets[6]) ?? [];
   object.stickerId = reader.readString(offsets[7]);
   object.title = reader.readString(offsets[8]);
+  object.weather = reader.readStringOrNull(offsets[9]);
   return object;
 }
 
@@ -165,6 +178,8 @@ P _eventDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 8:
       return (reader.readString(offset)) as P;
+    case 9:
+      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -1410,6 +1425,152 @@ extension EventQueryFilter on QueryBuilder<Event, Event, QFilterCondition> {
       ));
     });
   }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'weather',
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'weather',
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'weather',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'weather',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'weather',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'weather',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'weather',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'weather',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'weather',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'weather',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'weather',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> weatherIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'weather',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension EventQueryObject on QueryBuilder<Event, Event, QFilterCondition> {}
@@ -1486,6 +1647,18 @@ extension EventQuerySortBy on QueryBuilder<Event, Event, QSortBy> {
   QueryBuilder<Event, Event, QAfterSortBy> sortByTitleDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterSortBy> sortByWeather() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'weather', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterSortBy> sortByWeatherDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'weather', Sort.desc);
     });
   }
 }
@@ -1574,6 +1747,18 @@ extension EventQuerySortThenBy on QueryBuilder<Event, Event, QSortThenBy> {
       return query.addSortBy(r'title', Sort.desc);
     });
   }
+
+  QueryBuilder<Event, Event, QAfterSortBy> thenByWeather() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'weather', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterSortBy> thenByWeatherDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'weather', Sort.desc);
+    });
+  }
 }
 
 extension EventQueryWhereDistinct on QueryBuilder<Event, Event, QDistinct> {
@@ -1632,6 +1817,13 @@ extension EventQueryWhereDistinct on QueryBuilder<Event, Event, QDistinct> {
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Event, Event, QDistinct> distinctByWeather(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'weather', caseSensitive: caseSensitive);
     });
   }
 }
@@ -1694,6 +1886,12 @@ extension EventQueryProperty on QueryBuilder<Event, Event, QQueryProperty> {
   QueryBuilder<Event, String, QQueryOperations> titleProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'title');
+    });
+  }
+
+  QueryBuilder<Event, String?, QQueryOperations> weatherProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'weather');
     });
   }
 }

@@ -11,6 +11,7 @@ class Event {
   late String stickerId;
   String? location;
   List<double>? latlng;
+  String? weather;
   int? checklistId;
 
   late int multidayEventId;

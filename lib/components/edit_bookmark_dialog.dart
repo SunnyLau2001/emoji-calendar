@@ -13,64 +13,65 @@ import 'package:fyp_our_sky_new/utils/font_settings.dart';
 class EditBookmarkDialog extends ConsumerWidget {
   const EditBookmarkDialog({super.key});
 
+  Widget _buildStickerPicker() {
+    return BookmarkStickerPicker();
+  }
+
+  Widget _buildColorPicker(WidgetRef ref) {
+    // final dialogPickerColor = Colors.blue;
+    final dialogPickerColor = ref.read(multidayEventDetailProvider).bookmarkColorInt;
+    return ColorPicker(
+      // Use the dialogPickerColor as start color.
+      color: Color(dialogPickerColor),
+      pickerTypeTextStyle: FontSettings.primaryFont,
+      selectedPickerTypeColor: Colors.black12,
+      // Update the dialogPickerColor using the callback.
+      onColorChanged: (Color color) {
+        ref.read(multidayEventDetailProvider.notifier).setBookmarkStickerColor(color.value);
+      },
+      width: 40,
+      height: 40,
+      borderRadius: 4,
+      spacing: 5,
+      runSpacing: 5,
+      wheelDiameter: 155,
+      padding: EdgeInsets.all(10),
+      // heading: Text(
+      //   'Select color',
+      //   style: FontSettings.primaryFont,
+      // ),
+      subheading: Text(
+        'Select color shade',
+        style: FontSettings.primaryFont,
+      ),
+      wheelSubheading: Text(
+        'Selected color and its shades',
+        style: FontSettings.primaryFont,
+      ),
+      // showMaterialName: true,
+      // showColorName: true,
+      // showColorCode: true,
+      copyPasteBehavior: const ColorPickerCopyPasteBehavior(
+        longPressMenu: true,
+      ),
+      materialNameTextStyle: FontSettings.primaryFont,
+      colorNameTextStyle: FontSettings.primaryFont,
+      colorCodeTextStyle: FontSettings.primaryFont,
+      pickersEnabled: const <ColorPickerType, bool>{
+        ColorPickerType.both: false,
+        ColorPickerType.primary: true,
+        ColorPickerType.accent: false,
+        ColorPickerType.bw: false,
+        ColorPickerType.custom: false,
+        ColorPickerType.wheel: true,
+      },
+
+      // customColorSwatchesAndNames: colorsNameMap,
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Widget _buildStickerPicker() {
-      return BookmarkStickerPicker();
-    }
-
-    Widget _buildColorPicker() {
-      final dialogPickerColor = Colors.blue;
-      return ColorPicker(
-        // Use the dialogPickerColor as start color.
-        color: dialogPickerColor,
-        pickerTypeTextStyle: FontSettings.primaryFont,
-        selectedPickerTypeColor: Colors.black12,
-        // Update the dialogPickerColor using the callback.
-        onColorChanged: (Color color) {
-          ref.read(multidayEventDetailProvider.notifier).setBookmarkStickerColor(color.value);
-        },
-        width: 40,
-        height: 40,
-        borderRadius: 4,
-        spacing: 5,
-        runSpacing: 5,
-        wheelDiameter: 155,
-        padding: EdgeInsets.all(10),
-        // heading: Text(
-        //   'Select color',
-        //   style: FontSettings.primaryFont,
-        // ),
-        subheading: Text(
-          'Select color shade',
-          style: FontSettings.primaryFont,
-        ),
-        wheelSubheading: Text(
-          'Selected color and its shades',
-          style: FontSettings.primaryFont,
-        ),
-        // showMaterialName: true,
-        // showColorName: true,
-        // showColorCode: true,
-        copyPasteBehavior: const ColorPickerCopyPasteBehavior(
-          longPressMenu: true,
-        ),
-        materialNameTextStyle: FontSettings.primaryFont,
-        colorNameTextStyle: FontSettings.primaryFont,
-        colorCodeTextStyle: FontSettings.primaryFont,
-        pickersEnabled: const <ColorPickerType, bool>{
-          ColorPickerType.both: false,
-          ColorPickerType.primary: true,
-          ColorPickerType.accent: false,
-          ColorPickerType.bw: false,
-          ColorPickerType.custom: false,
-          ColorPickerType.wheel: true,
-        },
-
-        // customColorSwatchesAndNames: colorsNameMap,
-      );
-    }
-
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(
@@ -89,7 +90,7 @@ class EditBookmarkDialog extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildColorPicker(),
+                _buildColorPicker(ref),
                 _buildStickerPicker(),
               ],
             ),
@@ -103,24 +104,24 @@ class EditBookmarkDialog extends ConsumerWidget {
 class BookmarkStickerPicker extends ConsumerWidget {
   const BookmarkStickerPicker({super.key});
 
+  Widget _buildStickerGrid(List<Sticker> stickers, double width) {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 6,
+        childAspectRatio: 1,
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+      ),
+      itemCount: stickers.length,
+      itemBuilder: (context, index) {
+        return BookmarkStickerPickerCell(sticker: stickers[index]);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     AsyncValue<List<Sticker>> stickers = ref.watch(fetchStickersProvider);
-
-    Widget _buildStickerGrid(List<Sticker> stickers, double width) {
-      return GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 6,
-          childAspectRatio: 1,
-          mainAxisSpacing: 4,
-          crossAxisSpacing: 4,
-        ),
-        itemCount: stickers.length,
-        itemBuilder: (context, index) {
-          return BookmarkStickerPickerCell(sticker: stickers[index]);
-        },
-      );
-    }
 
     return stickers.when(
       data: (data) {

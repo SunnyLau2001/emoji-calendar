@@ -7,9 +7,9 @@ import 'package:fyp_our_sky_new/components/top_bar.dart';
 import '../providers/providers.dart';
 import '../utils/app_settings.dart';
 import '../utils/calendar_settings.dart';
-import 'custom_overlay.dart';
-import 'custom_side_menu.dart';
-import 'month_view_date_picker.dart';
+import '../components/custom_overlay.dart';
+import '../components/custom_side_menu.dart';
+import '../components/month_view_date_picker.dart';
 
 class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
@@ -78,32 +78,37 @@ class _MainPageState extends ConsumerState<MainPage> {
           // Overlay when select date range for multiday event
           CustomOverlay(),
 
-          // Month view
-          Positioned(
-            bottom: 0,
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height - 120,
-              width: MediaQuery.of(context).size.width,
-              child: MonthView(
-                monthViewController: monthViewController,
-              ),
+          SafeArea(
+            child: Stack(
+              children: [
+                // Month view
+                Positioned(
+                  bottom: 0,
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top - 120,
+                    width: MediaQuery.of(context).size.width,
+                    child: MonthView(
+                      monthViewController: monthViewController,
+                    ),
+                  ),
+                ),
+
+                Positioned(
+                  top: 0,
+                  child: TopBar(height: 120),
+                ),
+
+                Positioned(
+                  bottom: 14,
+                  right: 14,
+                  child: CustomFloatButton(
+                    monthViewController: monthViewController,
+                  ),
+                ),
+              ],
             ),
           ),
-          // Float button for back to current date
 
-          // Positioned(
-          //   top: 120,
-          //   child: MonthViewDatePicker(),
-          // ),
-          TopBar(height: 120),
-
-          Positioned(
-            bottom: 14,
-            right: 14,
-            child: CustomFloatButton(
-              monthViewController: monthViewController,
-            ),
-          ),
           // Side menu
           Consumer(
             builder: (context, ref, child) {
