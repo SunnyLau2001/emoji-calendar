@@ -1,4 +1,3 @@
-
 import 'package:isar/isar.dart';
 
 part 'checklist.g.dart';
@@ -6,13 +5,13 @@ part 'checklist.g.dart';
 @collection
 class Checklist {
   Id id = Isar.autoIncrement;
-  late int eventId;
-  List<ChecklistItem>? checklist;
-
+  late String title;
+  List<ChecklistItem> checklist = [];
+  int? eventId;
 }
 
 @embedded
 class ChecklistItem {
-  late String title;
+  late String detail;
   late bool checked = false;
 }

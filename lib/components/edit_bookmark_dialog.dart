@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/models/sticker.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';

@@ -49,7 +49,7 @@ const StickerSchema = CollectionSchema(
   getId: _stickerGetId,
   getLinks: _stickerGetLinks,
   attach: _stickerAttach,
-  version: '3.0.5',
+  version: '3.0.6-dev.0',
 );
 
 int _stickerEstimateSize(

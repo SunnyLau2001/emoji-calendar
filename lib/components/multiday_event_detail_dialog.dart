@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
 
-import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';
@@ -15,7 +14,13 @@ import '../models/sticker.dart';
 import 'edit_bookmark_dialog.dart';
 
 class MultidayEventDetailDialog extends ConsumerStatefulWidget {
-  const MultidayEventDetailDialog({super.key});
+  const MultidayEventDetailDialog({
+    super.key,
+    this.mode = "create",
+    this.title = "Title",
+  });
+  final String title;
+  final String mode;
 
   @override
   ConsumerState<MultidayEventDetailDialog> createState() => _MultidayEventDetailDialogState();
@@ -28,8 +33,10 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
-    dialogSelectColor = const Color(0xFFA239CA);
+    _controller = TextEditingController(
+      text: widget.title,
+    );
+    dialogSelectColor = Colors.white;
   }
 
   @override
@@ -97,7 +104,7 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
   }
 
   Widget _buildTitleField(String title) {
-    _controller.text = title;
+    // _controller.text = title;
     return TextField(
       controller: _controller,
       style: TextStyle(color: Colors.white),
@@ -234,10 +241,12 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
               child: InkWell(
                 onTap: () {
                   ref.read(multidayEventDetailProvider.notifier).setTitle(_controller.text);
-                  ref.read(multidayEventDetailProvider.notifier).setDateList();
+                  if (widget.mode == "create") {
+                    ref.read(multidayEventDetailProvider.notifier).setDateList();
+                    ref.read(isSelectingDateRangeProvider.notifier).state = false;
+                    context.go('/multidayEventEdit');
+                  }
                   Navigator.pop(context);
-                  ref.read(isSelectingDateRangeProvider.notifier).state = false;
-                  context.go('/multidayEventEdit');
                 },
                 child: Icon(Icons.check_rounded, color: Colors.white),
               ),
@@ -299,13 +308,28 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
 }
 
 //
-Future setMultidayEventEventDetail({
+Future<void> createMultidayEventEventDetail({
   required BuildContext context,
 }) {
-  return showDialog(
+  return showDialog<void>(
     context: context,
     builder: (context) {
       return MultidayEventDetailDialog();
+    },
+  );
+}
+
+Future<void> editMultidayEventEventDetail({
+  required BuildContext context,
+  required String title,
+}) {
+  return showDialog<void>(
+    context: context,
+    builder: (context) {
+      return MultidayEventDetailDialog(
+        mode: "edit",
+        title: title,
+      );
     },
   );
 }

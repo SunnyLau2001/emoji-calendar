@@ -8,13 +8,13 @@ part 'sticker_provider.g.dart';
 @riverpod
 Future<List<Sticker>> fetchStickers(FetchStickersRef ref) async {
   final stickerService = StickerService();
-  final stickers = stickerService.getAllStickers();
+  final stickers = await stickerService.getAllStickers();
   return stickers;
 }
 
 @riverpod
 Future<Sticker?> fetchStickerById(FetchStickerByIdRef ref, {required String stickerId}) async {
   final stickerService = StickerService();
-  final sticker = stickerService.getStickerById(stickerId);
+  final sticker = await stickerService.getStickerById(stickerId);
   return sticker;
 }

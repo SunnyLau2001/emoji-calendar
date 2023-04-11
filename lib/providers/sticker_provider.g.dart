@@ -6,7 +6,7 @@ part of 'sticker_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchStickersHash() => r'4eb19c316895a25684409e682ae2c76e9aafe773';
+String _$fetchStickersHash() => r'e2e0fbef5bb185b395188ee3ef03638a6e59d287';
 
 /// See also [fetchStickers].
 @ProviderFor(fetchStickers)
@@ -21,7 +21,7 @@ final fetchStickersProvider = AutoDisposeFutureProvider<List<Sticker>>.internal(
 );
 
 typedef FetchStickersRef = AutoDisposeFutureProviderRef<List<Sticker>>;
-String _$fetchStickerByIdHash() => r'cc1829255099d825f49f53ed7024821e2fb93670';
+String _$fetchStickerByIdHash() => r'931117dd3343f32ed52215319913bab988829a26';
 
 /// Copied from Dart SDK
 class _SystemHash {

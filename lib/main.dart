@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/pages/main_page.dart';
 import 'package:fyp_our_sky_new/pages/multiday_event_edit_page.dart';
+import 'package:fyp_our_sky_new/pages/single_date_view_page.dart';
 import 'package:fyp_our_sky_new/services/isar_service.dart';
 import 'package:fyp_our_sky_new/services/sticker_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +14,11 @@ void main() async {
   // Initialize all db that will be used
   await IsarService.initIsar();
   await StickerService.initSticker();
+
+  await FlutterMapTileCaching.initialise(
+    rootDirectory: null,
+  );
+  FlutterMapTileCaching.instance('MapTileStore').manage.create();
 
   runApp(ProviderScope(child: const OurTimeApp()));
 }
@@ -29,7 +36,7 @@ class OurTimeApp extends StatelessWidget {
 class AppRouter extends StatelessWidget {
   AppRouter({super.key});
 
-  final _router = GoRouter(
+  final GoRouter _router = GoRouter(
     routes: [
       GoRoute(
         path: '/',
@@ -44,6 +51,26 @@ class AppRouter extends StatelessWidget {
                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   // Change the opacity of the screen using a Curve based on the the animation's
                   // value
+                  return FadeTransition(
+                    opacity: CurveTween(curve: Curves.easeInOutCirc).animate(animation),
+                    child: child,
+                  );
+                },
+              );
+            },
+          ),
+          GoRoute(
+            path: 'singleDatePage',
+            name: 'singleDatePage',
+            pageBuilder: (context, state) {
+              final DateTime date = state.extra as DateTime;
+              print(date);
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: SingleDateViewPage(
+                  date: date,
+                ),
+                transitionsBuilder: (context, animation, secondaryAnimation, child) {
                   return FadeTransition(
                     opacity: CurveTween(curve: Curves.easeInOutCirc).animate(animation),
                     child: child,

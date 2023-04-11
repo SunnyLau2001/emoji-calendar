@@ -18,6 +18,15 @@ class MultidayEventDetail extends _$MultidayEventDetail {
     );
   }
 
+  void initializeState() {
+    state = MultidayEventDetailProp(
+      title: '',
+      dateRange: [],
+      bookmarkStickerId: 'default_1',
+      bookmarkColorInt: Colors.blue.value,
+    );
+  }
+
   void clearDateRange() {
     state = state.copyWith(dateRange: []);
   }
@@ -69,7 +78,7 @@ class MultidayEventDetail extends _$MultidayEventDetail {
           ? state.copyWith(dateRange: [...state.dateRange, date])
           : compare == 1
               ? state.copyWith(dateRange: [date, ...state.dateRange])
-              : state.copyWith(dateRange: []);
+              : state.copyWith(dateRange: [...state.dateRange]);
       return;
     }
 

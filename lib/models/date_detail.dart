@@ -9,5 +9,7 @@ class DateDetail {
   Id get isarId => UtilFunctions.fastHash(date);
   late DateTime lastUpdate;
 
+  List<int> availableTracks = [-1, -1, -1];
   List<int> eventsId = [];
+  List<int> multidayEventsId = [];
 }

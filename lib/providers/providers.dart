@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fyp_our_sky_new/models/address_detail.dart';
 import 'package:fyp_our_sky_new/utils/app_settings.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../utils/calendar_settings.dart';
 
@@ -54,3 +56,15 @@ final showMonthViewDatePickerProvider = StateProvider<bool>((ref) {
 final focusedDateEventsListProvider = StateProvider<String>((ref) {
   return '';
 });
+
+final activedDummyTargetIndexProvider = StateProvider<int>((ref) => -1);
+final isDraggingStickerProvider = StateProvider<bool>((ref) => false);
+
+final addressDetailProvider = StateProvider<AddressDetail?>((ref) {
+  return null;
+});
+final addressSearchBarFocusedProvider = StateProvider<bool>((ref) => false);
+final addressNameProvider = StateProvider<String>((ref) => "");
+final latLngProvider = StateProvider<LatLng>((ref) => LatLng(22.3163552, 114.1801817));
+
+final dateListInEditingModeProvider = StateProvider<int>((ref) => -1);

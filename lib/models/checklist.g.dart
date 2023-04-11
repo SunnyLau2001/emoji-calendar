@@ -27,6 +27,11 @@ const ChecklistSchema = CollectionSchema(
       id: 1,
       name: r'eventId',
       type: IsarType.long,
+    ),
+    r'title': PropertySchema(
+      id: 2,
+      name: r'title',
+      type: IsarType.string,
     )
   },
   estimateSize: _checklistEstimateSize,
@@ -40,7 +45,7 @@ const ChecklistSchema = CollectionSchema(
   getId: _checklistGetId,
   getLinks: _checklistGetLinks,
   attach: _checklistAttach,
-  version: '3.0.5',
+  version: '3.0.6-dev.0',
 );
 
 int _checklistEstimateSize(
@@ -49,20 +54,16 @@ int _checklistEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.checklist.length * 3;
   {
-    final list = object.checklist;
-    if (list != null) {
-      bytesCount += 3 + list.length * 3;
-      {
-        final offsets = allOffsets[ChecklistItem]!;
-        for (var i = 0; i < list.length; i++) {
-          final value = list[i];
-          bytesCount +=
-              ChecklistItemSchema.estimateSize(value, offsets, allOffsets);
-        }
-      }
+    final offsets = allOffsets[ChecklistItem]!;
+    for (var i = 0; i < object.checklist.length; i++) {
+      final value = object.checklist[i];
+      bytesCount +=
+          ChecklistItemSchema.estimateSize(value, offsets, allOffsets);
     }
   }
+  bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
 
@@ -79,6 +80,7 @@ void _checklistSerialize(
     object.checklist,
   );
   writer.writeLong(offsets[1], object.eventId);
+  writer.writeString(offsets[2], object.title);
 }
 
 Checklist _checklistDeserialize(
@@ -89,13 +91,15 @@ Checklist _checklistDeserialize(
 ) {
   final object = Checklist();
   object.checklist = reader.readObjectList<ChecklistItem>(
-    offsets[0],
-    ChecklistItemSchema.deserialize,
-    allOffsets,
-    ChecklistItem(),
-  );
-  object.eventId = reader.readLong(offsets[1]);
+        offsets[0],
+        ChecklistItemSchema.deserialize,
+        allOffsets,
+        ChecklistItem(),
+      ) ??
+      [];
+  object.eventId = reader.readLongOrNull(offsets[1]);
   object.id = id;
+  object.title = reader.readString(offsets[2]);
   return object;
 }
 
@@ -108,13 +112,16 @@ P _checklistDeserializeProp<P>(
   switch (propertyId) {
     case 0:
       return (reader.readObjectList<ChecklistItem>(
-        offset,
-        ChecklistItemSchema.deserialize,
-        allOffsets,
-        ChecklistItem(),
-      )) as P;
+            offset,
+            ChecklistItemSchema.deserialize,
+            allOffsets,
+            ChecklistItem(),
+          ) ??
+          []) as P;
     case 1:
-      return (reader.readLong(offset)) as P;
+      return (reader.readLongOrNull(offset)) as P;
+    case 2:
+      return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -211,23 +218,6 @@ extension ChecklistQueryWhere
 
 extension ChecklistQueryFilter
     on QueryBuilder<Checklist, Checklist, QFilterCondition> {
-  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> checklistIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'checklist',
-      ));
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterFilterCondition>
-      checklistIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'checklist',
-      ));
-    });
-  }
-
   QueryBuilder<Checklist, Checklist, QAfterFilterCondition>
       checklistLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
@@ -316,8 +306,24 @@ extension ChecklistQueryFilter
     });
   }
 
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'eventId',
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'eventId',
+      ));
+    });
+  }
+
   QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdEqualTo(
-      int value) {
+      int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'eventId',
@@ -327,7 +333,7 @@ extension ChecklistQueryFilter
   }
 
   QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdGreaterThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -340,7 +346,7 @@ extension ChecklistQueryFilter
   }
 
   QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdLessThan(
-    int value, {
+    int? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -353,8 +359,8 @@ extension ChecklistQueryFilter
   }
 
   QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdBetween(
-    int lower,
-    int upper, {
+    int? lower,
+    int? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -421,6 +427,136 @@ extension ChecklistQueryFilter
       ));
     });
   }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'title',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'title',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'title',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'title',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> titleIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'title',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension ChecklistQueryObject
@@ -446,6 +582,18 @@ extension ChecklistQuerySortBy on QueryBuilder<Checklist, Checklist, QSortBy> {
   QueryBuilder<Checklist, Checklist, QAfterSortBy> sortByEventIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'eventId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterSortBy> sortByTitle() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterSortBy> sortByTitleDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.desc);
     });
   }
 }
@@ -475,6 +623,18 @@ extension ChecklistQuerySortThenBy
       return query.addSortBy(r'id', Sort.desc);
     });
   }
+
+  QueryBuilder<Checklist, Checklist, QAfterSortBy> thenByTitle() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QAfterSortBy> thenByTitleDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'title', Sort.desc);
+    });
+  }
 }
 
 extension ChecklistQueryWhereDistinct
@@ -482,6 +642,13 @@ extension ChecklistQueryWhereDistinct
   QueryBuilder<Checklist, Checklist, QDistinct> distinctByEventId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'eventId');
+    });
+  }
+
+  QueryBuilder<Checklist, Checklist, QDistinct> distinctByTitle(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'title', caseSensitive: caseSensitive);
     });
   }
 }
@@ -494,16 +661,22 @@ extension ChecklistQueryProperty
     });
   }
 
-  QueryBuilder<Checklist, List<ChecklistItem>?, QQueryOperations>
+  QueryBuilder<Checklist, List<ChecklistItem>, QQueryOperations>
       checklistProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'checklist');
     });
   }
 
-  QueryBuilder<Checklist, int, QQueryOperations> eventIdProperty() {
+  QueryBuilder<Checklist, int?, QQueryOperations> eventIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'eventId');
+    });
+  }
+
+  QueryBuilder<Checklist, String, QQueryOperations> titleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'title');
     });
   }
 }
@@ -524,9 +697,9 @@ const ChecklistItemSchema = Schema(
       name: r'checked',
       type: IsarType.bool,
     ),
-    r'title': PropertySchema(
+    r'detail': PropertySchema(
       id: 1,
-      name: r'title',
+      name: r'detail',
       type: IsarType.string,
     )
   },
@@ -542,7 +715,7 @@ int _checklistItemEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.title.length * 3;
+  bytesCount += 3 + object.detail.length * 3;
   return bytesCount;
 }
 
@@ -553,7 +726,7 @@ void _checklistItemSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeBool(offsets[0], object.checked);
-  writer.writeString(offsets[1], object.title);
+  writer.writeString(offsets[1], object.detail);
 }
 
 ChecklistItem _checklistItemDeserialize(
@@ -564,7 +737,7 @@ ChecklistItem _checklistItemDeserialize(
 ) {
   final object = ChecklistItem();
   object.checked = reader.readBool(offsets[0]);
-  object.title = reader.readString(offsets[1]);
+  object.detail = reader.readString(offsets[1]);
   return object;
 }
 
@@ -597,13 +770,13 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleEqualTo(
+      detailEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'title',
+        property: r'detail',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -611,7 +784,7 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleGreaterThan(
+      detailGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -619,7 +792,7 @@ extension ChecklistItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'title',
+        property: r'detail',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -627,7 +800,7 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleLessThan(
+      detailLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -635,7 +808,7 @@ extension ChecklistItemQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'title',
+        property: r'detail',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -643,7 +816,7 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleBetween(
+      detailBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -652,7 +825,7 @@ extension ChecklistItemQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'title',
+        property: r'detail',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -663,13 +836,13 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleStartsWith(
+      detailStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'title',
+        property: r'detail',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -677,13 +850,13 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleEndsWith(
+      detailEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'title',
+        property: r'detail',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -691,10 +864,10 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleContains(String value, {bool caseSensitive = true}) {
+      detailContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'title',
+        property: r'detail',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -702,10 +875,10 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleMatches(String pattern, {bool caseSensitive = true}) {
+      detailMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'title',
+        property: r'detail',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -713,20 +886,20 @@ extension ChecklistItemQueryFilter
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleIsEmpty() {
+      detailIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'title',
+        property: r'detail',
         value: '',
       ));
     });
   }
 
   QueryBuilder<ChecklistItem, ChecklistItem, QAfterFilterCondition>
-      titleIsNotEmpty() {
+      detailIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'title',
+        property: r'detail',
         value: '',
       ));
     });

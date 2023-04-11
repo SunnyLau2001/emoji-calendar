@@ -1,14 +1,19 @@
+import 'dart:convert';
 import 'dart:ui';
 
+import 'package:animated_list_plus/animated_list_plus.dart';
+import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fyp_our_sky_new/components/set_event_detail_dialog.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart';
-import 'package:fyp_our_sky_new/providers/multiday_event_date_list_prop.dart';
 import 'package:fyp_our_sky_new/providers/providers.dart';
 import 'package:fyp_our_sky_new/utils/date_string.dart';
 import 'package:fyp_our_sky_new/utils/font_settings.dart';
 
-import '../models/event.dart';
+import '../models/sticker.dart';
+import '../providers/event_temp_prop.dart';
+import '../providers/multiday_event_date_list_prop.dart';
 
 class DateListDragTarget extends ConsumerStatefulWidget {
   const DateListDragTarget({
@@ -30,61 +35,67 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
 
   @override
   Widget build(BuildContext context) {
-    print("drag target");
     final dateString = "${widget.date.year}-${widget.date.month}-${widget.date.day}";
+    final focusedDate = ref.watch(focusedDateEventsListProvider);
 
     final MultidayEventDateListProp dateListProp = ref.watch(multidayEventDateListProvider
         .select((value) => value.firstWhere((element) => element.dateString == dateString)));
 
-    final List<Event> events = dateListProp.events;
+    final List<EventTemp> events = dateListProp.events;
+    final List<int>? latestStartTimeAvailable = events.isNotEmpty ? events[events.length - 1].endHourMinute : null;
 
-    return Consumer(
-      builder: (context, ref, child) {
-        final focusedDate = ref.watch(focusedDateEventsListProvider);
-
-        return AnimatedAlign(
-          alignment: Alignment.center,
-          duration: Duration(milliseconds: 500),
-          curve: Curves.ease,
-          heightFactor: focusedDate == '' || focusedDate == dateString ? 1 : 0,
-          child: AnimatedScale(
-            duration: Duration(milliseconds: 0),
-            curve: Curves.ease,
-            scale: focusedDate == '' || focusedDate == dateString ? 1 : 0,
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              padding: EdgeInsets.symmetric(vertical: 8),
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: Colors.white54),
-                color: Colors.white12,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+    return AnimatedAlign(
+      alignment: Alignment.center,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.ease,
+      heightFactor: focusedDate == '' || focusedDate == dateString ? 1 : 0,
+      child: AnimatedScale(
+        duration: Duration(milliseconds: 0),
+        curve: Curves.ease,
+        scale: focusedDate == '' || focusedDate == dateString ? 1 : 0,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: 8),
+          decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.white54),
+            color: Colors.white12,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _monthNames[widget.date.month - 1],
-                            style: FontSettings.primaryFont.copyWith(fontSize: 14),
-                          ),
-                          Text(
-                            "${_weekdayNames[widget.date.weekday - 1]} ${widget.date.day}",
-                            style: FontSettings.primaryFont.copyWith(fontSize: 18),
-                          ),
-                        ],
+                      Text(
+                        _monthNames[widget.date.month - 1],
+                        style: FontSettings.primaryFont.copyWith(fontSize: 14),
                       ),
-                      Spacer(),
-                      Material(
+                      Text(
+                        "${_weekdayNames[widget.date.weekday - 1]} ${widget.date.day}",
+                        style: FontSettings.primaryFont.copyWith(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                  Spacer(),
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final editingDateIndex = ref.watch(dateListInEditingModeProvider);
+                      final isEditing = editingDateIndex == widget.dateIndex;
+                      return Material(
                         type: MaterialType.transparency,
                         child: InkWell(
                           customBorder: CircleBorder(),
                           onTap: () {
-                            // ref.watch(eventsProvider.notifier).removeAllEventsFromDay(widget.dayIndex);
+                            if (!isEditing) {
+                              ref.read(dateListInEditingModeProvider.notifier).state = widget.dateIndex;
+                            }
+                            if (isEditing) {
+                              ref.read(dateListInEditingModeProvider.notifier).state = -1;
+                            }
                           },
                           child: Container(
                             width: 48,
@@ -92,24 +103,71 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                            ),
+                            child: isEditing
+                                ? Icon(Icons.close_rounded, color: Colors.white)
+                                : Icon(Icons.edit, color: Colors.white),
                           ),
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                  // AnimatedEventList(
-                  //   // events: list,
-                  //   dayIndex: widget.dayIndex,
-                  // ),
-                  // // ..._buildEvents(list, widget.dayIndex, ref),
-                  // _buildDummyTarget(context, ref, widget.dayIndex, list, latestStartTimeAvailable),
                 ],
               ),
-            ),
+              AnimatedEventList(
+                // events: list,
+                dateIndex: widget.dateIndex,
+                // events: events,
+              ),
+              // // ..._buildEvents(list, widget.dayIndex, ref),
+              Consumer(
+                builder: (context, ref, child) {
+                  final isEditing = ref.watch(dateListInEditingModeProvider) == widget.dateIndex;
+                  return Visibility(
+                    visible: !isEditing,
+                    child: DummyDragTarget(
+                      date: widget.date,
+                      dateIndex: widget.dateIndex,
+                      latestStartTimeAvailable: latestStartTimeAvailable,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AnimatedEventList extends ConsumerWidget {
+  const AnimatedEventList({
+    super.key,
+    required this.dateIndex,
+  });
+
+  final int dateIndex;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // print("AnimatedEventList ${dayIndex} build !!!");
+    final List<EventTemp> events = ref.watch(multidayEventDateListProvider.select((value) => value[dateIndex].events));
+
+    return ImplicitlyAnimatedList<EventTemp>(
+      items: events,
+      shrinkWrap: true,
+      areItemsTheSame: (oldItem, newItem) {
+        return oldItem == newItem;
+      },
+      physics: const NeverScrollableScrollPhysics(),
+      insertDuration: Duration(milliseconds: 200),
+      itemBuilder: (context, animation, event, index) {
+        return SizeFadeTransition(
+          animation: animation,
+          child: EventItemTile(
+            dateIndex: dateIndex,
+            event: event,
+            eventIndex: index,
           ),
         );
       },
@@ -117,69 +175,272 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
   }
 }
 
-// class DummyDragTarget extends ConsumerWidget {
-//   const DummyDragTarget({super.key});
+class EventItemTile extends ConsumerWidget {
+  const EventItemTile({
+    super.key,
+    required this.dateIndex,
+    required this.event,
+    required this.eventIndex,
+  });
 
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return DragTarget(
-//       onAccept: (EmojiItem data) async {
-//         final event =
-//             await addEventDetail(context: context, emojiItem: data, latestStartTimeAvailable: latestStartTimeAvailable);
+  final int dateIndex;
+  final EventTemp event;
+  final int eventIndex;
 
-//         ref.read(activedDummyTargetIndexProvider.notifier).state = -1;
-//         ref.read(stickerDraggingProvider.notifier).state = false;
+  String _timeStringHHMMFmt(List<int> time) {
+    final hour = time[0].toString().padLeft(2, "0");
+    final min = time[1].toString().padLeft(2, "0");
+    return "$hour:$min";
+  }
 
-//         if (event != null) {
-//           addEvent(ref, data, event);
-//         }
-//       },
-//       onLeave: (data) {
-//         ref.read(activedDummyTargetIndexProvider.notifier).state = -1;
-//       },
-//       onMove: (data) {
-//         ref.read(activedDummyTargetIndexProvider.notifier).state = dayIndex;
-//       },
-//       builder: (context, candidateData, rejectedData) {
-//         return Consumer(
-//           builder: (context, ref, child) {
-//             final activated = ref.watch(activedDummyTargetIndexProvider) == dayIndex;
-//             final dragging = ref.watch(stickerDraggingProvider);
-//             String dummyHints = "Drop to add event";
-//             if (list.length == 0 && !dragging) dummyHints = "You haven't add any event yet";
-//             bool showDefaultHints = list.isEmpty;
+  Widget _buildTime() {
+    return Flexible(
+      child: Row(
+        children: [
+          Container(
+            child: Text(
+              _timeStringHHMMFmt(event.startHourMinute),
+              style: FontSettings.primaryFont,
+            ),
+          ),
+          SizedBox(
+            width: 10,
+          ),
+          Container(
+            child: Text(
+              _timeStringHHMMFmt(event.endHourMinute),
+              style: FontSettings.primaryFont,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-//             return AnimatedOpacity(
-//               opacity: activated ? 1 : 0.3,
-//               duration: Duration(milliseconds: activated ? 300 : 0),
-//               child: AnimatedContainer(
-//                 height: 60.0,
-//                 curve: Curves.easeInOut,
-//                 duration: Duration(milliseconds: 400),
-//                 margin: EdgeInsets.only(top: 8, left: 8, right: 8),
-//                 padding: EdgeInsets.all(8),
-//                 decoration: BoxDecoration(
-//                   color: showDefaultHints
-//                       ? dragging
-//                           ? Colors.grey[200]
-//                           : Colors.white
-//                       : Colors.grey[200],
-//                 ),
-//                 child: Row(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     AnimatedOpacity(
-//                       opacity: 1,
-//                       duration: Duration(milliseconds: 200),
-//                       child: Text(dummyHints),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             );
-//           },
-//         );
-//       },
-//     );
-//   }
-// }
+  Widget _buildSticker(Sticker? sticker) {
+    if (sticker != null) {
+      final image = base64.decode(sticker.imageBase64);
+      return Container(
+        padding: EdgeInsets.all(4),
+        height: 40,
+        width: 40,
+        decoration: BoxDecoration(
+          color: Colors.white10,
+          border: Border.all(width: 1, color: Colors.white10),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Image.memory(
+          image,
+          gaplessPlayback: true,
+        ),
+      );
+    }
+    return Container();
+  }
+
+  Widget _buildTitle() {
+    return Container(
+      child: Text(
+        event.title,
+        style: FontSettings.primaryFont,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+
+  Widget _buildLocation() {
+    if (event.location != null && event.location != "") {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: 14,
+            height: 14,
+            child: Icon(
+              Icons.location_on,
+              color: Colors.white,
+              size: 14,
+            ),
+          ),
+          SizedBox(
+            width: 4,
+          ),
+          Container(
+            child: Text(
+              event.location ?? "",
+              style: FontSettings.primaryFont,
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Container();
+  }
+
+  Widget _buildDeleteButton() {
+    return Consumer(
+      builder: (context, ref, child) {
+        final isEditing = ref.watch(dateListInEditingModeProvider) == dateIndex;
+
+        return IgnorePointer(
+          ignoring: !isEditing,
+          child: AnimatedOpacity(
+            duration: Duration(milliseconds: 200),
+            opacity: isEditing ? 1 : 0,
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () {
+                  ref.read(multidayEventDateListProvider.notifier).removeEventByDateIndex(dateIndex, event);
+                },
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  child: Icon(Icons.delete, color: Colors.white),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isEditing = ref.watch(dateListInEditingModeProvider) == dateIndex;
+    return Material(
+      type: MaterialType.transparency,
+      child: InkWell(
+        onTap: () async {
+          if (!isEditing) {
+            await editEventDetail(context: context, dateIndex: dateIndex, eventIndex: eventIndex, eventTemp: event);
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.all(8),
+          height: 80,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildTime(),
+              Row(
+                children: [
+                  _buildSticker(event.sticker),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildTitle(),
+                      _buildLocation(),
+                    ],
+                  ),
+                  Spacer(),
+                  _buildDeleteButton(),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class DummyDragTarget extends ConsumerWidget {
+  const DummyDragTarget({
+    super.key,
+    required this.date,
+    required this.dateIndex,
+    this.latestStartTimeAvailable,
+  });
+
+  final DateTime date;
+  final int dateIndex;
+  final List<int>? latestStartTimeAvailable;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return DragTarget(
+      onAccept: (Sticker sticker) async {
+        await createEventDetail(
+            context: context,
+            date: date,
+            dateIndex: dateIndex,
+            sticker: sticker,
+            latestStartTimeAvailable: latestStartTimeAvailable);
+        // final event =
+        //     await addEventDetail(context: context, emojiItem: data, latestStartTimeAvailable: latestStartTimeAvailable);
+
+        // ref.read(activedDummyTargetIndexProvider.notifier).state = -1;
+        // ref.read(stickerDraggingProvider.notifier).state = false;
+
+        // if (event != null) {
+        //   addEvent(ref, data, event);
+        // }
+      },
+      onLeave: (data) {
+        ref.read(activedDummyTargetIndexProvider.notifier).state = -1;
+      },
+      onMove: (data) {
+        ref.read(activedDummyTargetIndexProvider.notifier).state = dateIndex;
+      },
+      builder: (context, candidateData, rejectedData) {
+        return Consumer(
+          builder: (context, ref, child) {
+            final activated = ref.watch(activedDummyTargetIndexProvider) == dateIndex;
+            // final dragging = ref.watch(stickerDraggingProvider);
+            String dummyHints = "Drop to add event";
+            // if (list.length == 0 && !dragging) dummyHints = "You haven't add any event yet";
+            // bool showDefaultHints = list.isEmpty;
+
+            return ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: 5,
+                  sigmaY: 5,
+                ),
+                child: AnimatedOpacity(
+                  opacity: activated ? 1 : 0.5,
+                  duration: Duration(milliseconds: true ? 300 : 0),
+                  child: AnimatedContainer(
+                    height: 60.0,
+                    curve: Curves.easeInOut,
+                    duration: Duration(milliseconds: 400),
+                    margin: EdgeInsets.only(top: 8, left: 8, right: 8),
+                    padding: EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                        // color: dragging
+                        //         ? Colors.grey[200]
+                        //         : Colors.white,
+                        ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedOpacity(
+                          opacity: 1,
+                          duration: Duration(milliseconds: 200),
+                          child: Text(
+                            dummyHints,
+                            style: FontSettings.primaryFont,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}

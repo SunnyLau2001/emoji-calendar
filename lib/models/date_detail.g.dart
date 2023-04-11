@@ -17,20 +17,30 @@ const DateDetailSchema = CollectionSchema(
   name: r'DateDetail',
   id: 6103370944398646265,
   properties: {
-    r'date': PropertySchema(
+    r'availableTracks': PropertySchema(
       id: 0,
+      name: r'availableTracks',
+      type: IsarType.longList,
+    ),
+    r'date': PropertySchema(
+      id: 1,
       name: r'date',
       type: IsarType.string,
     ),
     r'eventsId': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'eventsId',
       type: IsarType.longList,
     ),
     r'lastUpdate': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'lastUpdate',
       type: IsarType.dateTime,
+    ),
+    r'multidayEventsId': PropertySchema(
+      id: 4,
+      name: r'multidayEventsId',
+      type: IsarType.longList,
     )
   },
   estimateSize: _dateDetailEstimateSize,
@@ -44,7 +54,7 @@ const DateDetailSchema = CollectionSchema(
   getId: _dateDetailGetId,
   getLinks: _dateDetailGetLinks,
   attach: _dateDetailAttach,
-  version: '3.0.5',
+  version: '3.0.6-dev.0',
 );
 
 int _dateDetailEstimateSize(
@@ -53,8 +63,10 @@ int _dateDetailEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.availableTracks.length * 8;
   bytesCount += 3 + object.date.length * 3;
   bytesCount += 3 + object.eventsId.length * 8;
+  bytesCount += 3 + object.multidayEventsId.length * 8;
   return bytesCount;
 }
 
@@ -64,9 +76,11 @@ void _dateDetailSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.date);
-  writer.writeLongList(offsets[1], object.eventsId);
-  writer.writeDateTime(offsets[2], object.lastUpdate);
+  writer.writeLongList(offsets[0], object.availableTracks);
+  writer.writeString(offsets[1], object.date);
+  writer.writeLongList(offsets[2], object.eventsId);
+  writer.writeDateTime(offsets[3], object.lastUpdate);
+  writer.writeLongList(offsets[4], object.multidayEventsId);
 }
 
 DateDetail _dateDetailDeserialize(
@@ -76,9 +90,11 @@ DateDetail _dateDetailDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = DateDetail();
-  object.date = reader.readString(offsets[0]);
-  object.eventsId = reader.readLongList(offsets[1]) ?? [];
-  object.lastUpdate = reader.readDateTime(offsets[2]);
+  object.availableTracks = reader.readLongList(offsets[0]) ?? [];
+  object.date = reader.readString(offsets[1]);
+  object.eventsId = reader.readLongList(offsets[2]) ?? [];
+  object.lastUpdate = reader.readDateTime(offsets[3]);
+  object.multidayEventsId = reader.readLongList(offsets[4]) ?? [];
   return object;
 }
 
@@ -90,11 +106,15 @@ P _dateDetailDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
-    case 1:
       return (reader.readLongList(offset) ?? []) as P;
+    case 1:
+      return (reader.readString(offset)) as P;
     case 2:
+      return (reader.readLongList(offset) ?? []) as P;
+    case 3:
       return (reader.readDateTime(offset)) as P;
+    case 4:
+      return (reader.readLongList(offset) ?? []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -193,6 +213,151 @@ extension DateDetailQueryWhere
 
 extension DateDetailQueryFilter
     on QueryBuilder<DateDetail, DateDetail, QFilterCondition> {
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'availableTracks',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'availableTracks',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'availableTracks',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'availableTracks',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'availableTracks',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'availableTracks',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'availableTracks',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'availableTracks',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'availableTracks',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      availableTracksLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'availableTracks',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
+
   QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition> dateEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -575,6 +740,151 @@ extension DateDetailQueryFilter
       ));
     });
   }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdElementEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'multidayEventsId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdElementGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'multidayEventsId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdElementLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'multidayEventsId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdElementBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'multidayEventsId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'multidayEventsId',
+        length,
+        true,
+        length,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'multidayEventsId',
+        0,
+        true,
+        0,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'multidayEventsId',
+        0,
+        false,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'multidayEventsId',
+        0,
+        true,
+        length,
+        include,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'multidayEventsId',
+        length,
+        include,
+        999999,
+        true,
+      );
+    });
+  }
+
+  QueryBuilder<DateDetail, DateDetail, QAfterFilterCondition>
+      multidayEventsIdLengthBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'multidayEventsId',
+        lower,
+        includeLower,
+        upper,
+        includeUpper,
+      );
+    });
+  }
 }
 
 extension DateDetailQueryObject
@@ -651,6 +961,12 @@ extension DateDetailQuerySortThenBy
 
 extension DateDetailQueryWhereDistinct
     on QueryBuilder<DateDetail, DateDetail, QDistinct> {
+  QueryBuilder<DateDetail, DateDetail, QDistinct> distinctByAvailableTracks() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'availableTracks');
+    });
+  }
+
   QueryBuilder<DateDetail, DateDetail, QDistinct> distinctByDate(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -669,6 +985,12 @@ extension DateDetailQueryWhereDistinct
       return query.addDistinctBy(r'lastUpdate');
     });
   }
+
+  QueryBuilder<DateDetail, DateDetail, QDistinct> distinctByMultidayEventsId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'multidayEventsId');
+    });
+  }
 }
 
 extension DateDetailQueryProperty
@@ -676,6 +998,13 @@ extension DateDetailQueryProperty
   QueryBuilder<DateDetail, int, QQueryOperations> isarIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isarId');
+    });
+  }
+
+  QueryBuilder<DateDetail, List<int>, QQueryOperations>
+      availableTracksProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'availableTracks');
     });
   }
 
@@ -694,6 +1023,13 @@ extension DateDetailQueryProperty
   QueryBuilder<DateDetail, DateTime, QQueryOperations> lastUpdateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'lastUpdate');
+    });
+  }
+
+  QueryBuilder<DateDetail, List<int>, QQueryOperations>
+      multidayEventsIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'multidayEventsId');
     });
   }
 }

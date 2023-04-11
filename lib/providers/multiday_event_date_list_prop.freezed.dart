@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$MultidayEventDateListProp {
   String get dateString => throw _privateConstructorUsedError;
   DateTime get dateTime => throw _privateConstructorUsedError;
-  List<Event> get events => throw _privateConstructorUsedError;
+  List<EventTemp> get events => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MultidayEventDateListPropCopyWith<MultidayEventDateListProp> get copyWith =>
@@ -31,7 +31,7 @@ abstract class $MultidayEventDateListPropCopyWith<$Res> {
           $Res Function(MultidayEventDateListProp) then) =
       _$MultidayEventDateListPropCopyWithImpl<$Res, MultidayEventDateListProp>;
   @useResult
-  $Res call({String dateString, DateTime dateTime, List<Event> events});
+  $Res call({String dateString, DateTime dateTime, List<EventTemp> events});
 }
 
 /// @nodoc
@@ -64,7 +64,7 @@ class _$MultidayEventDateListPropCopyWithImpl<$Res,
       events: null == events
           ? _value.events
           : events // ignore: cast_nullable_to_non_nullable
-              as List<Event>,
+              as List<EventTemp>,
     ) as $Val);
   }
 }
@@ -78,7 +78,7 @@ abstract class _$$_MultidayEventDateListPropCopyWith<$Res>
       __$$_MultidayEventDateListPropCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String dateString, DateTime dateTime, List<Event> events});
+  $Res call({String dateString, DateTime dateTime, List<EventTemp> events});
 }
 
 /// @nodoc
@@ -110,7 +110,7 @@ class __$$_MultidayEventDateListPropCopyWithImpl<$Res>
       events: null == events
           ? _value._events
           : events // ignore: cast_nullable_to_non_nullable
-              as List<Event>,
+              as List<EventTemp>,
     ));
   }
 }
@@ -121,16 +121,16 @@ class _$_MultidayEventDateListProp implements _MultidayEventDateListProp {
   _$_MultidayEventDateListProp(
       {required this.dateString,
       required this.dateTime,
-      required final List<Event> events})
+      required final List<EventTemp> events})
       : _events = events;
 
   @override
   final String dateString;
   @override
   final DateTime dateTime;
-  final List<Event> _events;
+  final List<EventTemp> _events;
   @override
-  List<Event> get events {
+  List<EventTemp> get events {
     if (_events is EqualUnmodifiableListView) return _events;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_events);
@@ -169,14 +169,14 @@ abstract class _MultidayEventDateListProp implements MultidayEventDateListProp {
   factory _MultidayEventDateListProp(
       {required final String dateString,
       required final DateTime dateTime,
-      required final List<Event> events}) = _$_MultidayEventDateListProp;
+      required final List<EventTemp> events}) = _$_MultidayEventDateListProp;
 
   @override
   String get dateString;
   @override
   DateTime get dateTime;
   @override
-  List<Event> get events;
+  List<EventTemp> get events;
   @override
   @JsonKey(ignore: true)
   _$$_MultidayEventDateListPropCopyWith<_$_MultidayEventDateListProp>
