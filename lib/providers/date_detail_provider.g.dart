@@ -7,7 +7,7 @@ part of 'date_detail_provider.dart';
 // **************************************************************************
 
 String _$dateDetailStructuredWatcherHash() =>
-    r'2894cd2057bc5f046db6fc1d458b11d4830fb22f';
+    r'793e1b8d2414893163dd5086d893095c59f9aea3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -115,6 +115,94 @@ class DateDetailStructuredWatcherProvider
   }
 }
 
+String _$multidayEventStructuredWatcherHash() =>
+    r'52b221302dc5fe356ff0af0b217d081bcc9c9d88';
+typedef MultidayEventStructuredWatcherRef
+    = AutoDisposeStreamProviderRef<MultidayEventStructured?>;
+
+/// See also [multidayEventStructuredWatcher].
+@ProviderFor(multidayEventStructuredWatcher)
+const multidayEventStructuredWatcherProvider =
+    MultidayEventStructuredWatcherFamily();
+
+/// See also [multidayEventStructuredWatcher].
+class MultidayEventStructuredWatcherFamily
+    extends Family<AsyncValue<MultidayEventStructured?>> {
+  /// See also [multidayEventStructuredWatcher].
+  const MultidayEventStructuredWatcherFamily();
+
+  /// See also [multidayEventStructuredWatcher].
+  MultidayEventStructuredWatcherProvider call({
+    required int multidayEventId,
+  }) {
+    return MultidayEventStructuredWatcherProvider(
+      multidayEventId: multidayEventId,
+    );
+  }
+
+  @override
+  MultidayEventStructuredWatcherProvider getProviderOverride(
+    covariant MultidayEventStructuredWatcherProvider provider,
+  ) {
+    return call(
+      multidayEventId: provider.multidayEventId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'multidayEventStructuredWatcherProvider';
+}
+
+/// See also [multidayEventStructuredWatcher].
+class MultidayEventStructuredWatcherProvider
+    extends AutoDisposeStreamProvider<MultidayEventStructured?> {
+  /// See also [multidayEventStructuredWatcher].
+  MultidayEventStructuredWatcherProvider({
+    required this.multidayEventId,
+  }) : super.internal(
+          (ref) => multidayEventStructuredWatcher(
+            ref,
+            multidayEventId: multidayEventId,
+          ),
+          from: multidayEventStructuredWatcherProvider,
+          name: r'multidayEventStructuredWatcherProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$multidayEventStructuredWatcherHash,
+          dependencies: MultidayEventStructuredWatcherFamily._dependencies,
+          allTransitiveDependencies:
+              MultidayEventStructuredWatcherFamily._allTransitiveDependencies,
+        );
+
+  final int multidayEventId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is MultidayEventStructuredWatcherProvider &&
+        other.multidayEventId == multidayEventId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, multidayEventId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
 String _$fetchEventsHash() => r'b83764d6e7ce3c870d1d0024f420048e001e315f';
 typedef FetchEventsRef = AutoDisposeFutureProviderRef<List<Event?>>;
 
@@ -186,6 +274,88 @@ class FetchEventsProvider extends AutoDisposeFutureProvider<List<Event?>> {
   @override
   bool operator ==(Object other) {
     return other is FetchEventsProvider && other.eventIds == eventIds;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, eventIds.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$eventWatcherHash() => r'656c371da07923fde5a63a3b4e388b20ed5768c3';
+typedef EventWatcherRef = AutoDisposeStreamProviderRef<Event?>;
+
+/// See also [eventWatcher].
+@ProviderFor(eventWatcher)
+const eventWatcherProvider = EventWatcherFamily();
+
+/// See also [eventWatcher].
+class EventWatcherFamily extends Family<AsyncValue<Event?>> {
+  /// See also [eventWatcher].
+  const EventWatcherFamily();
+
+  /// See also [eventWatcher].
+  EventWatcherProvider call({
+    required int eventIds,
+  }) {
+    return EventWatcherProvider(
+      eventIds: eventIds,
+    );
+  }
+
+  @override
+  EventWatcherProvider getProviderOverride(
+    covariant EventWatcherProvider provider,
+  ) {
+    return call(
+      eventIds: provider.eventIds,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'eventWatcherProvider';
+}
+
+/// See also [eventWatcher].
+class EventWatcherProvider extends AutoDisposeStreamProvider<Event?> {
+  /// See also [eventWatcher].
+  EventWatcherProvider({
+    required this.eventIds,
+  }) : super.internal(
+          (ref) => eventWatcher(
+            ref,
+            eventIds: eventIds,
+          ),
+          from: eventWatcherProvider,
+          name: r'eventWatcherProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$eventWatcherHash,
+          dependencies: EventWatcherFamily._dependencies,
+          allTransitiveDependencies:
+              EventWatcherFamily._allTransitiveDependencies,
+        );
+
+  final int eventIds;
+
+  @override
+  bool operator ==(Object other) {
+    return other is EventWatcherProvider && other.eventIds == eventIds;
   }
 
   @override

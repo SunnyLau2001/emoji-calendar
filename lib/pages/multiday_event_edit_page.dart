@@ -450,8 +450,9 @@ class DraggableStickerPicker extends ConsumerWidget {
           sigmaY: 5.0,
         ),
         child: Container(
+          alignment: Alignment.center,
+          height: 150,
           padding: EdgeInsets.all(10),
-          // height: 200,
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
             border: Border.all(
@@ -472,7 +473,9 @@ class DraggableStickerPicker extends ConsumerWidget {
               return Container();
             },
             loading: () {
-              return CircularProgressIndicator();
+              return CircularProgressIndicator(
+                color: Colors.white,
+              );
             },
           ),
         ),

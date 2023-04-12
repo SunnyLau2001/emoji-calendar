@@ -12,6 +12,8 @@ class Event {
   String? location;
   List<double>? latlng;
   String? weather;
+  double? temperature;
+  DateTime? weatherLastUpdate;
 
   int? checklistId;
   late int multidayEventId;

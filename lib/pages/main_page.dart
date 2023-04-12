@@ -4,6 +4,7 @@ import 'package:fyp_our_sky_new/components/custom_float_button.dart';
 import 'package:fyp_our_sky_new/components/month_view.dart';
 import 'package:fyp_our_sky_new/components/top_bar.dart';
 
+import '../components/month_view_bottom_panel.dart';
 import '../providers/providers.dart';
 import '../utils/app_settings.dart';
 import '../utils/calendar_settings.dart';
@@ -105,6 +106,7 @@ class _MainPageState extends ConsumerState<MainPage> {
                     monthViewController: monthViewController,
                   ),
                 ),
+                MonthViewBottomPanel(),
               ],
             ),
           ),

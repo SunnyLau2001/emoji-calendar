@@ -75,6 +75,9 @@ class MultidayEventService {
       multidayEventId = await db.multidayEvents.put(multidayEvent);
     });
 
+    MultidayEvent? multidayEvent = await getMultidayEventById(multidayEventId);
+    print(multidayEvent);
+
     for (int i = 0; i < dateLists.length; i++) {
       List<int> eventIds = [];
       List<Event> events = [];
@@ -105,6 +108,7 @@ class MultidayEventService {
           ..stickerId = eventTemp.sticker!.id
           ..location = eventTemp.location
           ..latlng = eventTemp.latlng
+          ..weather = ""
           ..checklistId = checklistId
           ..multidayEventId = multidayEventId
           ..dateId = dateLists[i].dateString;
@@ -114,6 +118,10 @@ class MultidayEventService {
       await db.writeTxn(() async {
         eventIds = await db.events.putAll(events);
       });
+
+      if (multidayEvent != null) {
+        multidayEvent.eventsId = [...multidayEvent.eventsId, ...eventIds];
+      }
 
       dateDetails[i].eventsId = [...dateDetails[i].eventsId, ...eventIds];
       dateDetails[i].multidayEventsId = [...dateDetails[i].multidayEventsId, multidayEventId];
@@ -126,8 +134,13 @@ class MultidayEventService {
       dateDetails[i].lastUpdate = DateTime.now();
     }
 
-    // Update all dateDetail
     await db.writeTxn(() async {
+      if (multidayEvent != null) {
+        // Update multidayEvent with eventIds
+        await db.multidayEvents.put(multidayEvent);
+      }
+
+      // Update all dateDetail
       await db.dateDetails.putAll(dateDetails);
     });
   }
@@ -138,10 +151,34 @@ class MultidayEventService {
     yield* dateDetail;
   }
 
+  Stream<Event?> watchEventChange(int eventId) async* {
+    final db = await isar;
+    final event = db.events.watchObject(eventId, fireImmediately: true);
+    yield* event;
+  }
+
+  Stream<MultidayEvent?> watchMultidayEventChange(int multidayEventId) async* {
+    final db = await isar;
+    final multidayEvent = db.multidayEvents.watchObject(multidayEventId, fireImmediately: true);
+    yield* multidayEvent;
+  }
+
+  Future<Event?> getEventById(int eventId) async {
+    final db = await isar;
+    final event = await db.events.get(eventId);
+    return event;
+  }
+
   Future<List<Event?>> getEventsByIds(List<int> eventIds) async {
     final db = await isar;
     final eventsList = await db.events.getAll(eventIds);
     return eventsList;
+  }
+
+  Future<MultidayEvent?> getMultidayEventById(int multidayEventId) async {
+    final db = await isar;
+    final multidayEvent = await db.multidayEvents.get(multidayEventId);
+    return multidayEvent;
   }
 
   Future<List<MultidayEvent?>> getMultidayEventsByIds(List<int> multidayEventsIds) async {

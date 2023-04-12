@@ -311,12 +311,13 @@ class MonthViewCellTrack extends ConsumerWidget {
         height: height,
         decoration: BoxDecoration(color: Color(multidayEvent.bookmarkColorInt), borderRadius: BorderRadius.circular(4)),
         child: GridView.builder(
-          itemCount: numOfEvents,
+          physics: NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
           ),
+          itemCount: numOfEvents,
           itemBuilder: (context, index) {
             if (events[index] == null) return Container();
             return Consumer(
@@ -363,15 +364,12 @@ class MonthViewCellTrack extends ConsumerWidget {
     );
   }
 
-  Widget _buildPoint(MultidayEvent? multidayEvent, double top, bool highlight) {
+  Widget _buildStartPoint(MultidayEvent? multidayEvent, double top, bool highlight) {
     if (multidayEvent == null) return Container();
-    final start = multidayEvent.startDate == dateString;
-    final end = multidayEvent.endDate == dateString;
-    if (!start && !end) return Container();
+
     return Positioned(
       top: top - 4,
-      left: start ? -6 : null,
-      right: end ? -6 : null,
+      left: -6,
       child: Opacity(
         opacity: highlight ? 1 : 0.25,
         child: Container(
@@ -383,6 +381,29 @@ class MonthViewCellTrack extends ConsumerWidget {
             boxShadow: const [
               BoxShadow(
                   color: Colors.white, offset: Offset(0, 0), blurRadius: 2.0, blurStyle: BlurStyle.outer), //BoxShadow
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEndPoint(MultidayEvent? multidayEvent, double top, bool highlight) {
+    if (multidayEvent == null) return Container();
+
+    return Positioned(
+      top: top - 4,
+      right: -6,
+      child: Opacity(
+        opacity: highlight ? 1 : 0.25,
+        child: Container(
+          height: 12,
+          width: 12,
+          decoration: BoxDecoration(
+            color: Color(multidayEvent.bookmarkColorInt),
+            shape: BoxShape.circle,
+            boxShadow: const [
+              BoxShadow(color: Colors.white, offset: Offset(0, 0), blurRadius: 2.0, blurStyle: BlurStyle.outer),
             ],
           ),
         ),
@@ -405,6 +426,9 @@ class MonthViewCellTrack extends ConsumerWidget {
     DateTime startDate = DateTime(int.parse(start[0]), int.parse(start[1]), int.parse(start[2]));
     DateTime endDate = DateTime(int.parse(end[0]), int.parse(end[1]), int.parse(end[2]) + 1);
 
+    final isStart = multidayEvent!.startDate == dateString;
+    final isEnd = multidayEvent!.endDate == dateString;
+
     if (startDate == endDate) {
       endDate = DateTime(endDate.year, endDate.month, endDate.day + 1);
     }
@@ -419,7 +443,9 @@ class MonthViewCellTrack extends ConsumerWidget {
           visible: !isSelectingDateRange,
           child: GestureDetector(
             onTap: () {
-              print(dateString);
+              ref.watch(bottomPanelMultidayEventId.notifier).state = multidayEvent!.id;
+              ref.watch(showBottomPanelProvider.notifier).state = true;
+              print(multidayEvent!.id);
             },
             child: Container(
               height: height,
@@ -435,11 +461,20 @@ class MonthViewCellTrack extends ConsumerWidget {
                     top: 0,
                     child: _buildTrackBox(height, width, numOfEvents, events, multidayEvent, highlight),
                   ),
-                  _buildPoint(
-                    multidayEvent,
-                    decorationHeight - 4,
-                    highlight,
-                  ),
+                  isStart
+                      ? _buildStartPoint(
+                          multidayEvent,
+                          decorationHeight - 4,
+                          highlight,
+                        )
+                      : SizedBox(),
+                  isEnd
+                      ? _buildEndPoint(
+                          multidayEvent,
+                          decorationHeight - 4,
+                          highlight,
+                        )
+                      : SizedBox(),
                 ],
               ),
             ),
@@ -580,9 +615,6 @@ class MonthViewCellDateRangeMode extends ConsumerWidget {
                           cellDate.day.toString(),
                           style: FontSettings.primaryFont,
                         ),
-                        MonthViewCellDetail(
-                          dateString: dateString,
-                        )
                       ],
                     ),
                   ),
@@ -595,281 +627,3 @@ class MonthViewCellDateRangeMode extends ConsumerWidget {
     );
   }
 }
-
-class MonthViewCellDetail extends ConsumerWidget {
-  const MonthViewCellDetail({
-    super.key,
-    required this.dateString,
-  });
-
-  final String dateString;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // final dateDetail = ref.watch(dateDetailWatcherProvider(dateString: dateString));
-
-    // return dateDetail.when(
-    //   data: (data) {
-    //     if (data != null) {
-    //       // return CellMultidayEventLine(
-    //       //   dateDetail: data,
-    //       //   eventsId: data.eventsId,
-    //       //   multidayEventsIds: data.multidayEventsId,
-    //       // );
-    //     }
-    //     return Container();
-    //   },
-    //   error: (error, stackTrace) {
-    //     return Container();
-    //   },
-    //   loading: () {
-    //     return Container();
-    //   },
-    // );
-    return Container();
-  }
-}
-
-// class CellMultidayEventLine extends ConsumerWidget {
-//   const CellMultidayEventLine({
-//     super.key,
-//     required this.dateDetail,
-//     required this.eventsId,
-//     required this.multidayEventsIds,
-//   });
-
-//   final DateDetail dateDetail;
-//   final List<int> multidayEventsIds;
-//   final List<int> eventsId;
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final events = ref.watch(fetchEventsProvider(eventIds: eventsId));
-//     return events.when(
-//       data: (data) {
-//         if (data != null) {
-//           // List<int> multidayEventsIds = [];
-//           // for (int i = 0; i < data.length; i++) {
-//           //   if (!multidayEventsIds.contains(data[i]!.multidayEventId)) multidayEventsIds.add(data[i]!.multidayEventId);
-//           // }
-//           return MultidayEventLineBuilder(
-//             dateDetail: dateDetail,
-//             multidayEventsIds: multidayEventsIds,
-//             events: data,
-//           );
-//           // return CellMultidayEventLine(eventsId: data.eventsId);
-//         }
-//         return Container();
-//       },
-//       error: (error, stackTrace) {
-//         return Container();
-//       },
-//       loading: () {
-//         return Container();
-//       },
-//     );
-//   }
-// }
-
-// class MultidayEventLineBuilder extends ConsumerWidget {
-//   const MultidayEventLineBuilder({
-//     super.key,
-//     required this.dateDetail,
-//     required this.multidayEventsIds,
-//     required this.events,
-//   });
-
-//   final DateDetail dateDetail;
-//   final List<int> multidayEventsIds;
-//   final List<Event?> events;
-
-//   Widget _buildLine(MultidayEvent multidayEventDetail, List<Event?> events, double width) {
-//     return Container(
-//       padding: EdgeInsets.all(4),
-//       height: width,
-//       width: width,
-//       decoration: BoxDecoration(
-//         color: Color(multidayEventDetail.bookmarkColorInt),
-//         boxShadow: [
-//           BoxShadow(
-//               color: Colors.black54,
-//               offset: const Offset(
-//                 0,
-//                 0,
-//               ),
-//               blurRadius: 5.0,
-//               // spreadRadius: 0,
-//               blurStyle: BlurStyle.outer), //BoxShadow
-//         ],
-//       ),
-//       child: GridView.builder(
-//         itemCount: events.length < 4 ? events.length : 4,
-//         gridDelegate:
-//             SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 4, crossAxisSpacing: 4),
-//         itemBuilder: (context, index) {
-//           return Container(
-//             child: Consumer(
-//               builder: (context, ref, child) {
-//                 final image = ref.watch(fetchStickerByIdProvider(stickerId: events[index]!.stickerId));
-//                 return image.when(
-//                   data: (data) {
-//                     if (data != null) {
-//                       return Container(
-//                         child: Image.memory(base64.decode(data.imageBase64)),
-//                       );
-//                     }
-//                     return Container();
-//                   },
-//                   error: (error, stackTrace) {
-//                     return Container();
-//                   },
-//                   loading: () {
-//                     return Container();
-//                   },
-//                 );
-//               },
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-
-//   List<Widget> _buildLines(List<MultidayEvent?> multidayEventsDetail, List<List<Event?>> eventsList, double width) {
-//     List<Widget> tempList = [];
-//     for (int i = 0; i < multidayEventsDetail.length; i++) {
-//       if (i == 3) break;
-//       tempList.add(
-//         Positioned(
-//           top: (width * i / 2).toDouble(),
-//           child: Container(
-//             height: width,
-//             width: width,
-//             child: Stack(
-//               children: [
-//                 Positioned(
-//                   top: width / 2 - 3,
-//                   child: Container(
-//                     height: 6,
-//                     width: width,
-//                     decoration: BoxDecoration(
-//                       color: Color(multidayEventsDetail[i]!.bookmarkColorInt),
-//                       boxShadow: [
-//                         BoxShadow(
-//                             color: Colors.black54,
-//                             offset: const Offset(
-//                               0,
-//                               2,
-//                             ),
-//                             blurRadius: 5.0,
-
-//                             // spreadRadius: 0,
-//                             blurStyle: BlurStyle.inner), //BoxShadow
-//                       ],
-//                     ),
-//                     // child: ,
-//                   ),
-//                 ),
-//                 multidayEventsDetail[i]!.startDate == dateDetail.date
-//                     ? Positioned(
-//                         left: 0,
-//                         top: width / 2 - 10,
-//                         child: Transform.rotate(
-//                           angle: -math.pi / 4,
-//                           child: Container(
-//                             transformAlignment: Alignment.center,
-//                             width: 20,
-//                             height: 20,
-//                             decoration: BoxDecoration(
-//                               color: Color(multidayEventsDetail[i]!.bookmarkColorInt),
-//                               boxShadow: [
-//                                 BoxShadow(
-//                                     color: Colors.black54,
-//                                     offset: const Offset(
-//                                       0,
-//                                       2,
-//                                     ),
-//                                     blurRadius: 5.0,
-
-//                                     // spreadRadius: 0,
-//                                     blurStyle: BlurStyle.inner), //BoxShadow
-//                               ],
-//                             ),
-//                           ),
-//                         ),
-//                       )
-//                     : Container(),
-//                 multidayEventsDetail[i]!.endDate == dateDetail.date
-//                     ? Positioned(
-//                         right: 0,
-//                         top: width / 2 - 10,
-//                         child: Transform.rotate(
-//                           angle: -math.pi / 4,
-//                           child: Container(
-//                             transformAlignment: Alignment.center,
-//                             width: 20,
-//                             height: 20,
-//                             decoration: BoxDecoration(
-//                               color: Color(multidayEventsDetail[i]!.bookmarkColorInt),
-//                               boxShadow: [
-//                                 BoxShadow(
-//                                     color: Colors.black54,
-//                                     offset: const Offset(
-//                                       0,
-//                                       0,
-//                                     ),
-//                                     blurRadius: 5.0,
-
-//                                     // spreadRadius: 0,
-//                                     blurStyle: BlurStyle.outer), //BoxShadow
-//                               ],
-//                             ),
-//                           ),
-//                         ),
-//                       )
-//                     : Container(),
-//                 eventsList[i].length > 0 ? _buildLine(multidayEventsDetail[i]!, eventsList[i], width) : Container(),
-//               ],
-//             ),
-//           ),
-//         ),
-//       );
-//     }
-//     return tempList.reversed.toList();
-//   }
-
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final multidayEventsDetail = ref.watch(fetchMultidayEventsDetailProvider(multidayEventsIds: multidayEventsIds));
-//     return multidayEventsDetail.when(
-//       data: (data) {
-//         List<List<Event?>> tempList = [];
-//         for (int i = 0; i < data.length; i++) {
-//           tempList.add([]);
-//           for (int j = 0; j < events.length; j++) {
-//             if (events[j]!.multidayEventId == data[i]!.id) {
-//               tempList[i].add(events[j]);
-//             }
-//           }
-//         }
-//         return LayoutBuilder(
-//           builder: (context, constraints) {
-//             return Container(
-//               height: 120,
-//               width: constraints.maxWidth,
-//               child: Stack(
-//                 children: [..._buildLines(data, tempList, constraints.maxWidth)],
-//               ),
-//             );
-//           },
-//         );
-//       },
-//       error: (error, stackTrace) {
-//         return Container();
-//       },
-//       loading: () {
-//         return Container();
-//       },
-//     );
-//   }
-// }

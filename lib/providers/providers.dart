@@ -68,3 +68,6 @@ final addressNameProvider = StateProvider<String>((ref) => "");
 final latLngProvider = StateProvider<LatLng>((ref) => LatLng(22.3163552, 114.1801817));
 
 final dateListInEditingModeProvider = StateProvider<int>((ref) => -1);
+
+final showBottomPanelProvider = StateProvider<bool>((ref) => false);
+final bottomPanelMultidayEventId = StateProvider<int>((ref) => -1);
