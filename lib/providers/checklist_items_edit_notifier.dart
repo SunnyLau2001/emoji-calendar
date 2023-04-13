@@ -1,4 +1,5 @@
 import 'package:fyp_our_sky_new/providers/checklist_temp_prop.dart';
+import 'package:isar/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'checklist_items_edit_notifier.g.dart';
@@ -7,11 +8,19 @@ part 'checklist_items_edit_notifier.g.dart';
 class ChecklistItemsEdit extends _$ChecklistItemsEdit {
   @override
   ChecklistTemp build() {
-    return ChecklistTemp(title: "", items: []);
+    return ChecklistTemp(
+      id: Isar.autoIncrement,
+      title: "",
+      items: [],
+    );
   }
 
   void initChecklist() {
-    state = ChecklistTemp(title: "", items: []);
+    state = ChecklistTemp(
+      id: Isar.autoIncrement,
+      title: "",
+      items: [],
+    );
   }
 
   void setChecklistTemp(ChecklistTemp checklistTemp) {

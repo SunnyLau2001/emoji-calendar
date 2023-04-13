@@ -13,12 +13,13 @@ class EditBookmarkDialog extends ConsumerWidget {
   const EditBookmarkDialog({super.key});
 
   Widget _buildStickerPicker() {
-    return BookmarkStickerPicker();
+    return const BookmarkStickerPicker();
   }
 
   Widget _buildColorPicker(WidgetRef ref) {
     // final dialogPickerColor = Colors.blue;
-    final dialogPickerColor = ref.read(multidayEventDetailProvider).bookmarkColorInt;
+    final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
+    final dialogPickerColor = mEventTemp.bookmarkColorInt;
     return ColorPicker(
       // Use the dialogPickerColor as start color.
       color: Color(dialogPickerColor),
@@ -168,7 +169,8 @@ class BookmarkStickerPickerCell extends ConsumerWidget {
         children: [
           Consumer(
             builder: (context, ref, child) {
-              final isSelected = ref.watch(multidayEventDetailProvider).bookmarkStickerId == sticker.id;
+              final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
+              final isSelected = mEventTemp.bookmarkStickerId == sticker.id;
               return AnimatedContainer(
                 duration: Duration(milliseconds: 200),
                 curve: Curves.easeInOut,
@@ -210,7 +212,7 @@ Future editBookmark({
   return showDialog(
     context: context,
     builder: (context) {
-      return EditBookmarkDialog();
+      return const EditBookmarkDialog();
     },
   );
 }

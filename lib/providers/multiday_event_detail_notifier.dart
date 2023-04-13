@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart';
+import 'package:fyp_our_sky_new/services/multiday_event_service.dart';
+import 'package:isar/isar.dart';
 
+import '../models/multiday_event.dart';
 import 'multiday_event_detail_prop.dart';
+import 'multiday_event_temp.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'multiday_event_detail_notifier.g.dart';
@@ -11,118 +15,203 @@ class MultidayEventDetail extends _$MultidayEventDetail {
   @override
   MultidayEventDetailProp build() {
     return MultidayEventDetailProp(
-      title: '',
-      dateRange: [],
-      bookmarkStickerId: 'default_1',
-      bookmarkColorInt: Colors.blue.value,
+      multidayEventTemp: MultidayEventTemp(
+        id: Isar.autoIncrement,
+        title: '',
+        startDate: null,
+        endDate: null,
+        bookmarkStickerId: 'default_1',
+        bookmarkColorInt: Colors.blue.value,
+        eventIds: [],
+      ),
+      selectFirstDate: false,
+      removedEventIds: [],
+      removedChecklistIds: [],
     );
   }
 
-  void initializeState() {
+  void initMultidayEventDetailProp() {
     state = MultidayEventDetailProp(
-      title: '',
-      dateRange: [],
-      bookmarkStickerId: 'default_1',
-      bookmarkColorInt: Colors.blue.value,
+      multidayEventTemp: MultidayEventTemp(
+        id: Isar.autoIncrement,
+        title: '',
+        startDate: null,
+        endDate: null,
+        bookmarkStickerId: 'default_1',
+        bookmarkColorInt: Colors.blue.value,
+        eventIds: [],
+      ),
+      selectFirstDate: false,
+      removedEventIds: [],
+      removedChecklistIds: [],
+    );
+  }
+
+  void updateMultidayEventDetail(MultidayEvent multidayEvent) {
+    final sDate = multidayEvent.startDate.split('-');
+    final eDate = multidayEvent.endDate.split('-');
+    final startDateTime = DateTime(int.parse(sDate[0]), int.parse(sDate[1]), int.parse(sDate[2]));
+    final endDateTime = DateTime(int.parse(eDate[0]), int.parse(eDate[1]), int.parse(eDate[2]));
+
+    final tempState = state;
+    final mEventTemp = MultidayEventTemp(
+      id: multidayEvent.id,
+      title: multidayEvent.title,
+      startDate: startDateTime,
+      endDate: endDateTime,
+      bookmarkColorInt: multidayEvent.bookmarkColorInt,
+      bookmarkStickerId: multidayEvent.bookmarkStickerId,
+      eventIds: multidayEvent.eventsId,
+    );
+
+    state = tempState.copyWith(
+      multidayEventTemp: mEventTemp,
+      removedEventIds: [],
+      removedChecklistIds: [],
     );
   }
 
   void clearDateRange() {
-    state = state.copyWith(dateRange: []);
+    final tempState = state;
+
+    state = tempState.copyWith(
+      multidayEventTemp: tempState.multidayEventTemp.copyWith(startDate: null, endDate: null),
+    );
   }
 
-  void initDateRange() {
-    if (state.dateRange.isEmpty) {
-      final current = DateTime.now();
-      state = state.copyWith(dateRange: [DateTime(current.year, current.month, current.day)]);
-    }
+  void initStartEndDate() {
+    final current = DateTime.now();
+    final date = DateTime(current.year, current.month, current.day);
+    final tempState = state;
+    state = tempState.copyWith(
+      multidayEventTemp: tempState.multidayEventTemp.copyWith(startDate: date, endDate: date),
+      selectFirstDate: false,
+    );
   }
 
   void clearTitle() {
-    state = state.copyWith(title: '');
+    final tempState = state;
+    state = tempState.copyWith(multidayEventTemp: tempState.multidayEventTemp.copyWith(title: ''));
   }
 
   void setTitle(String title) {
-    state = state.copyWith(title: title);
+    final tempState = state;
+    state = tempState.copyWith(multidayEventTemp: tempState.multidayEventTemp.copyWith(title: title));
   }
 
   void clearBookmarkStickerColor() {
-    state = state.copyWith(bookmarkColorInt: Colors.blue.value);
+    final tempState = state;
+    state = tempState.copyWith(
+        multidayEventTemp: tempState.multidayEventTemp.copyWith(bookmarkColorInt: Colors.blue.value));
   }
 
   void setBookmarkStickerColor(int colorInt) {
-    state = state.copyWith(bookmarkColorInt: colorInt);
+    final tempState = state;
+    state = tempState.copyWith(multidayEventTemp: tempState.multidayEventTemp.copyWith(bookmarkColorInt: colorInt));
   }
 
   void clearBookmarkStickerId() {
-    state = state.copyWith(bookmarkStickerId: 'default_1');
+    final tempState = state;
+    state = tempState.copyWith(multidayEventTemp: tempState.multidayEventTemp.copyWith(bookmarkStickerId: 'default_1'));
   }
 
   void setBookmarkStickerId(String id) {
-    state = state.copyWith(bookmarkStickerId: id);
+    final tempState = state;
+    state = tempState.copyWith(multidayEventTemp: tempState.multidayEventTemp.copyWith(bookmarkStickerId: id));
   }
 
   void toggleDate(DateTime date) {
-    List<DateTime> temp = [...state.dateRange];
-
-    // if nothing selected
-    if (temp.isEmpty) {
-      state = state.copyWith(dateRange: [date]);
+    final tempState = state;
+    final selectFirstDate = tempState.selectFirstDate;
+    if (tempState.multidayEventTemp.startDate == null) {
+      initStartEndDate();
       return;
     }
 
-    if (temp.length == 1) {
-      final compare = temp[0].compareTo(date);
-
-      state = compare == -1
-          ? state.copyWith(dateRange: [...state.dateRange, date])
-          : compare == 1
-              ? state.copyWith(dateRange: [date, ...state.dateRange])
-              : state.copyWith(dateRange: [...state.dateRange]);
-      return;
+    if (selectFirstDate) {
+      final mEventTemp = tempState.multidayEventTemp.copyWith(startDate: date, endDate: date);
+      state = tempState.copyWith(
+        multidayEventTemp: mEventTemp,
+        selectFirstDate: false,
+      );
     }
 
-    if (temp.length == 2) {
-      if (date.isAtSameMomentAs(state.dateRange[0])) {
-        state = state.copyWith(dateRange: [state.dateRange[1]]);
-        return;
+    if (!selectFirstDate) {
+      DateTime startDate = tempState.multidayEventTemp.startDate!;
+      DateTime endDate = date;
+      if (startDate.isAfter(endDate)) {
+        DateTime tempDate = startDate;
+        startDate = endDate;
+        endDate = tempDate;
       }
-      if (date.isAtSameMomentAs(state.dateRange[1])) {
-        state = state.copyWith(dateRange: [state.dateRange[0]]);
 
-        return;
-      }
-      if (date.isBefore(state.dateRange[0])) {
-        state = state.copyWith(dateRange: [date, state.dateRange[1]]);
-        return;
-      }
-      if (date.isAfter(state.dateRange[0]) && date.isBefore(state.dateRange[1])) {
-        final dayDiffStart = date.difference(state.dateRange[0]).inDays.abs();
-        final dayDiffEnd = date.difference(state.dateRange[1]).inDays.abs();
-        if (dayDiffStart >= dayDiffEnd) {
-          state = state.copyWith(dateRange: [date, state.dateRange[1]]);
-        } else {
-          state = state.copyWith(dateRange: [state.dateRange[0], date]);
-        }
-        return;
-      }
-      if (date.isAfter(state.dateRange[1])) {
-        state = state.copyWith(dateRange: [state.dateRange[0], date]);
-        return;
-      }
-      return;
+      final mEventTemp = tempState.multidayEventTemp.copyWith(startDate: startDate, endDate: endDate);
+      state = tempState.copyWith(
+        multidayEventTemp: mEventTemp,
+        selectFirstDate: true,
+      );
     }
   }
 
   void setDateList() {
-    final dateRange = state.dateRange;
+    // final dateRange = state.dateRange;
     int step = 0;
-    if (dateRange.length == 1) {
+    print("1");
+    if (state.multidayEventTemp.startDate == null || state.multidayEventTemp.endDate == null) return;
+    print("2");
+
+    if (state.multidayEventTemp.startDate == state.multidayEventTemp.endDate) {
       step = 1;
+    } else {
+      step = state.multidayEventTemp.startDate!.difference(state.multidayEventTemp.endDate!).inDays.abs() + 1;
     }
-    if (dateRange.length == 2) {
-      step = dateRange[0].difference(dateRange[1]).inDays.abs() + 1;
+    print("3 ${step}");
+
+    ref
+        .watch(multidayEventDateListProvider.notifier)
+        .setMultidayEventDateList(state.multidayEventTemp.startDate!, step);
+  }
+
+  void removeEventAndChecklist(int eventId, int checklistId) {
+    List<int> eventIds = state.multidayEventTemp.eventIds;
+
+    List<int> removedEventIds = state.removedEventIds;
+    List<int> removedChecklistIds = state.removedChecklistIds;
+    if (eventIds.contains(eventId)) {
+      eventIds.remove(eventId);
+      removedEventIds.add(eventId);
     }
-    ref.watch(multidayEventDateListProvider.notifier).setMultidayEventDateList(dateRange[0], step);
+    if (checklistId != Isar.autoIncrement) {
+      removedChecklistIds.add(checklistId);
+    }
+
+    final tempState = state;
+    final mEventTemp = tempState.multidayEventTemp.copyWith(eventIds: eventIds);
+    state = tempState.copyWith(
+        multidayEventTemp: mEventTemp, removedEventIds: removedEventIds, removedChecklistIds: removedChecklistIds);
+  }
+
+  void removeChecklist(int checklistId) {
+    if (checklistId == Isar.autoIncrement) return;
+
+    List<int> removedChecklistIds = state.removedChecklistIds;
+    removedChecklistIds.add(checklistId);
+    final tempState = state;
+    state = tempState.copyWith(removedChecklistIds: removedChecklistIds);
+    // if (tempState.removedChecklistIds.con)
+  }
+
+  void putMultidayEventToDB() async {
+    final result = ref.watch(multidayEventDateListProvider);
+    final mEventDateLists = [...result];
+    if (mEventDateLists == null) return;
+    final mEventDetailProp = state;
+
+    await MultidayEventService().putMultidayEvents(mEventDetailProp, mEventDateLists);
+
+    // ref.watch(multidayEventDateListProvider.notifier).initMultidayEventDateList();
+    // initMultidayEventDetailProp;
+
+    // print(mEventDetailProps);
   }
 }

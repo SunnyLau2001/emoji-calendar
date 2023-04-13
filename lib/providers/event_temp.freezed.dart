@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'event_temp_prop.dart';
+part of 'event_temp.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -16,14 +16,19 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$EventTemp {
+  int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   List<int> get startHourMinute => throw _privateConstructorUsedError;
   List<int> get endHourMinute => throw _privateConstructorUsedError;
+  Sticker? get sticker => throw _privateConstructorUsedError;
   String? get location => throw _privateConstructorUsedError;
   List<double>? get latlng => throw _privateConstructorUsedError;
   String? get weather => throw _privateConstructorUsedError;
-  Sticker? get sticker => throw _privateConstructorUsedError;
+  double? get temperature => throw _privateConstructorUsedError;
+  DateTime? get weatherLastUpdate => throw _privateConstructorUsedError;
   ChecklistTemp get checklistTemp => throw _privateConstructorUsedError;
+  int? get multidayEventId => throw _privateConstructorUsedError;
+  String get dateId => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $EventTempCopyWith<EventTemp> get copyWith =>
@@ -36,14 +41,19 @@ abstract class $EventTempCopyWith<$Res> {
       _$EventTempCopyWithImpl<$Res, EventTemp>;
   @useResult
   $Res call(
-      {String title,
+      {int id,
+      String title,
       List<int> startHourMinute,
       List<int> endHourMinute,
+      Sticker? sticker,
       String? location,
       List<double>? latlng,
       String? weather,
-      Sticker? sticker,
-      ChecklistTemp checklistTemp});
+      double? temperature,
+      DateTime? weatherLastUpdate,
+      ChecklistTemp checklistTemp,
+      int? multidayEventId,
+      String dateId});
 
   $ChecklistTempCopyWith<$Res> get checklistTemp;
 }
@@ -61,16 +71,25 @@ class _$EventTempCopyWithImpl<$Res, $Val extends EventTemp>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? title = null,
     Object? startHourMinute = null,
     Object? endHourMinute = null,
+    Object? sticker = freezed,
     Object? location = freezed,
     Object? latlng = freezed,
     Object? weather = freezed,
-    Object? sticker = freezed,
+    Object? temperature = freezed,
+    Object? weatherLastUpdate = freezed,
     Object? checklistTemp = null,
+    Object? multidayEventId = freezed,
+    Object? dateId = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -83,6 +102,10 @@ class _$EventTempCopyWithImpl<$Res, $Val extends EventTemp>
           ? _value.endHourMinute
           : endHourMinute // ignore: cast_nullable_to_non_nullable
               as List<int>,
+      sticker: freezed == sticker
+          ? _value.sticker
+          : sticker // ignore: cast_nullable_to_non_nullable
+              as Sticker?,
       location: freezed == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -95,14 +118,26 @@ class _$EventTempCopyWithImpl<$Res, $Val extends EventTemp>
           ? _value.weather
           : weather // ignore: cast_nullable_to_non_nullable
               as String?,
-      sticker: freezed == sticker
-          ? _value.sticker
-          : sticker // ignore: cast_nullable_to_non_nullable
-              as Sticker?,
+      temperature: freezed == temperature
+          ? _value.temperature
+          : temperature // ignore: cast_nullable_to_non_nullable
+              as double?,
+      weatherLastUpdate: freezed == weatherLastUpdate
+          ? _value.weatherLastUpdate
+          : weatherLastUpdate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       checklistTemp: null == checklistTemp
           ? _value.checklistTemp
           : checklistTemp // ignore: cast_nullable_to_non_nullable
               as ChecklistTemp,
+      multidayEventId: freezed == multidayEventId
+          ? _value.multidayEventId
+          : multidayEventId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      dateId: null == dateId
+          ? _value.dateId
+          : dateId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 
@@ -123,14 +158,19 @@ abstract class _$$_EventTempCopyWith<$Res> implements $EventTempCopyWith<$Res> {
   @override
   @useResult
   $Res call(
-      {String title,
+      {int id,
+      String title,
       List<int> startHourMinute,
       List<int> endHourMinute,
+      Sticker? sticker,
       String? location,
       List<double>? latlng,
       String? weather,
-      Sticker? sticker,
-      ChecklistTemp checklistTemp});
+      double? temperature,
+      DateTime? weatherLastUpdate,
+      ChecklistTemp checklistTemp,
+      int? multidayEventId,
+      String dateId});
 
   @override
   $ChecklistTempCopyWith<$Res> get checklistTemp;
@@ -147,16 +187,25 @@ class __$$_EventTempCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? title = null,
     Object? startHourMinute = null,
     Object? endHourMinute = null,
+    Object? sticker = freezed,
     Object? location = freezed,
     Object? latlng = freezed,
     Object? weather = freezed,
-    Object? sticker = freezed,
+    Object? temperature = freezed,
+    Object? weatherLastUpdate = freezed,
     Object? checklistTemp = null,
+    Object? multidayEventId = freezed,
+    Object? dateId = null,
   }) {
     return _then(_$_EventTemp(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -169,6 +218,10 @@ class __$$_EventTempCopyWithImpl<$Res>
           ? _value._endHourMinute
           : endHourMinute // ignore: cast_nullable_to_non_nullable
               as List<int>,
+      sticker: freezed == sticker
+          ? _value.sticker
+          : sticker // ignore: cast_nullable_to_non_nullable
+              as Sticker?,
       location: freezed == location
           ? _value.location
           : location // ignore: cast_nullable_to_non_nullable
@@ -181,14 +234,26 @@ class __$$_EventTempCopyWithImpl<$Res>
           ? _value.weather
           : weather // ignore: cast_nullable_to_non_nullable
               as String?,
-      sticker: freezed == sticker
-          ? _value.sticker
-          : sticker // ignore: cast_nullable_to_non_nullable
-              as Sticker?,
+      temperature: freezed == temperature
+          ? _value.temperature
+          : temperature // ignore: cast_nullable_to_non_nullable
+              as double?,
+      weatherLastUpdate: freezed == weatherLastUpdate
+          ? _value.weatherLastUpdate
+          : weatherLastUpdate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       checklistTemp: null == checklistTemp
           ? _value.checklistTemp
           : checklistTemp // ignore: cast_nullable_to_non_nullable
               as ChecklistTemp,
+      multidayEventId: freezed == multidayEventId
+          ? _value.multidayEventId
+          : multidayEventId // ignore: cast_nullable_to_non_nullable
+              as int?,
+      dateId: null == dateId
+          ? _value.dateId
+          : dateId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -197,18 +262,25 @@ class __$$_EventTempCopyWithImpl<$Res>
 
 class _$_EventTemp implements _EventTemp {
   _$_EventTemp(
-      {required this.title,
+      {required this.id,
+      required this.title,
       required final List<int> startHourMinute,
       required final List<int> endHourMinute,
+      this.sticker,
       this.location,
       final List<double>? latlng,
       this.weather,
-      this.sticker,
-      required this.checklistTemp})
+      this.temperature,
+      this.weatherLastUpdate,
+      required this.checklistTemp,
+      this.multidayEventId,
+      required this.dateId})
       : _startHourMinute = startHourMinute,
         _endHourMinute = endHourMinute,
         _latlng = latlng;
 
+  @override
+  final int id;
   @override
   final String title;
   final List<int> _startHourMinute;
@@ -228,6 +300,8 @@ class _$_EventTemp implements _EventTemp {
   }
 
   @override
+  final Sticker? sticker;
+  @override
   final String? location;
   final List<double>? _latlng;
   @override
@@ -242,13 +316,19 @@ class _$_EventTemp implements _EventTemp {
   @override
   final String? weather;
   @override
-  final Sticker? sticker;
+  final double? temperature;
+  @override
+  final DateTime? weatherLastUpdate;
   @override
   final ChecklistTemp checklistTemp;
+  @override
+  final int? multidayEventId;
+  @override
+  final String dateId;
 
   @override
   String toString() {
-    return 'EventTemp(title: $title, startHourMinute: $startHourMinute, endHourMinute: $endHourMinute, location: $location, latlng: $latlng, weather: $weather, sticker: $sticker, checklistTemp: $checklistTemp)';
+    return 'EventTemp(id: $id, title: $title, startHourMinute: $startHourMinute, endHourMinute: $endHourMinute, sticker: $sticker, location: $location, latlng: $latlng, weather: $weather, temperature: $temperature, weatherLastUpdate: $weatherLastUpdate, checklistTemp: $checklistTemp, multidayEventId: $multidayEventId, dateId: $dateId)';
   }
 
   @override
@@ -256,31 +336,44 @@ class _$_EventTemp implements _EventTemp {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_EventTemp &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             const DeepCollectionEquality()
                 .equals(other._startHourMinute, _startHourMinute) &&
             const DeepCollectionEquality()
                 .equals(other._endHourMinute, _endHourMinute) &&
+            (identical(other.sticker, sticker) || other.sticker == sticker) &&
             (identical(other.location, location) ||
                 other.location == location) &&
             const DeepCollectionEquality().equals(other._latlng, _latlng) &&
             (identical(other.weather, weather) || other.weather == weather) &&
-            (identical(other.sticker, sticker) || other.sticker == sticker) &&
+            (identical(other.temperature, temperature) ||
+                other.temperature == temperature) &&
+            (identical(other.weatherLastUpdate, weatherLastUpdate) ||
+                other.weatherLastUpdate == weatherLastUpdate) &&
             (identical(other.checklistTemp, checklistTemp) ||
-                other.checklistTemp == checklistTemp));
+                other.checklistTemp == checklistTemp) &&
+            (identical(other.multidayEventId, multidayEventId) ||
+                other.multidayEventId == multidayEventId) &&
+            (identical(other.dateId, dateId) || other.dateId == dateId));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       title,
       const DeepCollectionEquality().hash(_startHourMinute),
       const DeepCollectionEquality().hash(_endHourMinute),
+      sticker,
       location,
       const DeepCollectionEquality().hash(_latlng),
       weather,
-      sticker,
-      checklistTemp);
+      temperature,
+      weatherLastUpdate,
+      checklistTemp,
+      multidayEventId,
+      dateId);
 
   @JsonKey(ignore: true)
   @override
@@ -291,15 +384,22 @@ class _$_EventTemp implements _EventTemp {
 
 abstract class _EventTemp implements EventTemp {
   factory _EventTemp(
-      {required final String title,
+      {required final int id,
+      required final String title,
       required final List<int> startHourMinute,
       required final List<int> endHourMinute,
+      final Sticker? sticker,
       final String? location,
       final List<double>? latlng,
       final String? weather,
-      final Sticker? sticker,
-      required final ChecklistTemp checklistTemp}) = _$_EventTemp;
+      final double? temperature,
+      final DateTime? weatherLastUpdate,
+      required final ChecklistTemp checklistTemp,
+      final int? multidayEventId,
+      required final String dateId}) = _$_EventTemp;
 
+  @override
+  int get id;
   @override
   String get title;
   @override
@@ -307,15 +407,23 @@ abstract class _EventTemp implements EventTemp {
   @override
   List<int> get endHourMinute;
   @override
+  Sticker? get sticker;
+  @override
   String? get location;
   @override
   List<double>? get latlng;
   @override
   String? get weather;
   @override
-  Sticker? get sticker;
+  double? get temperature;
+  @override
+  DateTime? get weatherLastUpdate;
   @override
   ChecklistTemp get checklistTemp;
+  @override
+  int? get multidayEventId;
+  @override
+  String get dateId;
   @override
   @JsonKey(ignore: true)
   _$$_EventTempCopyWith<_$_EventTemp> get copyWith =>

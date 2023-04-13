@@ -7,7 +7,7 @@ part of 'checklist_items_edit_notifier.dart';
 // **************************************************************************
 
 String _$checklistItemsEditHash() =>
-    r'1481b03f0f2f421b6999367a8d515ff8b6c3a1e8';
+    r'32150dd6d7e2e53f5d8f98329dd79f1fcca48f97';
 
 /// See also [ChecklistItemsEdit].
 @ProviderFor(ChecklistItemsEdit)

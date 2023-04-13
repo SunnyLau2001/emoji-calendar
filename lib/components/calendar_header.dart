@@ -33,8 +33,8 @@ class CalendarHeader extends ConsumerWidget {
             type: MaterialType.transparency,
             child: InkWell(
               onTap: () {
-                final show = ref.read(showMonthViewDatePickerProvider.notifier).state;
-                ref.read(showMonthViewDatePickerProvider.notifier).state = !show;
+                final show = ref.watch(showMonthViewDatePickerProvider.notifier).state;
+                ref.watch(showMonthViewDatePickerProvider.notifier).state = !show;
               },
               child: Container(
                 child: Column(

@@ -1,7 +1,10 @@
-import 'package:fyp_our_sky_new/providers/event_temp_prop.dart';
+import 'package:fyp_our_sky_new/models/date_detail.dart';
+import 'package:fyp_our_sky_new/providers/date_detail_provider.dart';
+import 'package:fyp_our_sky_new/providers/event_temp.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';
-import 'package:fyp_our_sky_new/services/multiday_event_service.dart';
+import 'package:isar/isar.dart';
 
+import 'date_detail_provider.dart';
 import 'multiday_event_date_list_prop.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -19,26 +22,61 @@ class MultidayEventDateList extends _$MultidayEventDateList {
   }
 
   void setMultidayEventDateList(DateTime startDate, int step) {
+    List<String> dateStrings = [];
+    List<DateDetail> dateDetails = [];
+
+    for (int i = 0; i < step; i++) {
+      final date = DateTime(startDate.year, startDate.month, startDate.day + i);
+      dateStrings.add("${date.year}-${date.month}-${date.day}");
+      dateDetails.add(DateDetail()
+        ..date = dateStrings[i]
+        ..lastUpdate = DateTime.now());
+    }
+
+    // if (result == null) {
+    //   for (int i = 0; i < step; i++) {
+    //     dateDetails.add(DateDetail()
+    //       ..date = dateStrings[i]
+    //       ..lastUpdate = DateTime.now());
+    //   }
+    // } else {
+    //   dateDetails = [...result];
+    // }
+
+    for (int i = 0; i < step; i++) {
+      if (dateDetails[i] == null) {
+        final dateDetail = DateDetail()
+          ..date = dateStrings[i]
+          ..lastUpdate = DateTime.now();
+        dateDetails[i] = dateDetail;
+      }
+    }
+
     List<MultidayEventDateListProp> tempList = [];
     for (int i = 0; i < step; i++) {
       final date = DateTime(startDate.year, startDate.month, startDate.day + i);
       MultidayEventDateListProp temp = MultidayEventDateListProp(
         dateString: "${date.year}-${date.month}-${date.day}",
         dateTime: date,
+        dateDetail: dateDetails[i],
         events: [],
       );
       tempList.add(temp);
     }
+    print(tempList);
     state = [...tempList];
   }
 
   void clearAllEventsByDateIndex(int dateIndex) {
-    state[dateIndex] = state[dateIndex].copyWith(events: []);
-    state = [...state];
+    List<MultidayEventDateListProp> tempState = state;
+    tempState[dateIndex] = tempState[dateIndex].copyWith(events: []);
+    state = tempState;
   }
 
   void addEventByDateIndex(int dateIndex, EventTemp event) {
-    if (dateIndex > state.length - 1) return;
+    print("Add");
+    // List<MultidayEventDateListProp> tempState = state;
+    // if (dateIndex > tempState.length - 1) continue;
     final dateListProp = state[dateIndex];
     final date = dateListProp.dateTime;
 
@@ -58,10 +96,12 @@ class MultidayEventDateList extends _$MultidayEventDateList {
   }
 
   void updateEventByDateIndexAndItemIndex(int dateIndex, int eventIndex, EventTemp eventTemp) {
-    if (dateIndex > state.length - 1) return;
-    if (eventIndex == -1 || eventIndex > state[dateIndex].events.length - 1) return;
+    List<MultidayEventDateListProp> tempState = state;
 
-    final dateListProp = state[dateIndex];
+    if (dateIndex > tempState.length - 1) return;
+    if (eventIndex == -1 || eventIndex > tempState[dateIndex].events.length - 1) return;
+
+    final dateListProp = tempState[dateIndex];
     final tempEvents = [...dateListProp.events];
     final date = dateListProp.dateTime;
 
@@ -73,27 +113,30 @@ class MultidayEventDateList extends _$MultidayEventDateList {
         return timeA.compareTo(timeB);
       },
     );
-    if (state.isNotEmpty) {
-      state[dateIndex] = dateListProp.copyWith(events: tempEvents);
-      state = [...state];
+    if (tempState.isNotEmpty) {
+      tempState[dateIndex] = dateListProp.copyWith(events: tempEvents);
+      state = tempState;
     }
   }
 
   void removeEventByDateIndex(int dateIndex, EventTemp event) {
-    final dateListProp = state[dateIndex];
-    List<EventTemp> tempList = [...state[dateIndex].events];
+    List<MultidayEventDateListProp>? tempState = state;
+
+    ref.watch(multidayEventDetailProvider.notifier).removeEventAndChecklist(event.id, event.checklistTemp.id);
+
+    if (tempState == null) return;
+    final dateListProp = tempState[dateIndex];
+    List<EventTemp> tempList = [...dateListProp.events];
     tempList.remove(event);
-    state[dateIndex] = dateListProp.copyWith(events: tempList);
-    state = [...state];
-  }
 
-  void putMultidayEvents() async {
-    final multidayEventDetail = ref.watch(multidayEventDetailProvider);
-    final multidayEventDateListProps = [...state];
+    DateDetail dateDetail = dateListProp.dateDetail;
+    if (event.id != Isar.autoIncrement) {
+      List<int> eventIds = dateListProp.dateDetail.eventsId;
+      if (eventIds.contains(event.id)) eventIds.remove(event.id);
+      dateDetail.eventsId = eventIds;
+    }
 
-    await MultidayEventService().putMultidayEvents(multidayEventDetail, multidayEventDateListProps);
-    // print(multidayEventDetail);
-    // state = [];
-    // ref.watch(multidayEventDetailProvider.notifier).initializeState();
+    tempState[dateIndex] = dateListProp.copyWith(events: tempList, dateDetail: dateDetail);
+    state = tempState;
   }
 }

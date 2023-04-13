@@ -16,10 +16,10 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$MultidayEventDetailProp {
-  String get title => throw _privateConstructorUsedError;
-  List<DateTime> get dateRange => throw _privateConstructorUsedError;
-  String get bookmarkStickerId => throw _privateConstructorUsedError;
-  int get bookmarkColorInt => throw _privateConstructorUsedError;
+  MultidayEventTemp get multidayEventTemp => throw _privateConstructorUsedError;
+  bool get selectFirstDate => throw _privateConstructorUsedError;
+  List<int> get removedEventIds => throw _privateConstructorUsedError;
+  List<int> get removedChecklistIds => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MultidayEventDetailPropCopyWith<MultidayEventDetailProp> get copyWith =>
@@ -33,10 +33,12 @@ abstract class $MultidayEventDetailPropCopyWith<$Res> {
       _$MultidayEventDetailPropCopyWithImpl<$Res, MultidayEventDetailProp>;
   @useResult
   $Res call(
-      {String title,
-      List<DateTime> dateRange,
-      String bookmarkStickerId,
-      int bookmarkColorInt});
+      {MultidayEventTemp multidayEventTemp,
+      bool selectFirstDate,
+      List<int> removedEventIds,
+      List<int> removedChecklistIds});
+
+  $MultidayEventTempCopyWith<$Res> get multidayEventTemp;
 }
 
 /// @nodoc
@@ -53,29 +55,37 @@ class _$MultidayEventDetailPropCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
-    Object? dateRange = null,
-    Object? bookmarkStickerId = null,
-    Object? bookmarkColorInt = null,
+    Object? multidayEventTemp = null,
+    Object? selectFirstDate = null,
+    Object? removedEventIds = null,
+    Object? removedChecklistIds = null,
   }) {
     return _then(_value.copyWith(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      dateRange: null == dateRange
-          ? _value.dateRange
-          : dateRange // ignore: cast_nullable_to_non_nullable
-              as List<DateTime>,
-      bookmarkStickerId: null == bookmarkStickerId
-          ? _value.bookmarkStickerId
-          : bookmarkStickerId // ignore: cast_nullable_to_non_nullable
-              as String,
-      bookmarkColorInt: null == bookmarkColorInt
-          ? _value.bookmarkColorInt
-          : bookmarkColorInt // ignore: cast_nullable_to_non_nullable
-              as int,
+      multidayEventTemp: null == multidayEventTemp
+          ? _value.multidayEventTemp
+          : multidayEventTemp // ignore: cast_nullable_to_non_nullable
+              as MultidayEventTemp,
+      selectFirstDate: null == selectFirstDate
+          ? _value.selectFirstDate
+          : selectFirstDate // ignore: cast_nullable_to_non_nullable
+              as bool,
+      removedEventIds: null == removedEventIds
+          ? _value.removedEventIds
+          : removedEventIds // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      removedChecklistIds: null == removedChecklistIds
+          ? _value.removedChecklistIds
+          : removedChecklistIds // ignore: cast_nullable_to_non_nullable
+              as List<int>,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $MultidayEventTempCopyWith<$Res> get multidayEventTemp {
+    return $MultidayEventTempCopyWith<$Res>(_value.multidayEventTemp, (value) {
+      return _then(_value.copyWith(multidayEventTemp: value) as $Val);
+    });
   }
 }
 
@@ -88,10 +98,13 @@ abstract class _$$_MultidayEventDetailPropCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String title,
-      List<DateTime> dateRange,
-      String bookmarkStickerId,
-      int bookmarkColorInt});
+      {MultidayEventTemp multidayEventTemp,
+      bool selectFirstDate,
+      List<int> removedEventIds,
+      List<int> removedChecklistIds});
+
+  @override
+  $MultidayEventTempCopyWith<$Res> get multidayEventTemp;
 }
 
 /// @nodoc
@@ -106,28 +119,28 @@ class __$$_MultidayEventDetailPropCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? title = null,
-    Object? dateRange = null,
-    Object? bookmarkStickerId = null,
-    Object? bookmarkColorInt = null,
+    Object? multidayEventTemp = null,
+    Object? selectFirstDate = null,
+    Object? removedEventIds = null,
+    Object? removedChecklistIds = null,
   }) {
     return _then(_$_MultidayEventDetailProp(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      dateRange: null == dateRange
-          ? _value._dateRange
-          : dateRange // ignore: cast_nullable_to_non_nullable
-              as List<DateTime>,
-      bookmarkStickerId: null == bookmarkStickerId
-          ? _value.bookmarkStickerId
-          : bookmarkStickerId // ignore: cast_nullable_to_non_nullable
-              as String,
-      bookmarkColorInt: null == bookmarkColorInt
-          ? _value.bookmarkColorInt
-          : bookmarkColorInt // ignore: cast_nullable_to_non_nullable
-              as int,
+      multidayEventTemp: null == multidayEventTemp
+          ? _value.multidayEventTemp
+          : multidayEventTemp // ignore: cast_nullable_to_non_nullable
+              as MultidayEventTemp,
+      selectFirstDate: null == selectFirstDate
+          ? _value.selectFirstDate
+          : selectFirstDate // ignore: cast_nullable_to_non_nullable
+              as bool,
+      removedEventIds: null == removedEventIds
+          ? _value._removedEventIds
+          : removedEventIds // ignore: cast_nullable_to_non_nullable
+              as List<int>,
+      removedChecklistIds: null == removedChecklistIds
+          ? _value._removedChecklistIds
+          : removedChecklistIds // ignore: cast_nullable_to_non_nullable
+              as List<int>,
     ));
   }
 }
@@ -136,30 +149,37 @@ class __$$_MultidayEventDetailPropCopyWithImpl<$Res>
 
 class _$_MultidayEventDetailProp implements _MultidayEventDetailProp {
   _$_MultidayEventDetailProp(
-      {required this.title,
-      required final List<DateTime> dateRange,
-      required this.bookmarkStickerId,
-      required this.bookmarkColorInt})
-      : _dateRange = dateRange;
+      {required this.multidayEventTemp,
+      required this.selectFirstDate,
+      required final List<int> removedEventIds,
+      required final List<int> removedChecklistIds})
+      : _removedEventIds = removedEventIds,
+        _removedChecklistIds = removedChecklistIds;
 
   @override
-  final String title;
-  final List<DateTime> _dateRange;
+  final MultidayEventTemp multidayEventTemp;
   @override
-  List<DateTime> get dateRange {
-    if (_dateRange is EqualUnmodifiableListView) return _dateRange;
+  final bool selectFirstDate;
+  final List<int> _removedEventIds;
+  @override
+  List<int> get removedEventIds {
+    if (_removedEventIds is EqualUnmodifiableListView) return _removedEventIds;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_dateRange);
+    return EqualUnmodifiableListView(_removedEventIds);
+  }
+
+  final List<int> _removedChecklistIds;
+  @override
+  List<int> get removedChecklistIds {
+    if (_removedChecklistIds is EqualUnmodifiableListView)
+      return _removedChecklistIds;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_removedChecklistIds);
   }
 
   @override
-  final String bookmarkStickerId;
-  @override
-  final int bookmarkColorInt;
-
-  @override
   String toString() {
-    return 'MultidayEventDetailProp(title: $title, dateRange: $dateRange, bookmarkStickerId: $bookmarkStickerId, bookmarkColorInt: $bookmarkColorInt)';
+    return 'MultidayEventDetailProp(multidayEventTemp: $multidayEventTemp, selectFirstDate: $selectFirstDate, removedEventIds: $removedEventIds, removedChecklistIds: $removedChecklistIds)';
   }
 
   @override
@@ -167,22 +187,23 @@ class _$_MultidayEventDetailProp implements _MultidayEventDetailProp {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_MultidayEventDetailProp &&
-            (identical(other.title, title) || other.title == title) &&
+            (identical(other.multidayEventTemp, multidayEventTemp) ||
+                other.multidayEventTemp == multidayEventTemp) &&
+            (identical(other.selectFirstDate, selectFirstDate) ||
+                other.selectFirstDate == selectFirstDate) &&
             const DeepCollectionEquality()
-                .equals(other._dateRange, _dateRange) &&
-            (identical(other.bookmarkStickerId, bookmarkStickerId) ||
-                other.bookmarkStickerId == bookmarkStickerId) &&
-            (identical(other.bookmarkColorInt, bookmarkColorInt) ||
-                other.bookmarkColorInt == bookmarkColorInt));
+                .equals(other._removedEventIds, _removedEventIds) &&
+            const DeepCollectionEquality()
+                .equals(other._removedChecklistIds, _removedChecklistIds));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      title,
-      const DeepCollectionEquality().hash(_dateRange),
-      bookmarkStickerId,
-      bookmarkColorInt);
+      multidayEventTemp,
+      selectFirstDate,
+      const DeepCollectionEquality().hash(_removedEventIds),
+      const DeepCollectionEquality().hash(_removedChecklistIds));
 
   @JsonKey(ignore: true)
   @override
@@ -195,19 +216,20 @@ class _$_MultidayEventDetailProp implements _MultidayEventDetailProp {
 
 abstract class _MultidayEventDetailProp implements MultidayEventDetailProp {
   factory _MultidayEventDetailProp(
-      {required final String title,
-      required final List<DateTime> dateRange,
-      required final String bookmarkStickerId,
-      required final int bookmarkColorInt}) = _$_MultidayEventDetailProp;
+          {required final MultidayEventTemp multidayEventTemp,
+          required final bool selectFirstDate,
+          required final List<int> removedEventIds,
+          required final List<int> removedChecklistIds}) =
+      _$_MultidayEventDetailProp;
 
   @override
-  String get title;
+  MultidayEventTemp get multidayEventTemp;
   @override
-  List<DateTime> get dateRange;
+  bool get selectFirstDate;
   @override
-  String get bookmarkStickerId;
+  List<int> get removedEventIds;
   @override
-  int get bookmarkColorInt;
+  List<int> get removedChecklistIds;
   @override
   @JsonKey(ignore: true)
   _$$_MultidayEventDetailPropCopyWith<_$_MultidayEventDetailProp>

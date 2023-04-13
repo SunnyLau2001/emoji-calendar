@@ -23,13 +23,8 @@ const ChecklistSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'ChecklistItem',
     ),
-    r'eventId': PropertySchema(
-      id: 1,
-      name: r'eventId',
-      type: IsarType.long,
-    ),
     r'title': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'title',
       type: IsarType.string,
     )
@@ -79,8 +74,7 @@ void _checklistSerialize(
     ChecklistItemSchema.serialize,
     object.checklist,
   );
-  writer.writeLong(offsets[1], object.eventId);
-  writer.writeString(offsets[2], object.title);
+  writer.writeString(offsets[1], object.title);
 }
 
 Checklist _checklistDeserialize(
@@ -97,9 +91,8 @@ Checklist _checklistDeserialize(
         ChecklistItem(),
       ) ??
       [];
-  object.eventId = reader.readLongOrNull(offsets[1]);
   object.id = id;
-  object.title = reader.readString(offsets[2]);
+  object.title = reader.readString(offsets[1]);
   return object;
 }
 
@@ -119,8 +112,6 @@ P _checklistDeserializeProp<P>(
           ) ??
           []) as P;
     case 1:
-      return (reader.readLongOrNull(offset)) as P;
-    case 2:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -303,75 +294,6 @@ extension ChecklistQueryFilter
         upper,
         includeUpper,
       );
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'eventId',
-      ));
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'eventId',
-      ));
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdEqualTo(
-      int? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'eventId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdGreaterThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'eventId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdLessThan(
-    int? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'eventId',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterFilterCondition> eventIdBetween(
-    int? lower,
-    int? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'eventId',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
     });
   }
 
@@ -573,18 +495,6 @@ extension ChecklistQueryLinks
     on QueryBuilder<Checklist, Checklist, QFilterCondition> {}
 
 extension ChecklistQuerySortBy on QueryBuilder<Checklist, Checklist, QSortBy> {
-  QueryBuilder<Checklist, Checklist, QAfterSortBy> sortByEventId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'eventId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterSortBy> sortByEventIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'eventId', Sort.desc);
-    });
-  }
-
   QueryBuilder<Checklist, Checklist, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -600,18 +510,6 @@ extension ChecklistQuerySortBy on QueryBuilder<Checklist, Checklist, QSortBy> {
 
 extension ChecklistQuerySortThenBy
     on QueryBuilder<Checklist, Checklist, QSortThenBy> {
-  QueryBuilder<Checklist, Checklist, QAfterSortBy> thenByEventId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'eventId', Sort.asc);
-    });
-  }
-
-  QueryBuilder<Checklist, Checklist, QAfterSortBy> thenByEventIdDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'eventId', Sort.desc);
-    });
-  }
-
   QueryBuilder<Checklist, Checklist, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -639,12 +537,6 @@ extension ChecklistQuerySortThenBy
 
 extension ChecklistQueryWhereDistinct
     on QueryBuilder<Checklist, Checklist, QDistinct> {
-  QueryBuilder<Checklist, Checklist, QDistinct> distinctByEventId() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'eventId');
-    });
-  }
-
   QueryBuilder<Checklist, Checklist, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -665,12 +557,6 @@ extension ChecklistQueryProperty
       checklistProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'checklist');
-    });
-  }
-
-  QueryBuilder<Checklist, int?, QQueryOperations> eventIdProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'eventId');
     });
   }
 

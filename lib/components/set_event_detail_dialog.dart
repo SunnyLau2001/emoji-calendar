@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -9,12 +7,12 @@ import 'package:fyp_our_sky_new/components/search_address_dialog.dart';
 import 'package:fyp_our_sky_new/components/set_checklist_dialog.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart';
 import 'package:fyp_our_sky_new/utils/font_settings.dart';
+import 'package:isar/isar.dart';
 
-import '../models/event.dart';
 import '../models/sticker.dart';
 import '../providers/checklist_items_edit_notifier.dart';
 import '../providers/checklist_temp_prop.dart';
-import '../providers/event_temp_prop.dart';
+import '../providers/event_temp.dart';
 
 extension TimeOfDayConverter on TimeOfDay {
   String to24hours() {
@@ -25,25 +23,21 @@ extension TimeOfDayConverter on TimeOfDay {
 }
 
 class EventDetailDialog extends ConsumerStatefulWidget {
-  EventDetailDialog({
+  const EventDetailDialog({
+    super.key,
+    required this.date,
     required this.dateIndex,
     required this.mode,
-    super.key,
-    this.date,
-    this.sticker,
-    this.latestStartTimeAvailable,
     this.eventIndex = -1,
-    this.eventTemp,
+    required this.eventTemp,
   });
 
   final String mode;
-  final DateTime? date;
+  final DateTime date;
   final int dateIndex;
-  final Sticker? sticker;
   // HHMM in [hour, minu] format
-  final List<int>? latestStartTimeAvailable;
   final int eventIndex;
-  final EventTemp? eventTemp;
+  final EventTemp eventTemp;
 
   @override
   ConsumerState<EventDetailDialog> createState() => _EventDetailDialogState();
@@ -82,25 +76,23 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
   // init event details
   void initDetails() {
     // Init edit event
-    if (widget.mode == "edit" && widget.eventTemp != null) {
-      startTime = TimeOfDay(hour: widget.eventTemp!.startHourMinute[0], minute: widget.eventTemp!.startHourMinute[1]);
-      endTime = TimeOfDay(hour: widget.eventTemp!.endHourMinute[0], minute: widget.eventTemp!.endHourMinute[1]);
-      title = widget.eventTemp!.title;
-      location = widget.eventTemp!.location ?? "Add location";
-      lat = widget.eventTemp!.latlng != null ? widget.eventTemp!.latlng![0] : null;
-      lng = widget.eventTemp!.latlng != null ? widget.eventTemp!.latlng![1] : null;
-      checklistTemp = widget.eventTemp!.checklistTemp ?? ChecklistTemp(title: "", items: []);
+    if (widget.mode == "edit") {
+      startTime = TimeOfDay(hour: widget.eventTemp.startHourMinute[0], minute: widget.eventTemp.startHourMinute[1]);
+      endTime = TimeOfDay(hour: widget.eventTemp.endHourMinute[0], minute: widget.eventTemp.endHourMinute[1]);
+      title = widget.eventTemp.title;
+      location = widget.eventTemp.location ?? "Add location";
+      lat = widget.eventTemp.latlng != null ? widget.eventTemp.latlng![0] : null;
+      lng = widget.eventTemp.latlng != null ? widget.eventTemp.latlng![1] : null;
+      checklistTemp = widget.eventTemp.checklistTemp;
     }
     // Init create event
     if (widget.mode == "create") {
-      startTime = widget.latestStartTimeAvailable != null
-          ? setTime(widget.latestStartTimeAvailable!)
-          : TimeOfDay(hour: 8, minute: 0);
+      startTime = TimeOfDay(hour: widget.eventTemp.startHourMinute[0], minute: widget.eventTemp.startHourMinute[1]);
       endTime = TimeOfDay(hour: startTime.hour + 1, minute: 0);
-      if (widget.sticker != null) {
-        title = widget.sticker!.tag;
+      if (widget.eventTemp.sticker != null) {
+        title = widget.eventTemp.sticker!.tag;
       }
-      checklistTemp = ChecklistTemp(title: "", items: []);
+      checklistTemp = widget.eventTemp.checklistTemp;
     }
   }
 
@@ -120,11 +112,7 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
   }
 
   Widget _buildEventTitle() {
-    String tempTitle = widget.mode == "edit"
-        ? widget.eventTemp!.title
-        : widget.sticker != null
-            ? widget.sticker!.tag
-            : "";
+    String tempTitle = widget.eventTemp.title;
 
     return TextField(
       focusNode: titleFocusNode,
@@ -152,8 +140,8 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
   }
 
   Widget _buildStickerIcon() {
-    if (widget.sticker != null) {
-      final image = base64.decode(widget.sticker!.imageBase64);
+    if (widget.eventTemp.sticker != null) {
+      final image = base64.decode(widget.eventTemp.sticker!.imageBase64);
       return Container(
         width: iconSize,
         height: iconSize,
@@ -168,7 +156,7 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
     }
 
     if (widget.mode == "edit" && widget.eventTemp != null) {
-      final image = base64.decode(widget.eventTemp!.sticker!.imageBase64);
+      final image = base64.decode(widget.eventTemp.sticker!.imageBase64);
       return Container(
         width: iconSize,
         height: iconSize,
@@ -343,19 +331,10 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
         final result = await setChecklist(context: context, checklistTemp: checklistTemp);
         if (result != null) {
           // ref.read();
-          print("not null");
           setState(() {
             checklistTemp = result;
           });
         }
-        // final addressDetail = await searchAddress(context: context);
-        // if (addressDetail != null) {
-        //   setState(() {
-        //     location = addressDetail.name;
-        //     lat = addressDetail.lat;
-        //     lng = addressDetail.lon;
-        //   });
-        // }
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -436,21 +415,24 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
                   } else {
                     latlng = null;
                   }
+                  final dateString = "${widget.date.year}-${widget.date.month}-${widget.date.day}";
                   final event = EventTemp(
+                    id: Isar.autoIncrement,
                     title: title,
                     startHourMinute: [startTime.hour, startTime.minute],
                     endHourMinute: [endTime.hour, endTime.minute],
+                    sticker: widget.eventTemp.sticker,
+                    dateId: dateString,
                     location: location,
                     latlng: latlng,
-                    sticker: widget.mode == "create" ? widget.sticker : widget.eventTemp!.sticker!,
                     checklistTemp: checklistTemp,
                   );
-
+    
                   if (widget.mode == "create") {
+                    print("create");
                     ref.watch(multidayEventDateListProvider.notifier).addEventByDateIndex(widget.dateIndex, event);
                   }
                   if (widget.mode == "edit") {
-                    print("Hello");
                     ref
                         .watch(multidayEventDateListProvider.notifier)
                         .updateEventByDateIndexAndItemIndex(widget.dateIndex, widget.eventIndex, event);
@@ -510,8 +492,7 @@ Future<void> createEventDetail({
   required BuildContext context,
   required DateTime date,
   required int dateIndex,
-  List<int>? latestStartTimeAvailable,
-  Sticker? sticker,
+  required EventTemp eventTemp,
 }) {
   return showDialog<void>(
     context: context,
@@ -519,8 +500,7 @@ Future<void> createEventDetail({
       return EventDetailDialog(
         date: date,
         dateIndex: dateIndex,
-        sticker: sticker,
-        latestStartTimeAvailable: latestStartTimeAvailable,
+        eventTemp: eventTemp,
         mode: "create",
       );
     },
@@ -529,6 +509,7 @@ Future<void> createEventDetail({
 
 Future<void> editEventDetail({
   required BuildContext context,
+  required DateTime date,
   required int dateIndex,
   required int eventIndex,
   // required DateTime? latestStartTimeAvailable,
@@ -538,6 +519,7 @@ Future<void> editEventDetail({
     context: context,
     builder: (context) {
       return EventDetailDialog(
+        date: date,
         dateIndex: dateIndex,
         eventIndex: eventIndex,
         eventTemp: eventTemp,

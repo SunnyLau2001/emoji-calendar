@@ -6,13 +6,15 @@ import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/components/set_event_detail_dialog.dart';
+import 'package:fyp_our_sky_new/providers/checklist_temp_prop.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart';
 import 'package:fyp_our_sky_new/providers/providers.dart';
 import 'package:fyp_our_sky_new/utils/date_string.dart';
 import 'package:fyp_our_sky_new/utils/font_settings.dart';
+import 'package:isar/isar.dart';
 
 import '../models/sticker.dart';
-import '../providers/event_temp_prop.dart';
+import '../providers/event_temp.dart';
 import '../providers/multiday_event_date_list_prop.dart';
 
 class DateListDragTarget extends ConsumerStatefulWidget {
@@ -38,12 +40,16 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
     final dateString = "${widget.date.year}-${widget.date.month}-${widget.date.day}";
     final focusedDate = ref.watch(focusedDateEventsListProvider);
 
-    final MultidayEventDateListProp dateListProp = ref.watch(multidayEventDateListProvider
-        .select((value) => value.firstWhere((element) => element.dateString == dateString)));
+    final mEventDateListProp = ref.watch(
+        multidayEventDateListProvider.select((e) => e.firstWhere((element) => element.dateString == dateString)));
+    print(mEventDateListProp);
+    // if (mEventDateList.isEmpty) return SizedBox();
+    // print(mEventDateList);
+    // final mEventDateListProp = mEventDateList.firstWhere((element) => element.dateString == dateString);
 
-    final List<EventTemp> events = dateListProp.events;
+    // if (list.isEmpty) return SizedBox();
+    final List<EventTemp> events = mEventDateListProp.events;
     final List<int>? latestStartTimeAvailable = events.isNotEmpty ? events[events.length - 1].endHourMinute : null;
-
     return AnimatedAlign(
       alignment: Alignment.center,
       duration: Duration(milliseconds: 500),
@@ -91,10 +97,10 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
                           customBorder: CircleBorder(),
                           onTap: () {
                             if (!isEditing) {
-                              ref.read(dateListInEditingModeProvider.notifier).state = widget.dateIndex;
+                              ref.watch(dateListInEditingModeProvider.notifier).state = widget.dateIndex;
                             }
                             if (isEditing) {
-                              ref.read(dateListInEditingModeProvider.notifier).state = -1;
+                              ref.watch(dateListInEditingModeProvider.notifier).state = -1;
                             }
                           },
                           child: Container(
@@ -115,6 +121,7 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
               ),
               AnimatedEventList(
                 // events: list,
+                date: widget.date,
                 dateIndex: widget.dateIndex,
                 // events: events,
               ),
@@ -126,6 +133,7 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
                     visible: !isEditing,
                     child: DummyDragTarget(
                       date: widget.date,
+                      dateString: dateString,
                       dateIndex: widget.dateIndex,
                       latestStartTimeAvailable: latestStartTimeAvailable,
                     ),
@@ -137,21 +145,120 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
         ),
       ),
     );
+
+    // return AnimatedAlign(
+    //   alignment: Alignment.center,
+    //   duration: Duration(milliseconds: 500),
+    //   curve: Curves.ease,
+    //   heightFactor: focusedDate == '' || focusedDate == dateString ? 1 : 0,
+    //   child: AnimatedScale(
+    //     duration: Duration(milliseconds: 0),
+    //     curve: Curves.ease,
+    //     scale: focusedDate == '' || focusedDate == dateString ? 1 : 0,
+    //     child: Container(
+    //       margin: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+    //       padding: EdgeInsets.symmetric(vertical: 8),
+    //       decoration: BoxDecoration(
+    //         border: Border.all(width: 1, color: Colors.white54),
+    //         color: Colors.white12,
+    //         borderRadius: BorderRadius.circular(4),
+    //       ),
+    //       child: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           Row(
+    //             crossAxisAlignment: CrossAxisAlignment.center,
+    //             children: [
+    //               Column(
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: [
+    //                   Text(
+    //                     _monthNames[widget.date.month - 1],
+    //                     style: FontSettings.primaryFont.copyWith(fontSize: 14),
+    //                   ),
+    //                   Text(
+    //                     "${_weekdayNames[widget.date.weekday - 1]} ${widget.date.day}",
+    //                     style: FontSettings.primaryFont.copyWith(fontSize: 18),
+    //                   ),
+    //                 ],
+    //               ),
+    //               Spacer(),
+    //               Consumer(
+    //                 builder: (context, ref, child) {
+    //                   final editingDateIndex = ref.watch(dateListInEditingModeProvider);
+    //                   final isEditing = editingDateIndex == widget.dateIndex;
+    //                   return Material(
+    //                     type: MaterialType.transparency,
+    //                     child: InkWell(
+    //                       customBorder: CircleBorder(),
+    //                       onTap: () {
+    //                         if (!isEditing) {
+    //                           ref.read(dateListInEditingModeProvider.notifier).state = widget.dateIndex;
+    //                         }
+    //                         if (isEditing) {
+    //                           ref.read(dateListInEditingModeProvider.notifier).state = -1;
+    //                         }
+    //                       },
+    //                       child: Container(
+    //                         width: 48,
+    //                         height: 48,
+    //                         decoration: BoxDecoration(
+    //                           shape: BoxShape.circle,
+    //                         ),
+    //                         child: isEditing
+    //                             ? Icon(Icons.close_rounded, color: Colors.white)
+    //                             : Icon(Icons.edit, color: Colors.white),
+    //                       ),
+    //                     ),
+    //                   );
+    //                 },
+    //               ),
+    //             ],
+    //           ),
+    //           AnimatedEventList(
+    //             // events: list,
+    //             date: widget.date,
+    //             dateIndex: widget.dateIndex,
+    //             // events: events,
+    //           ),
+    //           // // ..._buildEvents(list, widget.dayIndex, ref),
+    //           Consumer(
+    //             builder: (context, ref, child) {
+    //               final isEditing = ref.watch(dateListInEditingModeProvider) == widget.dateIndex;
+    //               return Visibility(
+    //                 visible: !isEditing,
+    //                 child: DummyDragTarget(
+    //                   date: widget.date,
+    //                   dateString: dateString,
+    //                   dateIndex: widget.dateIndex,
+    //                   latestStartTimeAvailable: latestStartTimeAvailable,
+    //                 ),
+    //               );
+    //             },
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 }
 
 class AnimatedEventList extends ConsumerWidget {
-  const AnimatedEventList({
+  AnimatedEventList({
     super.key,
+    required this.date,
     required this.dateIndex,
   });
 
+  final DateTime date;
   final int dateIndex;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // print("AnimatedEventList ${dayIndex} build !!!");
-    final List<EventTemp> events = ref.watch(multidayEventDateListProvider.select((value) => value[dateIndex].events));
+    final mEventDateList = ref.watch(multidayEventDateListProvider);
+
+    final events = mEventDateList[dateIndex].events;
 
     return ImplicitlyAnimatedList<EventTemp>(
       items: events,
@@ -165,6 +272,7 @@ class AnimatedEventList extends ConsumerWidget {
         return SizeFadeTransition(
           animation: animation,
           child: EventItemTile(
+            date: date,
             dateIndex: dateIndex,
             event: event,
             eventIndex: index,
@@ -178,11 +286,13 @@ class AnimatedEventList extends ConsumerWidget {
 class EventItemTile extends ConsumerWidget {
   const EventItemTile({
     super.key,
+    required this.date,
     required this.dateIndex,
     required this.event,
     required this.eventIndex,
   });
 
+  final DateTime date;
   final int dateIndex;
   final EventTemp event;
   final int eventIndex;
@@ -293,7 +403,8 @@ class EventItemTile extends ConsumerWidget {
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: () {
-                  ref.read(multidayEventDateListProvider.notifier).removeEventByDateIndex(dateIndex, event);
+                  ref.watch(multidayEventDateListProvider.notifier).removeEventByDateIndex(dateIndex, event);
+                  // ref.watch(multidayEventDateListProvider.notifier).removeEventByDateIndex(dateIndex, event);
                 },
                 child: Container(
                   height: 40,
@@ -317,7 +428,8 @@ class EventItemTile extends ConsumerWidget {
       child: InkWell(
         onTap: () async {
           if (!isEditing) {
-            await editEventDetail(context: context, dateIndex: dateIndex, eventIndex: eventIndex, eventTemp: event);
+            await editEventDetail(
+                context: context, date: date, dateIndex: dateIndex, eventIndex: eventIndex, eventTemp: event);
           }
         },
         child: Container(
@@ -358,11 +470,13 @@ class DummyDragTarget extends ConsumerWidget {
   const DummyDragTarget({
     super.key,
     required this.date,
+    required this.dateString,
     required this.dateIndex,
     this.latestStartTimeAvailable,
   });
 
   final DateTime date;
+  final String dateString;
   final int dateIndex;
   final List<int>? latestStartTimeAvailable;
 
@@ -370,27 +484,32 @@ class DummyDragTarget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DragTarget(
       onAccept: (Sticker sticker) async {
+        final checklistTemp = ChecklistTemp(id: Isar.autoIncrement, title: "", items: []);
+        final startHM = latestStartTimeAvailable ?? [8, 0];
+        final endHM = [startHM[0] + 1, 0];
+
+        final eventTemp = EventTemp(
+          id: Isar.autoIncrement,
+          title: "Title",
+          startHourMinute: startHM,
+          endHourMinute: endHM,
+          sticker: sticker,
+          dateId: dateString,
+          checklistTemp: checklistTemp,
+        );
+
         await createEventDetail(
-            context: context,
-            date: date,
-            dateIndex: dateIndex,
-            sticker: sticker,
-            latestStartTimeAvailable: latestStartTimeAvailable);
-        // final event =
-        //     await addEventDetail(context: context, emojiItem: data, latestStartTimeAvailable: latestStartTimeAvailable);
-
-        // ref.read(activedDummyTargetIndexProvider.notifier).state = -1;
-        // ref.read(stickerDraggingProvider.notifier).state = false;
-
-        // if (event != null) {
-        //   addEvent(ref, data, event);
-        // }
+          context: context,
+          date: date,
+          dateIndex: dateIndex,
+          eventTemp: eventTemp,
+        );
       },
       onLeave: (data) {
-        ref.read(activedDummyTargetIndexProvider.notifier).state = -1;
+        ref.watch(activedDummyTargetIndexProvider.notifier).state = -1;
       },
       onMove: (data) {
-        ref.read(activedDummyTargetIndexProvider.notifier).state = dateIndex;
+        ref.watch(activedDummyTargetIndexProvider.notifier).state = dateIndex;
       },
       builder: (context, candidateData, rejectedData) {
         return Consumer(

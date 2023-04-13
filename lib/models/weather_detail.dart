@@ -2,15 +2,11 @@ class WeatherDetail {
   final DateTime dateTime;
   final double temp;
   final String weather;
-  // final double? lon;
-  // final double? lat;
 
   const WeatherDetail({
     required this.dateTime,
     required this.temp,
     required this.weather,
-    // this.lon,
-    // this.lat,
   });
 
   factory WeatherDetail.fromJson(Map<String, dynamic> json) {

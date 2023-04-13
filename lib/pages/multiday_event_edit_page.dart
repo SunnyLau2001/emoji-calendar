@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';
+import 'package:fyp_our_sky_new/providers/put_multiday_event_notifier.dart';
 import 'package:fyp_our_sky_new/utils/date_string.dart';
 import 'package:fyp_our_sky_new/utils/font_settings.dart';
 
@@ -14,14 +15,14 @@ import '../models/sticker.dart';
 import '../providers/providers.dart';
 import '../providers/sticker_provider.dart';
 
-class MultidayEventEdit extends ConsumerStatefulWidget {
-  const MultidayEventEdit({super.key});
+class MultidayEventEditPage extends ConsumerStatefulWidget {
+  const MultidayEventEditPage({super.key});
 
   @override
-  ConsumerState<MultidayEventEdit> createState() => _MultidayEventEditState();
+  ConsumerState<MultidayEventEditPage> createState() => _MultidayEventEditPage();
 }
 
-class _MultidayEventEditState extends ConsumerState<MultidayEventEdit> {
+class _MultidayEventEditPage extends ConsumerState<MultidayEventEditPage> {
   // Setup the auto scrolling when stick drag to the edge of the list
   final _listViewKey = GlobalKey();
   final ScrollController _listviewScroller = ScrollController();
@@ -33,7 +34,7 @@ class _MultidayEventEditState extends ConsumerState<MultidayEventEdit> {
   }
 
   Widget _buildTopBar() {
-    return MultidayEventEditTopBar();
+    return const MultidayEventEditTopBar();
   }
 
   Widget _buildDateEventsList() {
@@ -47,7 +48,7 @@ class _MultidayEventEditState extends ConsumerState<MultidayEventEdit> {
   }
 
   Widget _buildDraggableStickerPicker() {
-    return SizedBox(
+    return const SizedBox(
       height: 150,
       child: DraggableStickerPicker(),
     );
@@ -153,41 +154,70 @@ class AutoScrollPanListener extends ConsumerWidget {
 }
 
 class MultidayEventEditTopBar extends ConsumerWidget {
-  MultidayEventEditTopBar({super.key});
+  const MultidayEventEditTopBar({super.key});
 
-  List<Widget> _buildSelectableDateList(List<DateTime> dateRange) {
+  List<Widget> _buildSelectableDateList(DateTime? startDate, DateTime? endDate) {
+    if (startDate == null || endDate == null) return [const SizedBox()];
+
+    if (startDate == endDate) return [SelectableDateCell(date: startDate)];
+
     List<Widget> selectableDateList = [];
 
-    if (dateRange.length == 0) {
-      return [];
-    }
+    int step = startDate.difference(endDate).inDays.abs();
+    print(step);
 
-    if (dateRange.length == 1) {
-      return [SelectableDateCell(date: dateRange[0])];
-    }
-
-    DateTime startDate = dateRange[0];
-    DateTime endDate = dateRange[1];
-    int numberOfDays = startDate.difference(endDate).inDays.abs();
-
-    for (int i = 0; i < numberOfDays + 1; i++) {
-      final date = DateTime(dateRange[0].year, dateRange[0].month, dateRange[0].day + i);
-      // final dateString = "${date.year}-${date.month}-${date.day}";
+    for (int i = 0; i < step + 1; i++) {
+      final date = DateTime(startDate.year, startDate.month, startDate.day + i);
       selectableDateList.add(SelectableDateCell(date: date));
     }
 
     return selectableDateList;
   }
 
+  Widget _buildBookmarkSticker(String stickerId, int colorInt) {
+    return Consumer(
+      builder: (context, ref, child) {
+        AsyncValue<Sticker?> sticker = ref.watch(fetchStickerByIdProvider(stickerId: stickerId));
+
+        return sticker.when(
+          data: (data) {
+            final image = base64.decode(data!.imageBase64);
+            return Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.white54),
+                color: Color(colorInt),
+                // shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(4),
+              child: Image.memory(
+                image,
+              ),
+            );
+          },
+          error: (error, stackTrace) {
+            return Container();
+          },
+          loading: () {
+            return Container();
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final multidayEventDetail = ref.watch(multidayEventDetailProvider);
+    final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
+    final startDate = mEventTemp.startDate;
+    final endDate = mEventTemp.endDate;
 
-    final title = multidayEventDetail.title;
-    final stickerId = multidayEventDetail.bookmarkStickerId;
-    AsyncValue<Sticker?> sticker = ref.watch(fetchStickerByIdProvider(stickerId: stickerId));
-    final colorInt = multidayEventDetail.bookmarkColorInt;
-    final dateRange = multidayEventDetail.dateRange;
+    final title = mEventTemp.title;
+    final stickerId = mEventTemp.bookmarkStickerId;
+    final colorInt = mEventTemp.bookmarkColorInt;
+
+    // final dateRange = multidayEventDetail.dateRange;
     return ClipRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(
@@ -196,7 +226,7 @@ class MultidayEventEditTopBar extends ConsumerWidget {
         ),
         child: InkWell(
           onTap: () async {
-            await editMultidayEventEventDetail(context: context, title: multidayEventDetail.title);
+            await editMultidayEventEventDetail(context: context, title: mEventTemp.title);
           },
           child: Container(
             height: 182,
@@ -224,7 +254,9 @@ class MultidayEventEditTopBar extends ConsumerWidget {
                       InkWell(
                         onTap: () {
                           Navigator.pop(context);
-                          ref.watch(multidayEventDateListProvider.notifier).putMultidayEvents();
+                          ref.watch(isSelectingDateRangeProvider.notifier).state = false;
+                          ref.read(putMultidayEventProvider.notifier).putMultidayEventToDB();
+                          // ref.watch(multidayEventDateListProvider.notifier).putMultidayEvents();
                         },
                         child: Icon(
                           Icons.check_rounded,
@@ -257,30 +289,7 @@ class MultidayEventEditTopBar extends ConsumerWidget {
                             onTap: () {},
                             child: Container(
                               alignment: Alignment.topCenter,
-                              child: sticker.when(
-                                data: (data) {
-                                  final image = base64.decode(data!.imageBase64);
-                                  return Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(width: 1, color: Colors.white54),
-                                      color: Color(colorInt),
-                                      // shape: BoxShape.circle,
-                                    ),
-                                    padding: EdgeInsets.all(4),
-                                    child: Image.memory(
-                                      image,
-                                    ),
-                                  );
-                                },
-                                error: (error, stackTrace) {
-                                  return Container();
-                                },
-                                loading: () {
-                                  return Container();
-                                },
-                              ),
+                              child: _buildBookmarkSticker(stickerId, colorInt),
                             ),
                           ),
                         ),
@@ -297,7 +306,7 @@ class MultidayEventEditTopBar extends ConsumerWidget {
                     padding: EdgeInsets.only(right: 8),
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    children: _buildSelectableDateList(dateRange),
+                    children: _buildSelectableDateList(startDate, endDate),
                   ),
                 ),
                 SizedBox(
@@ -394,10 +403,13 @@ class DateEventsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dateRange = ref.watch(multidayEventDetailProvider).dateRange;
+    // final dateRange = ref.watch(multidayEventDetailProvider).dateRange;
+    final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
+    DateTime? startDate = mEventTemp.startDate;
     final dateList = ref.watch(multidayEventDateListProvider);
+    if (dateList == null) return SizedBox();
 
-    DateTime startDate = dateRange.isNotEmpty ? dateRange[0] : DateTime.now();
+    startDate = startDate ?? DateTime.now();
     int year = startDate.year;
     int month = startDate.month;
     int day = startDate.day;
@@ -498,15 +510,15 @@ class DraggableStickerPickerCell extends ConsumerWidget {
     return LongPressDraggable(
       data: sticker,
       onDragStarted: () {
-        ref.watch(isDraggingStickerProvider.notifier).state = true;
+        ref.read(isDraggingStickerProvider.notifier).state = true;
       },
       onDragEnd: (_) {
-        ref.watch(isDraggingStickerProvider.notifier).state = false;
-        ref.watch(activedDummyTargetIndexProvider.notifier).state = -1;
+        ref.read(isDraggingStickerProvider.notifier).state = false;
+        ref.read(activedDummyTargetIndexProvider.notifier).state = -1;
       },
       onDraggableCanceled: (velocity, offset) {
-        ref.watch(isDraggingStickerProvider.notifier).state = false;
-        ref.watch(activedDummyTargetIndexProvider.notifier).state = -1;
+        ref.read(isDraggingStickerProvider.notifier).state = false;
+        ref.read(activedDummyTargetIndexProvider.notifier).state = -1;
       },
       child: Stack(
         children: [

@@ -51,7 +51,7 @@ class _SetChecklistDialogState extends ConsumerState<SetChecklistDialog> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       onChanged: (value) {
-        ref.read(checklistItemsEditProvider.notifier).setChecklistTitle(value);
+        ref.watch(checklistItemsEditProvider.notifier).setChecklistTitle(value);
       },
     );
   }
@@ -59,7 +59,7 @@ class _SetChecklistDialogState extends ConsumerState<SetChecklistDialog> {
   Widget _buildAddItems() {
     return InkWell(
       onTap: () {
-        ref.read(checklistItemsEditProvider.notifier).addChecklistItem(ChecklistItemTemp(
+        ref.watch(checklistItemsEditProvider.notifier).addChecklistItem(ChecklistItemTemp(
               detail: "",
               checked: false,
             ));
@@ -215,7 +215,7 @@ class _EditableChecklistItemState extends ConsumerState<EditableChecklistItem> {
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
       onChanged: (value) {
-        ref.read(checklistItemsEditProvider.notifier).updateChecklistItemDetailByIndex(widget.itemIndex, value);
+        ref.watch(checklistItemsEditProvider.notifier).updateChecklistItemDetailByIndex(widget.itemIndex, value);
       },
     );
   }
@@ -235,7 +235,7 @@ class _EditableChecklistItemState extends ConsumerState<EditableChecklistItem> {
             height: 40,
             child: InkWell(
               onTap: () {
-                ref.read(checklistItemsEditProvider.notifier).removeChecklistItemAtIndex(widget.itemIndex);
+                ref.watch(checklistItemsEditProvider.notifier).removeChecklistItemAtIndex(widget.itemIndex);
               },
               child: Container(
                 child: Icon(

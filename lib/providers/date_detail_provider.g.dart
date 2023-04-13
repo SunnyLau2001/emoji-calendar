@@ -7,7 +7,7 @@ part of 'date_detail_provider.dart';
 // **************************************************************************
 
 String _$dateDetailStructuredWatcherHash() =>
-    r'793e1b8d2414893163dd5086d893095c59f9aea3';
+    r'68e6c530791078cb81a115dd78ed1d1609fd8a34';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -116,7 +116,7 @@ class DateDetailStructuredWatcherProvider
 }
 
 String _$multidayEventStructuredWatcherHash() =>
-    r'52b221302dc5fe356ff0af0b217d081bcc9c9d88';
+    r'8a00bd063e2f4fc7f903b1f972cf6c930737afb3';
 typedef MultidayEventStructuredWatcherRef
     = AutoDisposeStreamProviderRef<MultidayEventStructured?>;
 
@@ -198,6 +198,90 @@ class MultidayEventStructuredWatcherProvider
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, multidayEventId.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$fetchDateDetailsHash() => r'b2e9ccd25974214f0be962a0ab837a4230733829';
+typedef FetchDateDetailsRef = AutoDisposeFutureProviderRef<List<DateDetail?>>;
+
+/// See also [fetchDateDetails].
+@ProviderFor(fetchDateDetails)
+const fetchDateDetailsProvider = FetchDateDetailsFamily();
+
+/// See also [fetchDateDetails].
+class FetchDateDetailsFamily extends Family<AsyncValue<List<DateDetail?>>> {
+  /// See also [fetchDateDetails].
+  const FetchDateDetailsFamily();
+
+  /// See also [fetchDateDetails].
+  FetchDateDetailsProvider call({
+    required List<String> dateStrings,
+  }) {
+    return FetchDateDetailsProvider(
+      dateStrings: dateStrings,
+    );
+  }
+
+  @override
+  FetchDateDetailsProvider getProviderOverride(
+    covariant FetchDateDetailsProvider provider,
+  ) {
+    return call(
+      dateStrings: provider.dateStrings,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'fetchDateDetailsProvider';
+}
+
+/// See also [fetchDateDetails].
+class FetchDateDetailsProvider
+    extends AutoDisposeFutureProvider<List<DateDetail?>> {
+  /// See also [fetchDateDetails].
+  FetchDateDetailsProvider({
+    required this.dateStrings,
+  }) : super.internal(
+          (ref) => fetchDateDetails(
+            ref,
+            dateStrings: dateStrings,
+          ),
+          from: fetchDateDetailsProvider,
+          name: r'fetchDateDetailsProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$fetchDateDetailsHash,
+          dependencies: FetchDateDetailsFamily._dependencies,
+          allTransitiveDependencies:
+              FetchDateDetailsFamily._allTransitiveDependencies,
+        );
+
+  final List<String> dateStrings;
+
+  @override
+  bool operator ==(Object other) {
+    return other is FetchDateDetailsProvider &&
+        other.dateStrings == dateStrings;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, dateStrings.hashCode);
 
     return _SystemHash.finish(hash);
   }

@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$MultidayEventDateListProp {
   String get dateString => throw _privateConstructorUsedError;
   DateTime get dateTime => throw _privateConstructorUsedError;
+  DateDetail get dateDetail => throw _privateConstructorUsedError;
   List<EventTemp> get events => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -31,7 +32,11 @@ abstract class $MultidayEventDateListPropCopyWith<$Res> {
           $Res Function(MultidayEventDateListProp) then) =
       _$MultidayEventDateListPropCopyWithImpl<$Res, MultidayEventDateListProp>;
   @useResult
-  $Res call({String dateString, DateTime dateTime, List<EventTemp> events});
+  $Res call(
+      {String dateString,
+      DateTime dateTime,
+      DateDetail dateDetail,
+      List<EventTemp> events});
 }
 
 /// @nodoc
@@ -50,6 +55,7 @@ class _$MultidayEventDateListPropCopyWithImpl<$Res,
   $Res call({
     Object? dateString = null,
     Object? dateTime = null,
+    Object? dateDetail = null,
     Object? events = null,
   }) {
     return _then(_value.copyWith(
@@ -61,6 +67,10 @@ class _$MultidayEventDateListPropCopyWithImpl<$Res,
           ? _value.dateTime
           : dateTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      dateDetail: null == dateDetail
+          ? _value.dateDetail
+          : dateDetail // ignore: cast_nullable_to_non_nullable
+              as DateDetail,
       events: null == events
           ? _value.events
           : events // ignore: cast_nullable_to_non_nullable
@@ -78,7 +88,11 @@ abstract class _$$_MultidayEventDateListPropCopyWith<$Res>
       __$$_MultidayEventDateListPropCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String dateString, DateTime dateTime, List<EventTemp> events});
+  $Res call(
+      {String dateString,
+      DateTime dateTime,
+      DateDetail dateDetail,
+      List<EventTemp> events});
 }
 
 /// @nodoc
@@ -96,6 +110,7 @@ class __$$_MultidayEventDateListPropCopyWithImpl<$Res>
   $Res call({
     Object? dateString = null,
     Object? dateTime = null,
+    Object? dateDetail = null,
     Object? events = null,
   }) {
     return _then(_$_MultidayEventDateListProp(
@@ -107,6 +122,10 @@ class __$$_MultidayEventDateListPropCopyWithImpl<$Res>
           ? _value.dateTime
           : dateTime // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      dateDetail: null == dateDetail
+          ? _value.dateDetail
+          : dateDetail // ignore: cast_nullable_to_non_nullable
+              as DateDetail,
       events: null == events
           ? _value._events
           : events // ignore: cast_nullable_to_non_nullable
@@ -121,6 +140,7 @@ class _$_MultidayEventDateListProp implements _MultidayEventDateListProp {
   _$_MultidayEventDateListProp(
       {required this.dateString,
       required this.dateTime,
+      required this.dateDetail,
       required final List<EventTemp> events})
       : _events = events;
 
@@ -128,6 +148,8 @@ class _$_MultidayEventDateListProp implements _MultidayEventDateListProp {
   final String dateString;
   @override
   final DateTime dateTime;
+  @override
+  final DateDetail dateDetail;
   final List<EventTemp> _events;
   @override
   List<EventTemp> get events {
@@ -138,7 +160,7 @@ class _$_MultidayEventDateListProp implements _MultidayEventDateListProp {
 
   @override
   String toString() {
-    return 'MultidayEventDateListProp(dateString: $dateString, dateTime: $dateTime, events: $events)';
+    return 'MultidayEventDateListProp(dateString: $dateString, dateTime: $dateTime, dateDetail: $dateDetail, events: $events)';
   }
 
   @override
@@ -150,11 +172,13 @@ class _$_MultidayEventDateListProp implements _MultidayEventDateListProp {
                 other.dateString == dateString) &&
             (identical(other.dateTime, dateTime) ||
                 other.dateTime == dateTime) &&
+            (identical(other.dateDetail, dateDetail) ||
+                other.dateDetail == dateDetail) &&
             const DeepCollectionEquality().equals(other._events, _events));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, dateString, dateTime,
+  int get hashCode => Object.hash(runtimeType, dateString, dateTime, dateDetail,
       const DeepCollectionEquality().hash(_events));
 
   @JsonKey(ignore: true)
@@ -169,12 +193,15 @@ abstract class _MultidayEventDateListProp implements MultidayEventDateListProp {
   factory _MultidayEventDateListProp(
       {required final String dateString,
       required final DateTime dateTime,
+      required final DateDetail dateDetail,
       required final List<EventTemp> events}) = _$_MultidayEventDateListProp;
 
   @override
   String get dateString;
   @override
   DateTime get dateTime;
+  @override
+  DateDetail get dateDetail;
   @override
   List<EventTemp> get events;
   @override

@@ -7,7 +7,7 @@ part of 'multiday_event_date_list_notifier.dart';
 // **************************************************************************
 
 String _$multidayEventDateListHash() =>
-    r'd6ac7cb62339e8ed30f594c87c7bc1cd4acc8efb';
+    r'51ebf8888df4ba2baad7b45b962c6fc23096ef92';
 
 /// See also [MultidayEventDateList].
 @ProviderFor(MultidayEventDateList)

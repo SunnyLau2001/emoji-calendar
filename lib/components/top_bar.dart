@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/components/multiday_event_detail_dialog.dart';
-import 'package:fyp_our_sky_new/providers/date_range_selected_notifier.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';
 import 'package:fyp_our_sky_new/providers/providers.dart';
-import 'package:fyp_our_sky_new/utils/app_settings.dart';
-import 'package:go_router/go_router.dart';
+import 'package:fyp_our_sky_new/utils/date_string.dart';
+import 'package:fyp_our_sky_new/utils/font_settings.dart';
 
 import 'calendar_header.dart';
 
@@ -27,6 +26,34 @@ class TopBar extends ConsumerWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
+            Positioned(
+              bottom: 0,
+              child: Container(
+                height: 20,
+                width: MediaQuery.of(context).size.width,
+                child: GridView.builder(
+                  itemCount: 7,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+                  itemBuilder: (context, index) {
+                    final ajustedIndex = index == 0 ? 6 : index;
+                    // CustomDateString.weekdayShort[index];
+                    return Text(
+                      "${CustomDateString.weekdayShort[ajustedIndex]}",
+                      style: FontSettings.primaryFont.copyWith(
+                        shadows: [
+                          const BoxShadow(
+                              color: Colors.black,
+                              offset: const Offset(0, 0),
+                              blurRadius: 5.0,
+                              // spreadRadius: 0,
+                              blurStyle: BlurStyle.outer),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
             // Side menu button
             Consumer(builder: (context, ref, child) {
               final showSideMenu = ref.watch(showSideMenuProvider);
@@ -52,7 +79,7 @@ class TopBar extends ConsumerWidget {
                           type: MaterialType.transparency,
                           child: InkWell(
                             onTap: () async {
-                              ref.read(showSideMenuProvider.notifier).state = !showSideMenu;
+                              ref.watch(showSideMenuProvider.notifier).state = !showSideMenu;
                             },
                             child: Icon(
                               Icons.arrow_forward_ios_rounded,
@@ -86,7 +113,7 @@ class TopBar extends ConsumerWidget {
                         type: MaterialType.transparency,
                         child: InkWell(
                           onTap: () {
-                            if (isSelecting) ref.read(isSelectingDateRangeProvider.notifier).state = false;
+                            if (isSelecting) ref.watch(isSelectingDateRangeProvider.notifier).state = false;
                           },
                           child: Icon(
                             Icons.close_rounded,
@@ -118,8 +145,8 @@ class TopBar extends ConsumerWidget {
                       type: MaterialType.transparency,
                       child: InkWell(
                         onTap: () {
-                          ref.read(multidayEventDetailProvider.notifier).initDateRange();
-                          ref.read(isSelectingDateRangeProvider.notifier).state = true;
+                          ref.watch(multidayEventDetailProvider.notifier).initStartEndDate();
+                          ref.watch(isSelectingDateRangeProvider.notifier).state = true;
                         },
                         child: Icon(
                           Icons.edit_calendar_rounded,

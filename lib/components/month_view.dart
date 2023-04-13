@@ -164,32 +164,45 @@ class _MonthViewCellState extends ConsumerState<MonthViewCell> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        onTap: () {
-          context.goNamed('singleDatePage', extra: widget.cellDate);
-        },
-        child: Container(
-          child: Stack(children: [
-            Positioned(
-              top: 40,
-              child: MonthViewCellNormalMode(
-                cellDate: widget.cellDate,
-                height: widget.cellHeight - 40,
-                cellWidth: widget.cellWidth,
-                dateString: dateString,
+    return Container(
+      child: Stack(children: [
+        Consumer(
+          builder: (context, ref, child) {
+            final isSelectingDateRange = ref.watch(isSelectingDateRangeProvider);
+
+            return IgnorePointer(
+              ignoring: isSelectingDateRange,
+              child: Material(
+                type: MaterialType.transparency,
+                child: InkWell(
+                  onTap: () {
+                    context.goNamed('singleDatePage', extra: widget.cellDate);
+                  },
+                  child: Container(
+                    height: widget.cellHeight,
+                    width: widget.cellWidth,
+                  ),
+                ),
               ),
-            ),
-            MonthViewCellDateRangeMode(
-              cellDate: widget.cellDate,
-              cellHeight: widget.cellHeight,
-              cellWidth: widget.cellWidth,
-              dateString: dateString,
-            ),
-          ]),
+            );
+          },
         ),
-      ),
+        Positioned(
+          top: 40,
+          child: MonthViewCellNormalMode(
+            cellDate: widget.cellDate,
+            height: widget.cellHeight - 40,
+            cellWidth: widget.cellWidth,
+            dateString: dateString,
+          ),
+        ),
+        MonthViewCellDateRangeMode(
+          cellDate: widget.cellDate,
+          cellHeight: widget.cellHeight,
+          cellWidth: widget.cellWidth,
+          dateString: dateString,
+        ),
+      ]),
     );
   }
 }
@@ -251,7 +264,7 @@ class MonthViewCellNormalMode extends ConsumerWidget {
       );
     }
     return Stack(
-      children: [...tracks.reversed.toList()],
+      children: [...tracks.toList()],
     );
   }
 
@@ -322,23 +335,25 @@ class MonthViewCellTrack extends ConsumerWidget {
             if (events[index] == null) return Container();
             return Consumer(
               builder: (context, ref, child) {
-                final sticker = ref.watch(fetchStickerByIdProvider(stickerId: events[index]!.stickerId));
+                if (events[index]!.stickerId == null) return SizedBox();
+
+                final sticker = ref.watch(fetchStickerByIdProvider(stickerId: events[index]!.stickerId!));
 
                 return sticker.when(
                   data: (data) {
                     if (data != null) {
                       final image = base64.decode(data.imageBase64);
-                      return Container(
+                      return SizedBox(
                         child: Image.memory(image),
                       );
                     }
-                    return Container();
+                    return SizedBox();
                   },
                   error: (error, stackTrace) {
-                    return Container();
+                    return SizedBox();
                   },
                   loading: () {
-                    return Container();
+                    return SizedBox();
                   },
                 );
               },
@@ -504,8 +519,18 @@ class MonthViewCellDateRangeMode extends ConsumerWidget {
       return SizedBox(
         height: 20,
         child: Text(
-          CustomDateString.monthsShort[cellDate.month - 1],
-          style: FontSettings.primaryFont.copyWith(fontSize: 16),
+          "|${CustomDateString.monthsShort[cellDate.month - 1]}",
+          style: FontSettings.primaryFont.copyWith(
+            fontSize: 16,
+            shadows: [
+              const BoxShadow(
+                  color: Colors.black,
+                  offset: const Offset(0, 0),
+                  blurRadius: 5.0,
+                  // spreadRadius: 0,
+                  blurStyle: BlurStyle.outer),
+            ],
+          ),
         ),
       );
     } else {
@@ -515,42 +540,38 @@ class MonthViewCellDateRangeMode extends ConsumerWidget {
     }
   }
 
-  bool _selectingBehavior(List<DateTime> dateRangeSelected) {
-    bool select = false;
+  bool _selectingBehavior(DateTime? startDate, DateTime? endDate) {
+    // bool select = false;
+    if (startDate == null && endDate == null) return false;
 
-    if (dateRangeSelected.isEmpty) {
-      return select;
+    // print(startDate);
+
+    if (cellDate == startDate || cellDate == endDate) return true;
+
+    if (startDate != null && endDate != null) {
+      if (cellDate.isAfter(startDate) && cellDate.isBefore(endDate)) return true;
     }
 
-    if (dateRangeSelected.length == 1) {
-      if (cellDate.isAtSameMomentAs(dateRangeSelected[0])) select = true;
-      return select;
-    }
-
-    if (dateRangeSelected.length == 2) {
-      if (cellDate.isAtSameMomentAs(dateRangeSelected[0]) ||
-          cellDate.isAtSameMomentAs(dateRangeSelected[1]) ||
-          cellDate.isAfter(dateRangeSelected[0]) && cellDate.isBefore(dateRangeSelected[1])) {
-        select = true;
-        return select;
-      }
-      return select;
-    }
-    return select;
+    return false;
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isToday = cellDate.isAtSameMomentAs(ref.read(currentDateProvider));
+    final isToday = cellDate.isAtSameMomentAs(ref.watch(currentDateProvider));
     final isSelectingDateRange = ref.watch(isSelectingDateRangeProvider);
-    final dateRangeSelected = ref.watch(multidayEventDetailProvider).dateRange;
-    final isSelected = _selectingBehavior(dateRangeSelected);
+    // final dateRangeSelected = ref.watch(multidayEventDetailProvider).dateRange;
+    final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
+
+    final startDate = mEventTemp.startDate;
+    final endDate = mEventTemp.endDate;
+
+    final isSelected = _selectingBehavior(startDate, endDate);
 
     return IgnorePointer(
       ignoring: !isSelectingDateRange,
       child: GestureDetector(
         onTap: () {
-          ref.read(multidayEventDetailProvider.notifier).toggleDate(cellDate);
+          ref.watch(multidayEventDetailProvider.notifier).toggleDate(cellDate);
         },
         child: AnimatedScale(
           duration: Duration(milliseconds: 200),

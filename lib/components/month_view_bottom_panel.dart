@@ -46,6 +46,14 @@ class MonthViewBottomPanelDetails extends ConsumerWidget {
       child: Stack(
         children: [
           Positioned(
+            bottom: 0,
+            child: Container(
+              height: 400,
+              width: MediaQuery.of(context).size.width,
+              child: MonthViewBottomPanelList(),
+            ),
+          ),
+          Positioned(
             top: 14,
             right: 14,
             child: Container(
@@ -64,14 +72,6 @@ class MonthViewBottomPanelDetails extends ConsumerWidget {
                   child: Icon(Icons.close_rounded),
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            child: Container(
-              height: 400,
-              width: MediaQuery.of(context).size.width,
-              child: MonthViewBottomPanelList(),
             ),
           ),
         ],
@@ -105,7 +105,6 @@ class MonthViewBottomPanelList extends ConsumerWidget {
         child: ListView.builder(
           itemCount: multidayEventStructured.events.length,
           itemBuilder: (context, index) {
-            print(index);
             if (multidayEventStructured.events[index] == null) return SizedBox();
             return BottomPanelEventListTile(
               event: multidayEventStructured.events[index],
@@ -164,9 +163,10 @@ class BottomPanelEventListTile extends ConsumerWidget {
         width: 20,
       );
     final totalMinutes = startTime.difference(endTime).inMinutes.abs();
-    final timeProgress = startTime.difference(now).inMinutes.abs();
-    final double progressRatio =
-        timeProgress >= totalMinutes ? totalMinutes / totalMinutes : timeProgress / totalMinutes;
+    final timeProgress = now.difference(startTime).inMinutes;
+    double progressRatio = 0;
+    if (timeProgress >= 0 && timeProgress < totalMinutes) progressRatio = timeProgress / totalMinutes;
+    if (timeProgress >= totalMinutes) progressRatio = totalMinutes.toDouble();
 
     return Container(
       height: 64,
@@ -213,7 +213,9 @@ class BottomPanelEventListTile extends ConsumerWidget {
     );
   }
 
-  Widget _buildSticker(String stickerId) {
+  Widget _buildSticker(String? stickerId) {
+    if (stickerId == null) return SizedBox(width: 40, height: 40,);
+
     return Consumer(
       builder: (context, ref, child) {
         final sticker = ref.watch(fetchStickerByIdProvider(stickerId: stickerId));
@@ -290,7 +292,6 @@ class BottomPanelEventListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print("Hello");
     if (event == null) return SizedBox();
 
     final dateSplit = event!.dateId.split("-");

@@ -8,7 +8,7 @@ class Event {
   late String title;
   late List<int> startHourMinute;
   late List<int> endHourMinute;
-  late String stickerId;
+  String? stickerId;
   String? location;
   List<double>? latlng;
   String? weather;

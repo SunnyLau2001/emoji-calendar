@@ -113,7 +113,12 @@ int _eventEstimateSize(
     }
   }
   bytesCount += 3 + object.startHourMinute.length * 8;
-  bytesCount += 3 + object.stickerId.length * 3;
+  {
+    final value = object.stickerId;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.title.length * 3;
   {
     final value = object.weather;
@@ -159,7 +164,7 @@ Event _eventDeserialize(
   object.location = reader.readStringOrNull(offsets[4]);
   object.multidayEventId = reader.readLong(offsets[5]);
   object.startHourMinute = reader.readLongList(offsets[6]) ?? [];
-  object.stickerId = reader.readString(offsets[7]);
+  object.stickerId = reader.readStringOrNull(offsets[7]);
   object.temperature = reader.readDoubleOrNull(offsets[8]);
   object.title = reader.readString(offsets[9]);
   object.weather = reader.readStringOrNull(offsets[10]);
@@ -189,7 +194,7 @@ P _eventDeserializeProp<P>(
     case 6:
       return (reader.readLongList(offset) ?? []) as P;
     case 7:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 8:
       return (reader.readDoubleOrNull(offset)) as P;
     case 9:
@@ -1186,8 +1191,24 @@ extension EventQueryFilter on QueryBuilder<Event, Event, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Event, Event, QAfterFilterCondition> stickerIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'stickerId',
+      ));
+    });
+  }
+
+  QueryBuilder<Event, Event, QAfterFilterCondition> stickerIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'stickerId',
+      ));
+    });
+  }
+
   QueryBuilder<Event, Event, QAfterFilterCondition> stickerIdEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -1200,7 +1221,7 @@ extension EventQueryFilter on QueryBuilder<Event, Event, QFilterCondition> {
   }
 
   QueryBuilder<Event, Event, QAfterFilterCondition> stickerIdGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1215,7 +1236,7 @@ extension EventQueryFilter on QueryBuilder<Event, Event, QFilterCondition> {
   }
 
   QueryBuilder<Event, Event, QAfterFilterCondition> stickerIdLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -1230,8 +1251,8 @@ extension EventQueryFilter on QueryBuilder<Event, Event, QFilterCondition> {
   }
 
   QueryBuilder<Event, Event, QAfterFilterCondition> stickerIdBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -2104,7 +2125,7 @@ extension EventQueryProperty on QueryBuilder<Event, Event, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Event, String, QQueryOperations> stickerIdProperty() {
+  QueryBuilder<Event, String?, QQueryOperations> stickerIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'stickerId');
     });

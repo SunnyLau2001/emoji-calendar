@@ -231,7 +231,7 @@ class _AddressSearchPageState extends ConsumerState<AddressSearchPage> {
   String searchQuery = "";
 
   void startTimer(String q) {
-    ref.read(addressSuggestionsProvider.notifier).searchSuggestions(q: q);
+    ref.watch(addressSuggestionsProvider.notifier).searchSuggestions(q: q);
   }
 
   void cancelTimer() {
@@ -241,7 +241,7 @@ class _AddressSearchPageState extends ConsumerState<AddressSearchPage> {
   }
 
   void clearSuggestions() {
-    ref.read(addressSuggestionsProvider.notifier).initSuggestions();
+    ref.watch(addressSuggestionsProvider.notifier).initSuggestions();
   }
 
   @override
@@ -300,7 +300,7 @@ class AddressSearchButton extends ConsumerWidget {
                 type: MaterialType.transparency,
                 child: InkWell(
                   onTap: () {
-                    ref.read(addressSearchBarFocusedProvider.notifier).state = true;
+                    ref.watch(addressSearchBarFocusedProvider.notifier).state = true;
                   },
                   child: Container(
                     padding: EdgeInsets.all(8),
@@ -408,7 +408,7 @@ class _AddressSearchBarState extends ConsumerState<AddressSearchBar> {
   Timer? timer;
 
   void startTimer(String q) {
-    ref.read(addressSuggestionsProvider.notifier).searchSuggestions(q: q);
+    ref.watch(addressSuggestionsProvider.notifier).searchSuggestions(q: q);
   }
 
   void cancelTimer() {
@@ -418,7 +418,7 @@ class _AddressSearchBarState extends ConsumerState<AddressSearchBar> {
   }
 
   void clearSuggestions() {
-    ref.read(addressSuggestionsProvider.notifier).initSuggestions();
+    ref.watch(addressSuggestionsProvider.notifier).initSuggestions();
   }
 
   @override
@@ -439,7 +439,7 @@ class _AddressSearchBarState extends ConsumerState<AddressSearchBar> {
               child: TextField(
                 enableSuggestions: true,
                 onChanged: (query) {
-                  ref.read(addressNameProvider.notifier).state = query;
+                  ref.watch(addressNameProvider.notifier).state = query;
                   if (timer != null) {
                     if (timer!.isActive) {
                       cancelTimer();
@@ -478,7 +478,7 @@ class _AddressSearchBarState extends ConsumerState<AddressSearchBar> {
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: () {
-                  ref.read(addressSearchBarFocusedProvider.notifier).state = false;
+                  ref.watch(addressSearchBarFocusedProvider.notifier).state = false;
                 },
                 child: SizedBox(
                   width: 40,
@@ -497,7 +497,7 @@ class _AddressSearchBarState extends ConsumerState<AddressSearchBar> {
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: () {
-                  ref.read(addressNameProvider.notifier).state = "";
+                  ref.watch(addressNameProvider.notifier).state = "";
                 },
                 child: SizedBox(
                   width: 40,
@@ -604,10 +604,10 @@ class ResultTile extends ConsumerWidget {
             onTap: () {
               if (lat != null && lon != null) {
                 final addressDetail = AddressDetail(name: name, label: label, lat: lat, lon: lon);
-                ref.read(addressDetailProvider.notifier).state = addressDetail;
-                ref.read(latLngProvider.notifier).state = LatLng(lat!, lon!);
-                ref.read(addressNameProvider.notifier).state = name;
-                ref.read(addressSearchBarFocusedProvider.notifier).state = false;
+                ref.watch(addressDetailProvider.notifier).state = addressDetail;
+                ref.watch(latLngProvider.notifier).state = LatLng(lat!, lon!);
+                ref.watch(addressNameProvider.notifier).state = name;
+                ref.watch(addressSearchBarFocusedProvider.notifier).state = false;
                 mapController.move(LatLng(lat!, lon!), 13);
               }
             },

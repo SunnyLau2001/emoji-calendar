@@ -2,6 +2,7 @@ import 'package:fyp_our_sky_new/models/date_detail_structured.dart';
 import 'package:fyp_our_sky_new/services/multiday_event_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../models/date_detail.dart';
 import '../models/event.dart';
 import '../models/multiday_event.dart';
 import '../models/multiday_event_structured.dart';
@@ -22,6 +23,27 @@ Stream<DateDetailStructured?> dateDetailStructuredWatcher(DateDetailStructuredWa
       final fetchedMultidayEvents = await MultidayEventService().getMultidayEventsByIds(dateDetail.multidayEventsId);
       events = fetchedEvents;
       multidayEvents = fetchedMultidayEvents;
+      events.sort(
+        (a, b) {
+          if (a == null || b == null) return 0;
+          final date = dateDetail.date.split("-");
+
+          final DateTime timeAStart = DateTime(
+              int.parse(date[0]), int.parse(date[1]), int.parse(date[2]), a.startHourMinute[0], a.startHourMinute[1]);
+
+          final DateTime timeBStart = DateTime(
+              int.parse(date[0]), int.parse(date[1]), int.parse(date[2]), b.startHourMinute[0], b.startHourMinute[1]);
+
+          int cmp = timeAStart.compareTo(timeBStart);
+          if (cmp != 0) return cmp;
+          final DateTime timeAEnd = DateTime(
+              int.parse(date[0]), int.parse(date[1]), int.parse(date[2]), a.endHourMinute[0], a.endHourMinute[1]);
+          final DateTime timeBEnd = DateTime(
+              int.parse(date[0]), int.parse(date[1]), int.parse(date[2]), b.endHourMinute[0], b.endHourMinute[1]);
+          return timeAEnd.compareTo(timeBEnd);
+        },
+      );
+
       dateDetailStructured =
           DateDetailStructured(dateDetail: dateDetail, events: events, multidayEvents: multidayEvents);
     }
@@ -50,7 +72,6 @@ Stream<MultidayEventStructured?> multidayEventStructuredWatcher(MultidayEventStr
           final timeADate = DateTime(int.parse(aDateSplit[0]), int.parse(aDateSplit[1]), int.parse(aDateSplit[2]));
           final timeBDate = DateTime(int.parse(bDateSplit[0]), int.parse(bDateSplit[1]), int.parse(bDateSplit[2]));
 
-          // final timeADate = DateTime()
           final DateTime timeAStart =
               DateTime(timeADate.year, timeADate.month, timeADate.day, a.startHourMinute[0], a.startHourMinute[1]);
 
@@ -72,6 +93,12 @@ Stream<MultidayEventStructured?> multidayEventStructuredWatcher(MultidayEventStr
 
     yield multidayEventStructured;
   }
+}
+
+@riverpod
+Future<List<DateDetail?>> fetchDateDetails(FetchDateDetailsRef ref, {required List<String> dateStrings}) async {
+  final dateDetails = await MultidayEventService().getDateDetailsByDates(dateStrings);
+  return dateDetails;
 }
 
 @riverpod

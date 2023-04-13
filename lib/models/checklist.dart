@@ -7,7 +7,6 @@ class Checklist {
   Id id = Isar.autoIncrement;
   late String title;
   List<ChecklistItem> checklist = [];
-  int? eventId;
 }
 
 @embedded

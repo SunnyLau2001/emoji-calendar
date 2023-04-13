@@ -124,29 +124,12 @@ class SingleDatePageViewContent extends ConsumerWidget {
   final DateTime date;
   final String dateString;
 
-  Widget _buildEventsListView(
+  Widget _buildEventsDetail(
     double width,
     DateDetailStructured? dateDetailStructured,
   ) {
     if (dateDetailStructured == null) return SizedBox();
-    List<Event?> sortedEvents = [...dateDetailStructured.events];
-    sortedEvents.sort(
-      (a, b) {
-        if (a == null || b == null) return 0;
-
-        final DateTime timeAStart =
-            DateTime(date.year, date.month, date.day, a.startHourMinute[0], a.startHourMinute[1]);
-
-        final DateTime timeBStart =
-            DateTime(date.year, date.month, date.day, b.startHourMinute[0], b.startHourMinute[1]);
-
-        int cmp = timeAStart.compareTo(timeBStart);
-        if (cmp != 0) return cmp;
-        final DateTime timeAEnd = DateTime(date.year, date.month, date.day, a.endHourMinute[0], a.endHourMinute[1]);
-        final DateTime timeBEnd = DateTime(date.year, date.month, date.day, b.endHourMinute[0], b.endHourMinute[1]);
-        return timeAEnd.compareTo(timeBEnd);
-      },
-    );
+    // List<Event?> sortedEvents = [...dateDetailStructured.events];
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -154,29 +137,158 @@ class SingleDatePageViewContent extends ConsumerWidget {
       ),
       height: 520,
       width: width,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+      ),
+      child: Stack(children: [
+        Positioned(
+          top: 0,
+          child: _buildMultidayEventBookmark(width, dateDetailStructured),
         ),
-        child: ListView.builder(
-          itemCount: sortedEvents.length,
-          itemBuilder: (context, index) {
-            if (sortedEvents[index] == null) return SizedBox();
-            MultidayEvent? multidayEvent;
-            for (int i = 0; i < dateDetailStructured.multidayEvents.length; i++) {
-              if (dateDetailStructured.multidayEvents[i]!.id == sortedEvents[index]!.multidayEventId) {
-                multidayEvent = dateDetailStructured.multidayEvents[i];
-                break;
-              }
+        Positioned(
+          bottom: 0,
+          child: _buildEventsListView(width, dateDetailStructured),
+        ),
+      ]),
+    );
+  }
+
+  Widget _buildMultidayEventBookmark(double width, DateDetailStructured dateDetailStructured) {
+    return Container(
+      height: 80,
+      width: width,
+      child: ListView.separated(
+        padding: EdgeInsets.only(left: 8),
+        separatorBuilder: (context, index) {
+          return SizedBox(
+            width: 4,
+          );
+        },
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: dateDetailStructured.multidayEvents.length,
+        itemBuilder: (context, index) {
+          final mEvent = dateDetailStructured.multidayEvents[index];
+          if (mEvent == null) return const SizedBox();
+          return Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              onTap: () {
+                // print(dateDetailStructured.);
+              },
+              child: Container(
+                alignment: Alignment.topCenter,
+                padding: EdgeInsets.all(4),
+                height: 80,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: Color(mEvent.bookmarkColorInt),
+                  border: Border.all(width: 1, color: Colors.white54),
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Colors.black54,
+                        offset: Offset(0, 0),
+                        blurRadius: 2.0,
+                        blurStyle: BlurStyle.outer), //BoxShadow
+                  ],
+                  // borderRadius: BorderRadius.circular(4),
+                ),
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final sticker = ref.watch(fetchStickerByIdProvider(stickerId: mEvent.bookmarkStickerId));
+                    return sticker.when(
+                      data: (data) {
+                        if (data == null) return SizedBox();
+                        final image = base64.decode(data.imageBase64);
+                        return Image.memory(
+                          image,
+                          gaplessPlayback: true,
+                        );
+                      },
+                      error: (error, stackTrace) {
+                        return SizedBox();
+                      },
+                      loading: () {
+                        return SizedBox();
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+
+          return Consumer(
+            builder: (context, ref, child) {
+              final sticker = ref.watch(fetchStickerByIdProvider(stickerId: mEvent.bookmarkStickerId));
+              return sticker.when(
+                data: (data) {
+                  if (data == null) return SizedBox();
+                  final image = base64.decode(data.imageBase64);
+                  return Container(
+                    alignment: Alignment.topCenter,
+                    padding: EdgeInsets.all(4),
+                    height: 80,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Color(mEvent.bookmarkColorInt).withOpacity(0.8),
+                      border: Border.all(width: 1, color: Colors.white54),
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Colors.black,
+                            offset: Offset(0, 0),
+                            blurRadius: 5.0,
+                            blurStyle: BlurStyle.outer), //BoxShadow
+                      ],
+                      // borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          // borderRadius: BorderRadius.circular(4),
+                          ),
+                      child: Image.memory(
+                        image,
+                        gaplessPlayback: true,
+                      ),
+                    ),
+                  );
+                },
+                error: (error, stackTrace) {
+                  return SizedBox();
+                },
+                loading: () {
+                  return SizedBox();
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Container _buildEventsListView(double width, DateDetailStructured dateDetailStructured) {
+    return Container(
+      height: 440,
+      width: width - 20,
+      child: ListView.builder(
+        itemCount: dateDetailStructured.events.length,
+        itemBuilder: (context, index) {
+          if (dateDetailStructured.events[index] == null) return SizedBox();
+          MultidayEvent? multidayEvent;
+          for (int i = 0; i < dateDetailStructured.multidayEvents.length; i++) {
+            if (dateDetailStructured.multidayEvents[i]!.id == dateDetailStructured.events[index]!.multidayEventId) {
+              multidayEvent = dateDetailStructured.multidayEvents[i];
+              break;
             }
-            return SingleDateEventListTile(
-              date: date,
-              event: sortedEvents[index],
-              multidayEvent: multidayEvent,
-            );
-          },
-        ),
+          }
+          return SingleDateEventListTile(
+            date: date,
+            event: dateDetailStructured.events[index],
+            multidayEvent: multidayEvent,
+          );
+        },
       ),
     );
   }
@@ -243,7 +355,7 @@ class SingleDatePageViewContent extends ConsumerWidget {
               children: [
                 Positioned(
                   bottom: 0,
-                  child: _buildEventsListView(
+                  child: _buildEventsDetail(
                     MediaQuery.of(context).size.width,
                     dateDetailStructured,
                   ),
@@ -465,7 +577,12 @@ class SingleDateEventListTile extends ConsumerWidget {
     );
   }
 
-  Widget _buildSticker(String stickerId) {
+  Widget _buildSticker(String? stickerId) {
+    if (stickerId == null)
+      return SizedBox(
+        width: 40,
+        height: 40,
+      );
     return Consumer(
       builder: (context, ref, child) {
         final sticker = ref.watch(fetchStickerByIdProvider(stickerId: stickerId));

@@ -46,61 +46,109 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
     _controller.dispose();
   }
 
-  Widget _buildDateRangeField(List<DateTime> dateRange) {
-    final dateRangeCell = dateRange.map((date) {
-      return Container(
-        padding: EdgeInsets.all(8),
-        width: 60,
-        decoration: BoxDecoration(
-          border: Border.all(width: 1, color: Colors.white24),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              CustomDateString.monthsShort[date.month - 1],
-              style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 12),
-            ),
-            Text(
-              date.day.toString(),
-              style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 16),
-            ),
-            Text(
-              CustomDateString.weekdayShort[date.weekday - 1],
-              style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 12),
-            ),
-          ],
-        ),
-      );
-    }).toList();
+  Widget _buildDateRangeField(DateTime? startDate, DateTime? endDate) {
+    if (startDate == null || endDate == null) return SizedBox();
+    // print(startDate == endDate)
 
-    if (dateRange.length == 1) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [...dateRangeCell],
-      );
-    }
-
-    if (dateRange.length == 2) {
+    if (startDate == endDate) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          dateRangeCell[0],
-          SizedBox(width: 10),
-          Text(
-            "TO",
-            style: FontSettings.primaryFont.copyWith(
-              color: Colors.white,
+          Container(
+            padding: EdgeInsets.all(8),
+            width: 60,
+            decoration: BoxDecoration(
+              border: Border.all(width: 1, color: Colors.white24),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  CustomDateString.monthsShort[startDate.month - 1],
+                  style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 12),
+                ),
+                Text(
+                  startDate.day.toString(),
+                  style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 16),
+                ),
+                Text(
+                  CustomDateString.weekdayShort[startDate.weekday - 1],
+                  style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 12),
+                ),
+              ],
             ),
           ),
-          SizedBox(width: 10),
-          dateRangeCell[1],
         ],
       );
     }
 
-    return Container();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          padding: EdgeInsets.all(8),
+          width: 60,
+          decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.white24),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                CustomDateString.monthsShort[startDate.month - 1],
+                style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 12),
+              ),
+              Text(
+                startDate.day.toString(),
+                style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 16),
+              ),
+              Text(
+                CustomDateString.weekdayShort[startDate.weekday - 1],
+                style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Text(
+          "TO",
+          style: FontSettings.primaryFont,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Container(
+          padding: EdgeInsets.all(8),
+          width: 60,
+          decoration: BoxDecoration(
+            border: Border.all(width: 1, color: Colors.white24),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                CustomDateString.monthsShort[endDate.month - 1],
+                style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 12),
+              ),
+              Text(
+                endDate.day.toString(),
+                style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 16),
+              ),
+              Text(
+                CustomDateString.weekdayShort[endDate.weekday - 1],
+                style: FontSettings.primaryFont.copyWith(color: Colors.white, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+    // return SizedBox();
   }
 
   Widget _buildTitleField(String title) {
@@ -129,8 +177,9 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
   Widget _buildBookmarkStickerField() {
     return Consumer(
       builder: (context, ref, child) {
-        final colorInt = ref.watch(multidayEventDetailProvider).bookmarkColorInt;
-        final stickerId = ref.watch(multidayEventDetailProvider).bookmarkStickerId;
+        final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
+        final colorInt = mEventTemp.bookmarkColorInt;
+        final stickerId = mEventTemp.bookmarkStickerId;
         AsyncValue<Sticker?> sticker = ref.watch(fetchStickerByIdProvider(stickerId: stickerId));
 
         return Container(
@@ -163,7 +212,10 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
                           color: Color(colorInt),
                           shape: BoxShape.circle,
                         ),
-                        child: Image.memory(image),
+                        child: Image.memory(
+                          image,
+                          gaplessPlayback: true,
+                        ),
                       );
                     },
                     error: (error, stackTrace) {
@@ -240,10 +292,11 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
               type: MaterialType.transparency,
               child: InkWell(
                 onTap: () {
-                  ref.read(multidayEventDetailProvider.notifier).setTitle(_controller.text);
+                  ref.watch(multidayEventDetailProvider.notifier).setTitle(_controller.text);
                   if (widget.mode == "create") {
-                    ref.read(multidayEventDetailProvider.notifier).setDateList();
-                    ref.read(isSelectingDateRangeProvider.notifier).state = false;
+                    print("Create");
+                    ref.watch(multidayEventDetailProvider.notifier).setDateList();
+                    ref.watch(isSelectingDateRangeProvider.notifier).state = false;
                     context.go('/multidayEventEdit');
                   }
                   Navigator.pop(context);
@@ -259,8 +312,11 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
 
   @override
   Widget build(BuildContext context) {
-    final dateRange = ref.watch(multidayEventDetailProvider).dateRange;
-    final title = ref.watch(multidayEventDetailProvider).title;
+    // final dateRange = ref.watch(multidayEventDetailProvider).dateRange;
+    final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
+    final startDate = mEventTemp.startDate;
+    final endDate = mEventTemp.endDate;
+    final title = mEventTemp.title;
 
     return BackdropFilter(
       filter: ImageFilter.blur(
@@ -285,7 +341,7 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
                 children: [
-                  _buildDateRangeField(dateRange),
+                  _buildDateRangeField(startDate, endDate),
                   SizedBox(height: 10),
                   _buildTitleField(title),
                   SizedBox(height: 10),

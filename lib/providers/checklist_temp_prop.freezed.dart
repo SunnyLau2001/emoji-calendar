@@ -16,6 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$ChecklistTemp {
+  int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   List<ChecklistItemTemp> get items => throw _privateConstructorUsedError;
 
@@ -30,7 +31,7 @@ abstract class $ChecklistTempCopyWith<$Res> {
           ChecklistTemp value, $Res Function(ChecklistTemp) then) =
       _$ChecklistTempCopyWithImpl<$Res, ChecklistTemp>;
   @useResult
-  $Res call({String title, List<ChecklistItemTemp> items});
+  $Res call({int id, String title, List<ChecklistItemTemp> items});
 }
 
 /// @nodoc
@@ -46,10 +47,15 @@ class _$ChecklistTempCopyWithImpl<$Res, $Val extends ChecklistTemp>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? title = null,
     Object? items = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -70,7 +76,7 @@ abstract class _$$_ChecklistTempCopyWith<$Res>
       __$$_ChecklistTempCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String title, List<ChecklistItemTemp> items});
+  $Res call({int id, String title, List<ChecklistItemTemp> items});
 }
 
 /// @nodoc
@@ -84,10 +90,15 @@ class __$$_ChecklistTempCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? title = null,
     Object? items = null,
   }) {
     return _then(_$_ChecklistTemp(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -104,9 +115,13 @@ class __$$_ChecklistTempCopyWithImpl<$Res>
 
 class _$_ChecklistTemp implements _ChecklistTemp {
   _$_ChecklistTemp(
-      {required this.title, required final List<ChecklistItemTemp> items})
+      {required this.id,
+      required this.title,
+      required final List<ChecklistItemTemp> items})
       : _items = items;
 
+  @override
+  final int id;
   @override
   final String title;
   final List<ChecklistItemTemp> _items;
@@ -119,7 +134,7 @@ class _$_ChecklistTemp implements _ChecklistTemp {
 
   @override
   String toString() {
-    return 'ChecklistTemp(title: $title, items: $items)';
+    return 'ChecklistTemp(id: $id, title: $title, items: $items)';
   }
 
   @override
@@ -127,13 +142,14 @@ class _$_ChecklistTemp implements _ChecklistTemp {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ChecklistTemp &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             const DeepCollectionEquality().equals(other._items, _items));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, title, const DeepCollectionEquality().hash(_items));
+      runtimeType, id, title, const DeepCollectionEquality().hash(_items));
 
   @JsonKey(ignore: true)
   @override
@@ -144,9 +160,12 @@ class _$_ChecklistTemp implements _ChecklistTemp {
 
 abstract class _ChecklistTemp implements ChecklistTemp {
   factory _ChecklistTemp(
-      {required final String title,
+      {required final int id,
+      required final String title,
       required final List<ChecklistItemTemp> items}) = _$_ChecklistTemp;
 
+  @override
+  int get id;
   @override
   String get title;
   @override
