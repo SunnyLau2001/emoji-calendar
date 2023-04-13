@@ -116,7 +116,7 @@ class DateDetailStructuredWatcherProvider
 }
 
 String _$multidayEventStructuredWatcherHash() =>
-    r'8a00bd063e2f4fc7f903b1f972cf6c930737afb3';
+    r'92aa45038140036035ecec7ff18bbe97e05dcc43';
 typedef MultidayEventStructuredWatcherRef
     = AutoDisposeStreamProviderRef<MultidayEventStructured?>;
 

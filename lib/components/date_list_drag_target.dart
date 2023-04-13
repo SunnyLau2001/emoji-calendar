@@ -40,9 +40,21 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
     final dateString = "${widget.date.year}-${widget.date.month}-${widget.date.day}";
     final focusedDate = ref.watch(focusedDateEventsListProvider);
 
-    final mEventDateListProp = ref.watch(
-        multidayEventDateListProvider.select((e) => e.firstWhere((element) => element.dateString == dateString)));
-    print(mEventDateListProp);
+    // final mEventDateListProp = ref.watch(
+    //     multidayEventDateListProvider.select((e) => e.firstWhere((element) => element.dateString == dateString)));
+    final mEventDateList = ref.watch(multidayEventDateListProvider);
+    if (mEventDateList.length <= 0) return SizedBox();
+    print(mEventDateList);
+    MultidayEventDateListProp? mEventDateListProp;
+    for (int i = 0; i < mEventDateList.length; i++) {
+      if (mEventDateList[i].dateString == dateString) {
+        mEventDateListProp = mEventDateList[i];
+        break;
+      }
+    }
+    // final mEventDateListProp = mEventDateList.firstWhere((element) => element.dateString == dateString);
+    if (mEventDateListProp == null) return SizedBox();
+
     // if (mEventDateList.isEmpty) return SizedBox();
     // print(mEventDateList);
     // final mEventDateListProp = mEventDateList.firstWhere((element) => element.dateString == dateString);

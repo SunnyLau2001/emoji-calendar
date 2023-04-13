@@ -44,6 +44,7 @@ class EventDetailDialog extends ConsumerStatefulWidget {
 }
 
 class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
+  late Id id;
   String title = "";
   late TimeOfDay startTime;
   late TimeOfDay endTime;
@@ -75,6 +76,7 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
 
   // init event details
   void initDetails() {
+    id = widget.eventTemp.id;
     // Init edit event
     if (widget.mode == "edit") {
       startTime = TimeOfDay(hour: widget.eventTemp.startHourMinute[0], minute: widget.eventTemp.startHourMinute[1]);
@@ -417,7 +419,7 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
                   }
                   final dateString = "${widget.date.year}-${widget.date.month}-${widget.date.day}";
                   final event = EventTemp(
-                    id: Isar.autoIncrement,
+                    id: id,
                     title: title,
                     startHourMinute: [startTime.hour, startTime.minute],
                     endHourMinute: [endTime.hour, endTime.minute],
@@ -427,14 +429,19 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
                     latlng: latlng,
                     checklistTemp: checklistTemp,
                   );
-    
+
                   if (widget.mode == "create") {
                     print("create");
+                    print(widget.dateIndex);
                     ref.watch(multidayEventDateListProvider.notifier).addEventByDateIndex(widget.dateIndex, event);
                   }
                   if (widget.mode == "edit") {
+                    print(widget.mode);
+                    print(widget.dateIndex);
+                    print(widget.eventIndex);
+
                     ref
-                        .watch(multidayEventDateListProvider.notifier)
+                        .read(multidayEventDateListProvider.notifier)
                         .updateEventByDateIndexAndItemIndex(widget.dateIndex, widget.eventIndex, event);
                   }
                   Navigator.pop(context);

@@ -29,6 +29,39 @@ class MultidayEventService {
     final db = await isar;
     final mEventTemp = mEventDetailProp.multidayEventTemp;
 
+    final startTime = mEventTemp.startDate!;
+    final endTime = mEventTemp.endDate!;
+    final startDateString = "${startTime.year}-${startTime.month}-${startTime.day}";
+    final endDateString = "${endTime.year}-${endTime.month}-${endTime.day}";
+
+    Id multidayEventId = mEventTemp.id == Isar.autoIncrement || mEventTemp.id == 0 ? Isar.autoIncrement : mEventTemp.id;
+    MultidayEvent? multidayEvent;
+
+    bool existingTrack = false;
+
+    if (multidayEventId == Isar.autoIncrement || mEventTemp.id == 0) {
+      await db.writeTxn(() async {
+        final newMultidayEvent = MultidayEvent()
+          ..id = mEventTemp.id
+          ..title = mEventTemp.title
+          ..bookmarkColorInt = mEventTemp.bookmarkColorInt
+          ..bookmarkStickerId = mEventTemp.bookmarkStickerId
+          ..startDate = startDateString
+          ..endDate = endDateString;
+        multidayEventId = await db.multidayEvents.put(newMultidayEvent);
+      });
+      multidayEvent = await getMultidayEventById(multidayEventId);
+    } else {
+      multidayEvent = MultidayEvent()
+        ..id = mEventTemp.id
+        ..title = mEventTemp.title
+        ..bookmarkColorInt = mEventTemp.bookmarkColorInt
+        ..bookmarkStickerId = mEventTemp.bookmarkStickerId
+        ..startDate = startDateString
+        ..endDate = endDateString
+        ..eventsId = mEventTemp.eventIds;
+    }
+
     int availableTrack = -1;
 
     List<DateDetail> newDateDetails =
@@ -53,6 +86,10 @@ class MultidayEventService {
         }
         tempDateDatils.add(tempDateDetail);
       }
+      if (tempDateDatils[i].availableTracks.contains(multidayEventId)) {
+        existingTrack = true;
+      }
+
       final available = tempDateDatils[i].availableTracks.indexOf(-1);
       if (available == -1) {
         availableTrack = -1;
@@ -62,24 +99,6 @@ class MultidayEventService {
       }
     }
 
-    final startTime = mEventTemp.startDate!;
-    final endTime = mEventTemp.endDate!;
-    final startDateString = "${startTime.year}-${startTime.month}-${startTime.day}";
-    final endDateString = "${endTime.year}-${endTime.month}-${endTime.day}";
-
-    int multidayEventId = 0;
-    await db.writeTxn(() async {
-      final multidayEvent = MultidayEvent()
-        ..title = mEventTemp.title
-        ..bookmarkColorInt = mEventTemp.bookmarkColorInt
-        ..bookmarkStickerId = mEventTemp.bookmarkStickerId
-        ..startDate = startDateString
-        ..endDate = endDateString
-        ..id = mEventTemp.id;
-      multidayEventId = await db.multidayEvents.put(multidayEvent);
-    });
-
-    MultidayEvent? multidayEvent = await getMultidayEventById(multidayEventId);
     print(multidayEvent);
 
     for (int i = 0; i < mEventDateLists.length; i++) {
@@ -106,6 +125,7 @@ class MultidayEventService {
         });
 
         final event = Event()
+          ..id = eventTemp.id
           ..title = eventTemp.title
           ..startHourMinute = eventTemp.startHourMinute
           ..endHourMinute = eventTemp.endHourMinute
@@ -125,13 +145,14 @@ class MultidayEventService {
       });
 
       if (multidayEvent != null) {
-        multidayEvent.eventsId = [...multidayEvent.eventsId, ...eventIds];
+        multidayEvent.eventsId = {...multidayEvent.eventsId, ...eventIds}.toList();
       }
 
-      tempDateDatils[i].eventsId = [...tempDateDatils[i].eventsId, ...eventIds];
-      tempDateDatils[i].multidayEventsId = [...tempDateDatils[i].multidayEventsId, multidayEventId];
+      tempDateDatils[i].eventsId = {...tempDateDatils[i].eventsId, ...eventIds}.toList();
+      tempDateDatils[i].multidayEventsId = {...tempDateDatils[i].multidayEventsId, multidayEventId}.toList();
 
-      if (availableTrack != -1) {
+      if (availableTrack != -1 && !existingTrack) {
+        // print(existingTrack);
         // Set the multidayEventId to availableTrack index
         tempDateDatils[i].availableTracks[availableTrack] = multidayEventId;
       }
@@ -148,132 +169,13 @@ class MultidayEventService {
 
       // Update all dateDetail
       await db.dateDetails.putAll(tempDateDatils);
+
+      await db.events.deleteAll(mEventDetailProp.removedEventIds);
+      await db.checklists.deleteAll(mEventDetailProp.removedEventIds);
     });
 
     return;
   }
-
-  // Future<void> putMultidayEvents(MultidayEventDetailProp detail, List<MultidayEventDateListProp> dateLists) async {
-  //   final db = await isar;
-  //   List<DateDetail> dateDetails = [];
-  //   int availableTrack = -1;
-
-  //   for (int i = 0; i < dateLists.length; i++) {
-  //     DateDetail? dateDetail = await db.dateDetails.get(UtilFunctions.fastHash(dateLists[i].dateString));
-
-  //     if (dateDetail == null) {
-  //       dateDetail = DateDetail()
-  //         ..date = dateLists[i].dateString
-  //         ..eventsId = []
-  //         ..lastUpdate = DateTime.now();
-  //     }
-
-  //     dateDetails.add(dateDetail);
-  //     final available = dateDetail.availableTracks.indexOf(-1);
-  //     if (available == -1) {
-  //       availableTrack = -1;
-  //     }
-  //     if (available >= availableTrack) {
-  //       availableTrack = available;
-  //     }
-  //   }
-
-  //   String startDateString = "";
-  //   String endDateString = "";
-  //   if (detail.dateRange.length == 1) {
-  //     final date = detail.dateRange[0];
-  //     final dateString = "${date.year}-${date.month}-${date.day}";
-  //     startDateString = dateString;
-  //     endDateString = dateString;
-  //   }
-
-  //   if (detail.dateRange.length == 2) {
-  //     final startDate = detail.dateRange[0];
-  //     startDateString = "${startDate.year}-${startDate.month}-${startDate.day}";
-  //     final endDate = detail.dateRange[1];
-  //     endDateString = "${endDate.year}-${endDate.month}-${endDate.day}";
-  //   }
-
-  //   int multidayEventId = 0;
-  //   await db.writeTxn(() async {
-  //     final multidayEvent = MultidayEvent()
-  //       ..title = detail.title
-  //       ..bookmarkColorInt = detail.bookmarkColorInt
-  //       ..bookmarkStickerId = detail.bookmarkStickerId
-  //       ..startDate = startDateString
-  //       ..endDate = endDateString;
-  //     multidayEventId = await db.multidayEvents.put(multidayEvent);
-  //   });
-
-  //   MultidayEvent? multidayEvent = await getMultidayEventById(multidayEventId);
-  //   print(multidayEvent);
-
-  //   for (int i = 0; i < dateLists.length; i++) {
-  //     List<int> eventIds = [];
-  //     List<Event> events = [];
-  //     for (int j = 0; j < dateLists[i].events.length; j++) {
-  //       final eventTemp = dateLists[i].events[j];
-  //       int? checklistId;
-  //       if (eventTemp.checklistTemp != null) {
-  //         List<ChecklistItem> checklistItems = [];
-  //         checklistItems = eventTemp.checklistTemp!.items.map((item) {
-  //           return ChecklistItem()
-  //             ..detail = item.detail
-  //             ..checked = item.checked;
-  //         }).toList();
-
-  //         final checklist = Checklist()
-  //           ..checklist = checklistItems
-  //           ..title = eventTemp.checklistTemp!.title;
-
-  //         await db.writeTxn(() async {
-  //           checklistId = await db.checklists.put(checklist);
-  //         });
-  //       }
-
-  //       final event = Event()
-  //         ..title = eventTemp.title
-  //         ..startHourMinute = eventTemp.startHourMinute
-  //         ..endHourMinute = eventTemp.endHourMinute
-  //         ..stickerId = eventTemp.sticker!.id
-  //         ..location = eventTemp.location
-  //         ..latlng = eventTemp.latlng
-  //         ..weather = ""
-  //         ..checklistId = checklistId
-  //         ..multidayEventId = multidayEventId
-  //         ..dateId = dateLists[i].dateString;
-  //       events.add(event);
-  //     }
-
-  //     await db.writeTxn(() async {
-  //       eventIds = await db.events.putAll(events);
-  //     });
-
-  //     if (multidayEvent != null) {
-  //       multidayEvent.eventsId = [...multidayEvent.eventsId, ...eventIds];
-  //     }
-
-  //     dateDetails[i].eventsId = [...dateDetails[i].eventsId, ...eventIds];
-  //     dateDetails[i].multidayEventsId = [...dateDetails[i].multidayEventsId, multidayEventId];
-
-  //     if (availableTrack != -1) {
-  //       // Set the multidayEventId to availableTrack index
-  //       dateDetails[i].availableTracks[availableTrack] = multidayEventId;
-  //     }
-
-  //     dateDetails[i].lastUpdate = DateTime.now();
-  //   }
-
-  //   await db.writeTxn(() async {
-  //     if (multidayEvent != null) {
-  //       // Update multidayEvent with eventIds
-  //       await db.multidayEvents.put(multidayEvent);
-  //     }
-
-  //     // Update all dateDetail
-  //     await db.dateDetails.putAll(dateDetails);
-  //   });
-  // }
 
   Stream<DateDetail?> watchDateDetailChange(String dateString) async* {
     final db = await isar;
@@ -291,6 +193,12 @@ class MultidayEventService {
     final db = await isar;
     final multidayEvent = db.multidayEvents.watchObject(multidayEventId, fireImmediately: true);
     yield* multidayEvent;
+  }
+
+  Future<DateDetail?> getDateDetailByDate(String dateString) async {
+    final db = await isar;
+    final dateDetail = await db.dateDetails.get(UtilFunctions.fastHash(dateString));
+    return dateDetail;
   }
 
   Future<List<DateDetail?>> getDateDetailsByDates(List<String> dateStrings) async {
@@ -322,5 +230,11 @@ class MultidayEventService {
     final db = await isar;
     final multidayEventsList = await db.multidayEvents.getAll(multidayEventsIds);
     return multidayEventsList;
+  }
+
+  Future<Checklist?> getChecklistById(int checklistId) async {
+    final db = await isar;
+    final checklist = await db.checklists.get(checklistId);
+    return checklist;
   }
 }

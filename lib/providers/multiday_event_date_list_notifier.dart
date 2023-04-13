@@ -21,6 +21,10 @@ class MultidayEventDateList extends _$MultidayEventDateList {
     state = [];
   }
 
+  void setMultidayEventDateListPropList(List<MultidayEventDateListProp> mList) {
+    state = [...mList];
+  }
+
   void setMultidayEventDateList(DateTime startDate, int step) {
     List<String> dateStrings = [];
     List<DateDetail> dateDetails = [];
@@ -70,7 +74,7 @@ class MultidayEventDateList extends _$MultidayEventDateList {
   void clearAllEventsByDateIndex(int dateIndex) {
     List<MultidayEventDateListProp> tempState = state;
     tempState[dateIndex] = tempState[dateIndex].copyWith(events: []);
-    state = tempState;
+    state = [...tempState];
   }
 
   void addEventByDateIndex(int dateIndex, EventTemp event) {
@@ -100,6 +104,7 @@ class MultidayEventDateList extends _$MultidayEventDateList {
 
     if (dateIndex > tempState.length - 1) return;
     if (eventIndex == -1 || eventIndex > tempState[dateIndex].events.length - 1) return;
+    print("Pass consditoin");
 
     final dateListProp = tempState[dateIndex];
     final tempEvents = [...dateListProp.events];
@@ -115,7 +120,7 @@ class MultidayEventDateList extends _$MultidayEventDateList {
     );
     if (tempState.isNotEmpty) {
       tempState[dateIndex] = dateListProp.copyWith(events: tempEvents);
-      state = tempState;
+      state = [...tempState];
     }
   }
 
@@ -131,12 +136,12 @@ class MultidayEventDateList extends _$MultidayEventDateList {
 
     DateDetail dateDetail = dateListProp.dateDetail;
     if (event.id != Isar.autoIncrement) {
-      List<int> eventIds = dateListProp.dateDetail.eventsId;
+      List<int> eventIds = [...dateListProp.dateDetail.eventsId];
       if (eventIds.contains(event.id)) eventIds.remove(event.id);
       dateDetail.eventsId = eventIds;
     }
 
     tempState[dateIndex] = dateListProp.copyWith(events: tempList, dateDetail: dateDetail);
-    state = tempState;
+    state = [...tempState];
   }
 }

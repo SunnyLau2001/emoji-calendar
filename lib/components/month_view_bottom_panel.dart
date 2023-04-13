@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/models/multiday_event_structured.dart';
 import 'package:fyp_our_sky_new/providers/date_detail_provider.dart';
+import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart';
+import 'package:fyp_our_sky_new/providers/multiday_event_date_list_prop.dart';
+import 'package:fyp_our_sky_new/providers/multiday_event_detail_notifier.dart';
+import 'package:fyp_our_sky_new/providers/multiday_event_detail_prop.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models/event.dart';
 import '../models/multiday_event.dart';
@@ -72,6 +77,69 @@ class MonthViewBottomPanelDetails extends ConsumerWidget {
                   child: Icon(Icons.close_rounded),
                 ),
               ),
+            ),
+          ),
+          Positioned(
+            top: 54,
+            right: 14,
+            child: Consumer(
+              builder: (context, ref, child) {
+                final multidayEventId = ref.watch(bottomPanelMultidayEventId);
+                final multidayEventWatcher =
+                    ref.watch(multidayEventStructuredWatcherProvider(multidayEventId: multidayEventId));
+
+                return multidayEventWatcher.when(
+                  data: (data) {
+                    if (data == null) return SizedBox();
+                    final MultidayEventDetailProp mProp = data.mEventDetailProp;
+                    final List<MultidayEventDateListProp> mList = data.mEventDateListProps;
+                    return Container(
+                      clipBehavior: Clip.antiAlias,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      height: 40,
+                      width: 40,
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: InkWell(
+                          onTap: () {
+                            ref.watch(multidayEventDetailProvider.notifier).setMultidayEventDetailProp(mProp);
+                            ref.watch(multidayEventDateListProvider.notifier).setMultidayEventDateListPropList(mList);
+                            context.go("/multidayEventEdit");
+                            // ref.watch(showBottomPanelProvider.notifier).state = false;
+                          },
+                          child: Icon(Icons.edit),
+                        ),
+                      ),
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    return SizedBox();
+                  },
+                  loading: () {
+                    return SizedBox();
+                  },
+                );
+
+                return Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  height: 40,
+                  width: 40,
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: InkWell(
+                      onTap: () async {
+                        // ref.watch(showBottomPanelProvider.notifier).state = false;
+                      },
+                      child: Icon(Icons.edit),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -214,7 +282,11 @@ class BottomPanelEventListTile extends ConsumerWidget {
   }
 
   Widget _buildSticker(String? stickerId) {
-    if (stickerId == null) return SizedBox(width: 40, height: 40,);
+    if (stickerId == null)
+      return SizedBox(
+        width: 40,
+        height: 40,
+      );
 
     return Consumer(
       builder: (context, ref, child) {

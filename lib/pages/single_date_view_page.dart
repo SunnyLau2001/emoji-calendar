@@ -9,9 +9,15 @@ import 'package:fyp_our_sky_new/services/open_weather_service.dart';
 import 'package:fyp_our_sky_new/utils/app_settings.dart';
 import 'package:fyp_our_sky_new/utils/date_string.dart';
 import 'package:fyp_our_sky_new/utils/font_settings.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models/event.dart';
 import '../models/sticker.dart';
+import '../providers/multiday_event_date_list_notifier.dart';
+import '../providers/multiday_event_date_list_prop.dart';
+import '../providers/multiday_event_detail_notifier.dart';
+import '../providers/multiday_event_detail_prop.dart';
+import '../providers/providers.dart';
 import '../providers/sticker_provider.dart';
 
 class SingleDateViewPage extends ConsumerStatefulWidget {
@@ -171,97 +177,9 @@ class SingleDatePageViewContent extends ConsumerWidget {
         itemBuilder: (context, index) {
           final mEvent = dateDetailStructured.multidayEvents[index];
           if (mEvent == null) return const SizedBox();
-          return Material(
-            type: MaterialType.transparency,
-            child: InkWell(
-              onTap: () {
-                // print(dateDetailStructured.);
-              },
-              child: Container(
-                alignment: Alignment.topCenter,
-                padding: EdgeInsets.all(4),
-                height: 80,
-                width: 40,
-                decoration: BoxDecoration(
-                  color: Color(mEvent.bookmarkColorInt),
-                  border: Border.all(width: 1, color: Colors.white54),
-                  boxShadow: const [
-                    BoxShadow(
-                        color: Colors.black54,
-                        offset: Offset(0, 0),
-                        blurRadius: 2.0,
-                        blurStyle: BlurStyle.outer), //BoxShadow
-                  ],
-                  // borderRadius: BorderRadius.circular(4),
-                ),
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final sticker = ref.watch(fetchStickerByIdProvider(stickerId: mEvent.bookmarkStickerId));
-                    return sticker.when(
-                      data: (data) {
-                        if (data == null) return SizedBox();
-                        final image = base64.decode(data.imageBase64);
-                        return Image.memory(
-                          image,
-                          gaplessPlayback: true,
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return SizedBox();
-                      },
-                      loading: () {
-                        return SizedBox();
-                      },
-                    );
-                  },
-                ),
-              ),
-            ),
-          );
-
-          return Consumer(
-            builder: (context, ref, child) {
-              final sticker = ref.watch(fetchStickerByIdProvider(stickerId: mEvent.bookmarkStickerId));
-              return sticker.when(
-                data: (data) {
-                  if (data == null) return SizedBox();
-                  final image = base64.decode(data.imageBase64);
-                  return Container(
-                    alignment: Alignment.topCenter,
-                    padding: EdgeInsets.all(4),
-                    height: 80,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Color(mEvent.bookmarkColorInt).withOpacity(0.8),
-                      border: Border.all(width: 1, color: Colors.white54),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.black,
-                            offset: Offset(0, 0),
-                            blurRadius: 5.0,
-                            blurStyle: BlurStyle.outer), //BoxShadow
-                      ],
-                      // borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          // borderRadius: BorderRadius.circular(4),
-                          ),
-                      child: Image.memory(
-                        image,
-                        gaplessPlayback: true,
-                      ),
-                    ),
-                  );
-                },
-                error: (error, stackTrace) {
-                  return SizedBox();
-                },
-                loading: () {
-                  return SizedBox();
-                },
-              );
-            },
+          return SingleDateMultidayEventBookMark(
+            width: width,
+            mEvent: mEvent,
           );
         },
       ),
@@ -388,6 +306,94 @@ class SingleDatePageViewContent extends ConsumerWidget {
         return Container();
       },
     );
+  }
+}
+
+class SingleDateMultidayEventBookMark extends ConsumerWidget {
+  const SingleDateMultidayEventBookMark({
+    super.key,
+    required this.width,
+    required this.mEvent,
+  });
+
+  final double width;
+  final MultidayEvent? mEvent;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Consumer(
+      builder: (context, ref, child) {
+        if (mEvent == null) return const SizedBox();
+        final multidayEventId = mEvent!.id;
+        final multidayEventWatcher =
+            ref.watch(multidayEventStructuredWatcherProvider(multidayEventId: multidayEventId));
+
+        return multidayEventWatcher.when(
+          data: (data) {
+            if (data == null) return SizedBox();
+            final MultidayEventDetailProp mProp = data.mEventDetailProp;
+            final List<MultidayEventDateListProp> mList = data.mEventDateListProps;
+            return Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: () {
+                  ref.watch(multidayEventDetailProvider.notifier).setMultidayEventDetailProp(mProp);
+                  ref.watch(multidayEventDateListProvider.notifier).setMultidayEventDateListPropList(mList);
+                  context.go("/multidayEventEdit");
+                  // print(dateDetailStructured.);
+                },
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  padding: EdgeInsets.all(4),
+                  height: 80,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    color: Color(mEvent!.bookmarkColorInt),
+                    border: Border.all(width: 1, color: Colors.white54),
+                    boxShadow: const [
+                      BoxShadow(
+                          color: Colors.black54,
+                          offset: Offset(0, 0),
+                          blurRadius: 2.0,
+                          blurStyle: BlurStyle.outer), //BoxShadow
+                    ],
+                    // borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final sticker = ref.watch(fetchStickerByIdProvider(stickerId: mEvent!.bookmarkStickerId));
+                      return sticker.when(
+                        data: (data) {
+                          if (data == null) return SizedBox();
+                          final image = base64.decode(data.imageBase64);
+                          return Image.memory(
+                            image,
+                            gaplessPlayback: true,
+                          );
+                        },
+                        error: (error, stackTrace) {
+                          return SizedBox();
+                        },
+                        loading: () {
+                          return SizedBox();
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
+          error: (error, stackTrace) {
+            return SizedBox();
+          },
+          loading: () {
+            return SizedBox();
+          },
+        );
+      },
+    );
+    ;
   }
 }
 

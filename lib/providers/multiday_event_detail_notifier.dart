@@ -30,13 +30,20 @@ class MultidayEventDetail extends _$MultidayEventDetail {
     );
   }
 
+  void setMultidayEventDetailProp(MultidayEventDetailProp mProp) {
+    state = mProp;
+  }
+
   void initMultidayEventDetailProp() {
+    final startDate = state.multidayEventTemp.startDate;
+    final endDate = state.multidayEventTemp.endDate;
+
     state = MultidayEventDetailProp(
       multidayEventTemp: MultidayEventTemp(
         id: Isar.autoIncrement,
         title: '',
-        startDate: null,
-        endDate: null,
+        startDate: startDate,
+        endDate: endDate,
         bookmarkStickerId: 'default_1',
         bookmarkColorInt: Colors.blue.value,
         eventIds: [],
@@ -173,10 +180,10 @@ class MultidayEventDetail extends _$MultidayEventDetail {
   }
 
   void removeEventAndChecklist(int eventId, int checklistId) {
-    List<int> eventIds = state.multidayEventTemp.eventIds;
+    List<int> eventIds = [...state.multidayEventTemp.eventIds];
 
-    List<int> removedEventIds = state.removedEventIds;
-    List<int> removedChecklistIds = state.removedChecklistIds;
+    List<int> removedEventIds = [...state.removedEventIds];
+    List<int> removedChecklistIds = [...state.removedChecklistIds];
     if (eventIds.contains(eventId)) {
       eventIds.remove(eventId);
       removedEventIds.add(eventId);

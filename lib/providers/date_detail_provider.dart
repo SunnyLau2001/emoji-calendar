@@ -1,11 +1,19 @@
 import 'package:fyp_our_sky_new/models/date_detail_structured.dart';
+import 'package:fyp_our_sky_new/providers/checklist_temp_prop.dart';
 import 'package:fyp_our_sky_new/services/multiday_event_service.dart';
+import 'package:fyp_our_sky_new/services/sticker_service.dart';
+import 'package:isar/isar.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../models/checklist.dart';
 import '../models/date_detail.dart';
 import '../models/event.dart';
 import '../models/multiday_event.dart';
 import '../models/multiday_event_structured.dart';
+import 'event_temp.dart';
+import 'multiday_event_date_list_prop.dart';
+import 'multiday_event_detail_prop.dart';
+import 'multiday_event_temp.dart';
 
 part 'date_detail_provider.g.dart';
 
@@ -61,7 +69,8 @@ Stream<MultidayEventStructured?> multidayEventStructuredWatcher(MultidayEventStr
     if (multidayEvent != null) {
       // List<Event?> events = [];
       final fetchedEvents = await MultidayEventService().getEventsByIds(multidayEvent.eventsId);
-
+      // List<String> dateStrings = fetchedEvents.map((e) => e == null ? "" : e.dateId).toSet().toList();
+      // print(dateStrings);
       fetchedEvents.sort(
         (a, b) {
           if (a == null || b == null) {
@@ -88,7 +97,116 @@ Stream<MultidayEventStructured?> multidayEventStructuredWatcher(MultidayEventStr
         },
       );
 
-      multidayEventStructured = MultidayEventStructured(multidayEvents: multidayEvent, events: fetchedEvents);
+      // Add preprocess data for edit!!!
+      final sDate = multidayEvent.startDate.split("-");
+      final eDate = multidayEvent.endDate.split("-");
+      final startDate = DateTime(int.parse(sDate[0]), int.parse(sDate[1]), int.parse(sDate[2]));
+      final endDate = DateTime(int.parse(eDate[0]), int.parse(eDate[1]), int.parse(eDate[2]));
+
+      final multidayEventDetailProp = MultidayEventDetailProp(
+        multidayEventTemp: MultidayEventTemp(
+          id: multidayEvent.id,
+          title: multidayEvent.title,
+          startDate: startDate,
+          endDate: endDate,
+          bookmarkStickerId: multidayEvent.bookmarkStickerId,
+          bookmarkColorInt: multidayEvent.bookmarkColorInt,
+          eventIds: multidayEvent.eventsId,
+        ),
+        selectFirstDate: false,
+        removedEventIds: [],
+        removedChecklistIds: [],
+      );
+
+      final steps = startDate.difference(endDate).inDays.abs() + 1;
+
+      List<List<EventTemp>> eventTemps = [];
+      for (int i = 0; i < steps; i++) {
+        eventTemps.add([]);
+      }
+      List<DateTime> dateTimes = [];
+      List<String> dateStrings = [];
+      for (int i = 0; i < steps; i++) {
+        final dateTime = DateTime(startDate.year, startDate.month, startDate.day + i);
+        final dateString = "${dateTime.year}-${dateTime.month}-${dateTime.day}";
+        dateTimes.add(dateTime);
+        dateStrings.add(dateString);
+        for (int j = 0; j < fetchedEvents.length; j++) {
+          if (fetchedEvents[j] == null) continue;
+          if (fetchedEvents[j]!.dateId == dateString) {
+            Checklist? checklist;
+            ChecklistTemp checklistTemp;
+            if (fetchedEvents[j]!.checklistId != null) {
+              checklist = await MultidayEventService().getChecklistById(fetchedEvents[j]!.checklistId!);
+            }
+            if (checklist == null) {
+              checklistTemp = ChecklistTemp(
+                id: Isar.autoIncrement,
+                title: "",
+                items: [],
+              );
+            } else {
+              List<ChecklistItemTemp> checklistItemTemp = checklist.checklist
+                  .map((e) => ChecklistItemTemp(
+                        detail: e.detail,
+                        checked: e.checked,
+                      ))
+                  .toList();
+              checklistTemp = ChecklistTemp(
+                id: checklist.id,
+                title: checklist.title,
+                items: checklistItemTemp,
+              );
+            }
+            final sticker = await StickerService().getStickerById(fetchedEvents[j]!.stickerId!);
+            EventTemp eventTemp = EventTemp(
+              id: fetchedEvents[j]!.id,
+              title: fetchedEvents[j]!.title,
+              startHourMinute: fetchedEvents[j]!.startHourMinute,
+              endHourMinute: fetchedEvents[j]!.endHourMinute,
+              checklistTemp: checklistTemp,
+              dateId: fetchedEvents[j]!.dateId,
+              sticker: sticker
+            );
+            eventTemps[i].add(eventTemp);
+            // final eventTemp = EventTemp(
+
+            // );
+            // eventTemps[i].add(value);
+          }
+        }
+      }
+
+      print("Loop");
+      List<MultidayEventDateListProp> mEventDateListProps = [];
+      for (int i = 0; i < steps; i++) {
+        final dateTime = dateTimes[i];
+        final dateString = dateStrings[i];
+        final result = await MultidayEventService().getDateDetailByDate(dateString);
+        DateDetail dateDetail;
+        if (result == null) {
+          dateDetail = DateDetail()
+            ..date = dateString[i]
+            ..lastUpdate = DateTime.now();
+        } else {
+          dateDetail = result;
+        }
+        MultidayEventDateListProp mEventDetailProp = MultidayEventDateListProp(
+          dateDetail: dateDetail,
+          dateString: dateString,
+          dateTime: dateTime,
+          events: eventTemps[i],
+        );
+        mEventDateListProps.add(mEventDetailProp);
+        print(mEventDetailProp);
+      }
+
+      multidayEventStructured = MultidayEventStructured(
+        multidayEvents: multidayEvent,
+        events: fetchedEvents,
+        mEventDetailProp: multidayEventDetailProp,
+        mEventDateListProps: mEventDateListProps,
+      );
     }
 
     yield multidayEventStructured;

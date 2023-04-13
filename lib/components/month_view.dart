@@ -275,8 +275,11 @@ class MonthViewCellNormalMode extends ConsumerWidget {
     return dateDetailStructuredWatcher.when(
       data: (dateDetailStructured) {
         if (dateDetailStructured != null) {
+          final availableTrack = dateDetailStructured.dateDetail!.availableTracks.indexOf(-1);
+          print(availableTrack);
+          final trackOccupied = availableTrack == -1 ? 0 : availableTrack;
           return Container(
-            height: height,
+            height: cellWidth / 2 * trackOccupied,
             width: cellWidth,
             decoration: BoxDecoration(),
             child: _buildMultidayEventTracks(dateDetailStructured, cellWidth),

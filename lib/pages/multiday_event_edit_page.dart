@@ -164,7 +164,6 @@ class MultidayEventEditTopBar extends ConsumerWidget {
     List<Widget> selectableDateList = [];
 
     int step = startDate.difference(endDate).inDays.abs();
-    print(step);
 
     for (int i = 0; i < step + 1; i++) {
       final date = DateTime(startDate.year, startDate.month, startDate.day + i);
@@ -404,27 +403,33 @@ class DateEventsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final dateRange = ref.watch(multidayEventDetailProvider).dateRange;
-    final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
-    DateTime? startDate = mEventTemp.startDate;
-    final dateList = ref.watch(multidayEventDateListProvider);
-    if (dateList == null) return SizedBox();
 
-    startDate = startDate ?? DateTime.now();
-    int year = startDate.year;
-    int month = startDate.month;
-    int day = startDate.day;
+    return Consumer(
+      builder: (context, ref, child) {
+        final mEventTemp = ref.watch(multidayEventDetailProvider).multidayEventTemp;
+        DateTime? startDate = mEventTemp.startDate;
+        final dateList = ref.watch(multidayEventDateListProvider);
 
-    return ListView.builder(
-      controller: listviewScroller,
-      key: listviewKey,
-      physics: const ClampingScrollPhysics(),
-      reverse: true,
-      padding: EdgeInsets.only(top: 182 + MediaQuery.of(context).padding.top),
-      itemCount: dateList.length,
-      itemBuilder: (context, index) {
-        return DateListDragTarget(
-          date: DateTime(year, month, day + (dateList.length - index - 1)),
-          dateIndex: dateList.length - index - 1,
+        startDate = startDate ?? DateTime.now();
+        int year = startDate.year;
+        int month = startDate.month;
+        int day = startDate.day;
+
+        return Container(
+          child: ListView.builder(
+            controller: listviewScroller,
+            key: listviewKey,
+            physics: const ClampingScrollPhysics(),
+            reverse: true,
+            padding: EdgeInsets.only(top: 182 + MediaQuery.of(context).padding.top),
+            itemCount: dateList.length,
+            itemBuilder: (context, index) {
+              return DateListDragTarget(
+                date: DateTime(year, month, day + (dateList.length - index - 1)),
+                dateIndex: dateList.length - index - 1,
+              );
+            },
+          ),
         );
       },
     );

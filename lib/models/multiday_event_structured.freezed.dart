@@ -18,6 +18,10 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$MultidayEventStructured {
   MultidayEvent? get multidayEvents => throw _privateConstructorUsedError;
   List<Event?> get events => throw _privateConstructorUsedError;
+  MultidayEventDetailProp get mEventDetailProp =>
+      throw _privateConstructorUsedError;
+  List<MultidayEventDateListProp> get mEventDateListProps =>
+      throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $MultidayEventStructuredCopyWith<MultidayEventStructured> get copyWith =>
@@ -30,7 +34,13 @@ abstract class $MultidayEventStructuredCopyWith<$Res> {
           $Res Function(MultidayEventStructured) then) =
       _$MultidayEventStructuredCopyWithImpl<$Res, MultidayEventStructured>;
   @useResult
-  $Res call({MultidayEvent? multidayEvents, List<Event?> events});
+  $Res call(
+      {MultidayEvent? multidayEvents,
+      List<Event?> events,
+      MultidayEventDetailProp mEventDetailProp,
+      List<MultidayEventDateListProp> mEventDateListProps});
+
+  $MultidayEventDetailPropCopyWith<$Res> get mEventDetailProp;
 }
 
 /// @nodoc
@@ -49,6 +59,8 @@ class _$MultidayEventStructuredCopyWithImpl<$Res,
   $Res call({
     Object? multidayEvents = freezed,
     Object? events = null,
+    Object? mEventDetailProp = null,
+    Object? mEventDateListProps = null,
   }) {
     return _then(_value.copyWith(
       multidayEvents: freezed == multidayEvents
@@ -59,7 +71,24 @@ class _$MultidayEventStructuredCopyWithImpl<$Res,
           ? _value.events
           : events // ignore: cast_nullable_to_non_nullable
               as List<Event?>,
+      mEventDetailProp: null == mEventDetailProp
+          ? _value.mEventDetailProp
+          : mEventDetailProp // ignore: cast_nullable_to_non_nullable
+              as MultidayEventDetailProp,
+      mEventDateListProps: null == mEventDateListProps
+          ? _value.mEventDateListProps
+          : mEventDateListProps // ignore: cast_nullable_to_non_nullable
+              as List<MultidayEventDateListProp>,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $MultidayEventDetailPropCopyWith<$Res> get mEventDetailProp {
+    return $MultidayEventDetailPropCopyWith<$Res>(_value.mEventDetailProp,
+        (value) {
+      return _then(_value.copyWith(mEventDetailProp: value) as $Val);
+    });
   }
 }
 
@@ -71,7 +100,14 @@ abstract class _$$_MultidayEventStructuredCopyWith<$Res>
       __$$_MultidayEventStructuredCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({MultidayEvent? multidayEvents, List<Event?> events});
+  $Res call(
+      {MultidayEvent? multidayEvents,
+      List<Event?> events,
+      MultidayEventDetailProp mEventDetailProp,
+      List<MultidayEventDateListProp> mEventDateListProps});
+
+  @override
+  $MultidayEventDetailPropCopyWith<$Res> get mEventDetailProp;
 }
 
 /// @nodoc
@@ -88,6 +124,8 @@ class __$$_MultidayEventStructuredCopyWithImpl<$Res>
   $Res call({
     Object? multidayEvents = freezed,
     Object? events = null,
+    Object? mEventDetailProp = null,
+    Object? mEventDateListProps = null,
   }) {
     return _then(_$_MultidayEventStructured(
       multidayEvents: freezed == multidayEvents
@@ -98,6 +136,14 @@ class __$$_MultidayEventStructuredCopyWithImpl<$Res>
           ? _value._events
           : events // ignore: cast_nullable_to_non_nullable
               as List<Event?>,
+      mEventDetailProp: null == mEventDetailProp
+          ? _value.mEventDetailProp
+          : mEventDetailProp // ignore: cast_nullable_to_non_nullable
+              as MultidayEventDetailProp,
+      mEventDateListProps: null == mEventDateListProps
+          ? _value._mEventDateListProps
+          : mEventDateListProps // ignore: cast_nullable_to_non_nullable
+              as List<MultidayEventDateListProp>,
     ));
   }
 }
@@ -106,8 +152,12 @@ class __$$_MultidayEventStructuredCopyWithImpl<$Res>
 
 class _$_MultidayEventStructured implements _MultidayEventStructured {
   _$_MultidayEventStructured(
-      {required this.multidayEvents, required final List<Event?> events})
-      : _events = events;
+      {required this.multidayEvents,
+      required final List<Event?> events,
+      required this.mEventDetailProp,
+      required final List<MultidayEventDateListProp> mEventDateListProps})
+      : _events = events,
+        _mEventDateListProps = mEventDateListProps;
 
   @override
   final MultidayEvent? multidayEvents;
@@ -120,8 +170,19 @@ class _$_MultidayEventStructured implements _MultidayEventStructured {
   }
 
   @override
+  final MultidayEventDetailProp mEventDetailProp;
+  final List<MultidayEventDateListProp> _mEventDateListProps;
+  @override
+  List<MultidayEventDateListProp> get mEventDateListProps {
+    if (_mEventDateListProps is EqualUnmodifiableListView)
+      return _mEventDateListProps;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_mEventDateListProps);
+  }
+
+  @override
   String toString() {
-    return 'MultidayEventStructured(multidayEvents: $multidayEvents, events: $events)';
+    return 'MultidayEventStructured(multidayEvents: $multidayEvents, events: $events, mEventDetailProp: $mEventDetailProp, mEventDateListProps: $mEventDateListProps)';
   }
 
   @override
@@ -131,12 +192,20 @@ class _$_MultidayEventStructured implements _MultidayEventStructured {
             other is _$_MultidayEventStructured &&
             (identical(other.multidayEvents, multidayEvents) ||
                 other.multidayEvents == multidayEvents) &&
-            const DeepCollectionEquality().equals(other._events, _events));
+            const DeepCollectionEquality().equals(other._events, _events) &&
+            (identical(other.mEventDetailProp, mEventDetailProp) ||
+                other.mEventDetailProp == mEventDetailProp) &&
+            const DeepCollectionEquality()
+                .equals(other._mEventDateListProps, _mEventDateListProps));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, multidayEvents,
-      const DeepCollectionEquality().hash(_events));
+  int get hashCode => Object.hash(
+      runtimeType,
+      multidayEvents,
+      const DeepCollectionEquality().hash(_events),
+      mEventDetailProp,
+      const DeepCollectionEquality().hash(_mEventDateListProps));
 
   @JsonKey(ignore: true)
   @override
@@ -149,13 +218,20 @@ class _$_MultidayEventStructured implements _MultidayEventStructured {
 
 abstract class _MultidayEventStructured implements MultidayEventStructured {
   factory _MultidayEventStructured(
-      {required final MultidayEvent? multidayEvents,
-      required final List<Event?> events}) = _$_MultidayEventStructured;
+          {required final MultidayEvent? multidayEvents,
+          required final List<Event?> events,
+          required final MultidayEventDetailProp mEventDetailProp,
+          required final List<MultidayEventDateListProp> mEventDateListProps}) =
+      _$_MultidayEventStructured;
 
   @override
   MultidayEvent? get multidayEvents;
   @override
   List<Event?> get events;
+  @override
+  MultidayEventDetailProp get mEventDetailProp;
+  @override
+  List<MultidayEventDateListProp> get mEventDateListProps;
   @override
   @JsonKey(ignore: true)
   _$$_MultidayEventStructuredCopyWith<_$_MultidayEventStructured>

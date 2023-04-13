@@ -4,7 +4,7 @@ part 'event.g.dart';
 
 @collection
 class Event {
-  Id id = Isar.autoIncrement;
+  late Id id;
   late String title;
   late List<int> startHourMinute;
   late List<int> endHourMinute;
