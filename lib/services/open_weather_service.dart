@@ -36,7 +36,6 @@ class OpenWeatherService {
   }
 
   Future<void> updateWeatherByEventId(int eventId) async {
-    print(eventId);
     final db = await isar;
     Event? event = await db.events.get(eventId);
     if (event == null) return;
@@ -54,9 +53,7 @@ class OpenWeatherService {
     //   print("now after weather dt?---------------------");
     //   print(now.isAfter(response[i].dateTime));
     // }
-    print(response);
     if (response.isNotEmpty) {
-      print("Not Empty");
       event.weather = response[0].weather;
       event.temperature = response[0].temp;
       event.weatherLastUpdate = now;

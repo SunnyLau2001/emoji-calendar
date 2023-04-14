@@ -116,7 +116,7 @@ class DateDetailStructuredWatcherProvider
 }
 
 String _$multidayEventStructuredWatcherHash() =>
-    r'92aa45038140036035ecec7ff18bbe97e05dcc43';
+    r'9e37e04db00449f133a722394117715c4606012d';
 typedef MultidayEventStructuredWatcherRef
     = AutoDisposeStreamProviderRef<MultidayEventStructured?>;
 
@@ -446,6 +446,89 @@ class EventWatcherProvider extends AutoDisposeStreamProvider<Event?> {
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, eventIds.hashCode);
+
+    return _SystemHash.finish(hash);
+  }
+}
+
+String _$checklistWatcherHash() => r'6cc5efc3cbce97caf5058a38a495ff877820c587';
+typedef ChecklistWatcherRef = AutoDisposeStreamProviderRef<Checklist?>;
+
+/// See also [checklistWatcher].
+@ProviderFor(checklistWatcher)
+const checklistWatcherProvider = ChecklistWatcherFamily();
+
+/// See also [checklistWatcher].
+class ChecklistWatcherFamily extends Family<AsyncValue<Checklist?>> {
+  /// See also [checklistWatcher].
+  const ChecklistWatcherFamily();
+
+  /// See also [checklistWatcher].
+  ChecklistWatcherProvider call({
+    required int checklistId,
+  }) {
+    return ChecklistWatcherProvider(
+      checklistId: checklistId,
+    );
+  }
+
+  @override
+  ChecklistWatcherProvider getProviderOverride(
+    covariant ChecklistWatcherProvider provider,
+  ) {
+    return call(
+      checklistId: provider.checklistId,
+    );
+  }
+
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
+
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
+
+  @override
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
+
+  @override
+  String? get name => r'checklistWatcherProvider';
+}
+
+/// See also [checklistWatcher].
+class ChecklistWatcherProvider extends AutoDisposeStreamProvider<Checklist?> {
+  /// See also [checklistWatcher].
+  ChecklistWatcherProvider({
+    required this.checklistId,
+  }) : super.internal(
+          (ref) => checklistWatcher(
+            ref,
+            checklistId: checklistId,
+          ),
+          from: checklistWatcherProvider,
+          name: r'checklistWatcherProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$checklistWatcherHash,
+          dependencies: ChecklistWatcherFamily._dependencies,
+          allTransitiveDependencies:
+              ChecklistWatcherFamily._allTransitiveDependencies,
+        );
+
+  final int checklistId;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ChecklistWatcherProvider &&
+        other.checklistId == checklistId;
+  }
+
+  @override
+  int get hashCode {
+    var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, checklistId.hashCode);
 
     return _SystemHash.finish(hash);
   }

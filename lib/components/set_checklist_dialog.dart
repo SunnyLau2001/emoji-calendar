@@ -210,7 +210,7 @@ class _EditableChecklistItemState extends ConsumerState<EditableChecklistItem> {
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(width: 1, color: Colors.white60),
         ),
-        labelText: 'Item ${widget.itemIndex} Detail',
+        labelText: 'Item ${widget.itemIndex + 1} Detail',
         labelStyle: FontSettings.primaryFont.copyWith(color: Colors.white),
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),

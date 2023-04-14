@@ -9,7 +9,6 @@ import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart
 import 'package:fyp_our_sky_new/utils/font_settings.dart';
 import 'package:isar/isar.dart';
 
-import '../models/sticker.dart';
 import '../providers/checklist_items_edit_notifier.dart';
 import '../providers/checklist_temp_prop.dart';
 import '../providers/event_temp.dart';
@@ -431,15 +430,9 @@ class _EventDetailDialogState extends ConsumerState<EventDetailDialog> {
                   );
 
                   if (widget.mode == "create") {
-                    print("create");
-                    print(widget.dateIndex);
                     ref.watch(multidayEventDateListProvider.notifier).addEventByDateIndex(widget.dateIndex, event);
                   }
                   if (widget.mode == "edit") {
-                    print(widget.mode);
-                    print(widget.dateIndex);
-                    print(widget.eventIndex);
-
                     ref
                         .read(multidayEventDateListProvider.notifier)
                         .updateEventByDateIndexAndItemIndex(widget.dateIndex, widget.eventIndex, event);

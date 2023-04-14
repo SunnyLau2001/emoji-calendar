@@ -208,17 +208,17 @@ class MultidayEventDetail extends _$MultidayEventDetail {
     // if (tempState.removedChecklistIds.con)
   }
 
-  void putMultidayEventToDB() async {
-    final result = ref.watch(multidayEventDateListProvider);
-    final mEventDateLists = [...result];
-    if (mEventDateLists == null) return;
-    final mEventDetailProp = state;
+  // void putMultidayEventToDB() async {
+  //   final result = ref.watch(multidayEventDateListProvider);
+  //   final mEventDateLists = [...result];
+  //   if (mEventDateLists == null) return;
+  //   final mEventDetailProp = state;
 
-    await MultidayEventService().putMultidayEvents(mEventDetailProp, mEventDateLists);
+  //   await MultidayEventService().putMultidayEvents(mEventDetailProp, mEventDateLists);
 
-    // ref.watch(multidayEventDateListProvider.notifier).initMultidayEventDateList();
-    // initMultidayEventDetailProp;
+  //   // ref.watch(multidayEventDateListProvider.notifier).initMultidayEventDateList();
+  //   // initMultidayEventDetailProp;
 
-    // print(mEventDetailProps);
-  }
+  //   // print(mEventDetailProps);
+  // }
 }

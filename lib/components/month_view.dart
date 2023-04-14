@@ -165,44 +165,48 @@ class _MonthViewCellState extends ConsumerState<MonthViewCell> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Stack(children: [
-        Consumer(
-          builder: (context, ref, child) {
-            final isSelectingDateRange = ref.watch(isSelectingDateRangeProvider);
-
-            return IgnorePointer(
-              ignoring: isSelectingDateRange,
-              child: Material(
-                type: MaterialType.transparency,
-                child: InkWell(
-                  onTap: () {
-                    context.goNamed('singleDatePage', extra: widget.cellDate);
-                  },
-                  child: Container(
-                    height: widget.cellHeight,
-                    width: widget.cellWidth,
+      height: cellHeight,
+      width: widget.cellWidth,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Consumer(
+            builder: (context, ref, child) {
+              final isSelectingDateRange = ref.watch(isSelectingDateRangeProvider);
+              return IgnorePointer(
+                ignoring: isSelectingDateRange,
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    onTap: () {
+                      context.goNamed('singleDatePage', extra: widget.cellDate);
+                    },
+                    child: Container(
+                      height: widget.cellHeight,
+                      width: widget.cellWidth,
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        ),
-        Positioned(
-          top: 40,
-          child: MonthViewCellNormalMode(
+              );
+            },
+          ),
+          Positioned(
+            top: 40,
+            child: MonthViewCellNormalMode(
+              cellDate: widget.cellDate,
+              height: widget.cellHeight - 40,
+              cellWidth: widget.cellWidth,
+              dateString: dateString,
+            ),
+          ),
+          MonthViewCellDateRangeMode(
             cellDate: widget.cellDate,
-            height: widget.cellHeight - 40,
+            cellHeight: widget.cellHeight,
             cellWidth: widget.cellWidth,
             dateString: dateString,
           ),
-        ),
-        MonthViewCellDateRangeMode(
-          cellDate: widget.cellDate,
-          cellHeight: widget.cellHeight,
-          cellWidth: widget.cellWidth,
-          dateString: dateString,
-        ),
-      ]),
+        ],
+      ),
     );
   }
 }
@@ -275,23 +279,24 @@ class MonthViewCellNormalMode extends ConsumerWidget {
     return dateDetailStructuredWatcher.when(
       data: (dateDetailStructured) {
         if (dateDetailStructured != null) {
-          final availableTrack = dateDetailStructured.dateDetail!.availableTracks.indexOf(-1);
-          print(availableTrack);
-          final trackOccupied = availableTrack == -1 ? 0 : availableTrack;
+          final availableTrack = dateDetailStructured.dateDetail!.availableTracks.reversed.toList();
+          int trackOccupied = 3;
+          // print(height);
+
           return Container(
-            height: cellWidth / 2 * trackOccupied,
+            height: (cellWidth / 2) * trackOccupied,
             width: cellWidth,
             decoration: BoxDecoration(),
             child: _buildMultidayEventTracks(dateDetailStructured, cellWidth),
           );
         }
-        return Container();
+        return SizedBox();
       },
       error: (error, stackTrace) {
-        return Container();
+        return SizedBox();
       },
       loading: () {
-        return Container();
+        return SizedBox();
       },
     );
   }
@@ -322,6 +327,7 @@ class MonthViewCellTrack extends ConsumerWidget {
     return Opacity(
       opacity: highlight ? 1 : 0.25,
       child: Container(
+        clipBehavior: Clip.none,
         padding: EdgeInsets.all(4),
         width: width,
         height: height,
@@ -368,7 +374,10 @@ class MonthViewCellTrack extends ConsumerWidget {
   }
 
   Widget _buildTrackBase(double height, double width, MultidayEvent? multidayEvent, bool highlight) {
-    if (multidayEvent == null) return Container();
+    if (multidayEvent == null) {
+      return Container();
+    }
+
     return Opacity(
       opacity: highlight ? 1 : 0.25,
       child: Container(
@@ -383,7 +392,7 @@ class MonthViewCellTrack extends ConsumerWidget {
   }
 
   Widget _buildStartPoint(MultidayEvent? multidayEvent, double top, bool highlight) {
-    if (multidayEvent == null) return Container();
+    if (multidayEvent == null) return SizedBox();
 
     return Positioned(
       top: top - 4,
@@ -407,7 +416,7 @@ class MonthViewCellTrack extends ConsumerWidget {
   }
 
   Widget _buildEndPoint(MultidayEvent? multidayEvent, double top, bool highlight) {
-    if (multidayEvent == null) return Container();
+    if (multidayEvent == null) return SizedBox();
 
     return Positioned(
       top: top - 4,
@@ -433,8 +442,13 @@ class MonthViewCellTrack extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (multidayEvent == null) return Container();
 
-    final numOfEvents = events.length > 4 ? 4 : events.length;
+    final numOfEvents = events.length > 2 ? 2 : events.length;
+
     final height = numOfEvents <= 2 ? width / 2 : width;
+
+    // final numOfEvents = events.length > 4 ? 4 : events.length;
+    // final height = width / 2;
+
     final decorationHeight = width / 4;
 
     final now = DateTime.now();
@@ -463,7 +477,6 @@ class MonthViewCellTrack extends ConsumerWidget {
             onTap: () {
               ref.watch(bottomPanelMultidayEventId.notifier).state = multidayEvent!.id;
               ref.watch(showBottomPanelProvider.notifier).state = true;
-              print(multidayEvent!.id);
             },
             child: Container(
               height: height,
@@ -471,10 +484,12 @@ class MonthViewCellTrack extends ConsumerWidget {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Positioned(
-                    top: decorationHeight - 4,
-                    child: numOfEvents == 0 ? _buildTrackBase(height, width, multidayEvent, highlight) : Container(),
-                  ),
+                  numOfEvents == 0
+                      ? Positioned(
+                          top: decorationHeight - 4,
+                          child: _buildTrackBase(height, width, multidayEvent, highlight),
+                        )
+                      : SizedBox(),
                   Positioned(
                     top: 0,
                     child: _buildTrackBox(height, width, numOfEvents, events, multidayEvent, highlight),
@@ -547,7 +562,6 @@ class MonthViewCellDateRangeMode extends ConsumerWidget {
     // bool select = false;
     if (startDate == null && endDate == null) return false;
 
-    // print(startDate);
 
     if (cellDate == startDate || cellDate == endDate) return true;
 

@@ -287,11 +287,31 @@ class SingleDatePageViewContent extends ConsumerWidget {
                   ),
                 ),
                 Positioned(
-                  top: 0,
-                  right: 0,
+                  top: 14,
+                  right: 14,
                   child: SingleDateLocationWeatherInfo(
                     date: date,
                     events: events,
+                  ),
+                ),
+                Positioned(
+                  top: 14,
+                  left: 14,
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],

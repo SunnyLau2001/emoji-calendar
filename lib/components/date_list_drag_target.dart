@@ -44,7 +44,6 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
     //     multidayEventDateListProvider.select((e) => e.firstWhere((element) => element.dateString == dateString)));
     final mEventDateList = ref.watch(multidayEventDateListProvider);
     if (mEventDateList.length <= 0) return SizedBox();
-    print(mEventDateList);
     MultidayEventDateListProp? mEventDateListProp;
     for (int i = 0; i < mEventDateList.length; i++) {
       if (mEventDateList[i].dateString == dateString) {
@@ -56,7 +55,6 @@ class _DateListDragTarget extends ConsumerState<DateListDragTarget> {
     if (mEventDateListProp == null) return SizedBox();
 
     // if (mEventDateList.isEmpty) return SizedBox();
-    // print(mEventDateList);
     // final mEventDateListProp = mEventDateList.firstWhere((element) => element.dateString == dateString);
 
     // if (list.isEmpty) return SizedBox();

@@ -67,7 +67,6 @@ class MultidayEventDateList extends _$MultidayEventDateList {
       );
       tempList.add(temp);
     }
-    print(tempList);
     state = [...tempList];
   }
 
@@ -78,7 +77,6 @@ class MultidayEventDateList extends _$MultidayEventDateList {
   }
 
   void addEventByDateIndex(int dateIndex, EventTemp event) {
-    print("Add");
     // List<MultidayEventDateListProp> tempState = state;
     // if (dateIndex > tempState.length - 1) continue;
     final dateListProp = state[dateIndex];
@@ -104,7 +102,6 @@ class MultidayEventDateList extends _$MultidayEventDateList {
 
     if (dateIndex > tempState.length - 1) return;
     if (eventIndex == -1 || eventIndex > tempState[dateIndex].events.length - 1) return;
-    print("Pass consditoin");
 
     final dateListProp = tempState[dateIndex];
     final tempEvents = [...dateListProp.events];

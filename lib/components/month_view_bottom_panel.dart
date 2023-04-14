@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fyp_our_sky_new/components/view_checklist_dialog.dart';
 import 'package:fyp_our_sky_new/models/multiday_event_structured.dart';
 import 'package:fyp_our_sky_new/providers/date_detail_provider.dart';
 import 'package:fyp_our_sky_new/providers/multiday_event_date_list_notifier.dart';
@@ -158,6 +159,11 @@ class MonthViewBottomPanelList extends ConsumerWidget {
     MultidayEventStructured? multidayEventStructured,
   ) {
     if (multidayEventStructured == null) return SizedBox();
+    final String title = multidayEventStructured.multidayEvents == null
+        ? ""
+        : multidayEventStructured.multidayEvents!.title == ""
+            ? "(No Title)"
+            : multidayEventStructured.multidayEvents!.title;
 
     return Container(
       padding: EdgeInsets.symmetric(
@@ -165,21 +171,40 @@ class MonthViewBottomPanelList extends ConsumerWidget {
       ),
       height: 400,
       width: width,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
-        ),
-        child: ListView.builder(
-          itemCount: multidayEventStructured.events.length,
-          itemBuilder: (context, index) {
-            if (multidayEventStructured.events[index] == null) return SizedBox();
-            return BottomPanelEventListTile(
-              event: multidayEventStructured.events[index],
-              multidayEvent: multidayEventStructured.multidayEvents,
-            );
-          },
-        ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 0,
+            child: Container(
+              padding: EdgeInsets.all(8),
+              child: Text(
+                title,
+                style: FontSettings.primaryFont.copyWith(color: Colors.black, fontSize: 24),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            child: Container(
+              height: 320,
+              width: width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+              ),
+              child: ListView.builder(
+                itemCount: multidayEventStructured.events.length,
+                itemBuilder: (context, index) {
+                  if (multidayEventStructured.events[index] == null) return SizedBox();
+                  return BottomPanelEventListTile(
+                    event: multidayEventStructured.events[index],
+                    multidayEvent: multidayEventStructured.multidayEvents,
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -258,26 +283,47 @@ class BottomPanelEventListTile extends ConsumerWidget {
   }
 
   Widget _buildTime(Event event) {
-    return Flexible(
-      child: Row(
-        children: [
-          Container(
-            child: Text(
-              _timeStringHHMMFmt(event.startHourMinute),
-              style: FontSettings.primaryFont.copyWith(color: Colors.black),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          child: Text(
+            event.dateId,
+            style: FontSettings.primaryFont.copyWith(color: Colors.black),
           ),
-          SizedBox(
-            width: 10,
+        ),
+        Flexible(
+          child: Row(
+            children: [
+              Container(
+                child: Text(
+                  _timeStringHHMMFmt(event.startHourMinute),
+                  style: FontSettings.primaryFont.copyWith(color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Container(
+                child: Text(
+                  "-",
+                  style: FontSettings.primaryFont.copyWith(color: Colors.black),
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Container(
+                child: Text(
+                  _timeStringHHMMFmt(event.endHourMinute),
+                  style: FontSettings.primaryFont.copyWith(color: Colors.black),
+                ),
+              ),
+            ],
           ),
-          Container(
-            child: Text(
-              _timeStringHHMMFmt(event.endHourMinute),
-              style: FontSettings.primaryFont.copyWith(color: Colors.black),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -375,34 +421,44 @@ class BottomPanelEventListTile extends ConsumerWidget {
 
     return Opacity(
       opacity: now.isAfter(endTime) ? 0.25 : 1,
-      child: Container(
-        padding: EdgeInsets.all(8),
-        height: 96,
-        decoration: BoxDecoration(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildTime(event!),
-            Row(
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: () async {
+            if (event!.checklistId != null)
+              await viewChecklistOfEvent(context: context, checklistId: event!.checklistId!);
+          },
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.all(8),
+            height: 120,
+            decoration: BoxDecoration(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildTimeIndicatorBar(event!, multidayEvent, startTime, endTime, now),
-                _buildSticker(event!.stickerId),
-                SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
+                _buildTime(event!),
+                Row(
                   children: [
-                    _buildTitle(event!),
-                    _buildLocation(event!),
+                    _buildTimeIndicatorBar(event!, multidayEvent, startTime, endTime, now),
+                    _buildSticker(event!.stickerId),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildTitle(event!),
+                        _buildLocation(event!),
+                      ],
+                    ),
+                    Spacer(),
                   ],
                 ),
-                Spacer(),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

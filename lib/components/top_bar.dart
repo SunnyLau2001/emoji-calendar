@@ -145,6 +145,7 @@ class TopBar extends ConsumerWidget {
                       type: MaterialType.transparency,
                       child: InkWell(
                         onTap: () {
+                          ref.watch(multidayEventDetailProvider.notifier).initMultidayEventDetailProp();
                           ref.watch(multidayEventDetailProvider.notifier).initStartEndDate();
                           ref.watch(isSelectingDateRangeProvider.notifier).state = true;
                         },

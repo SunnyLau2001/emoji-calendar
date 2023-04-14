@@ -14,7 +14,6 @@ class NominatimService {
     // print('Response body: ${response.body}');
     final json = jsonDecode(response.body);
     List<dynamic> features = json['features'];
-    print(features);
     return features.map<AddressDetail>((feature) => AddressDetail.fromJson(feature)).toList();
   }
 }

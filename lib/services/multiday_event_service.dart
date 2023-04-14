@@ -99,7 +99,6 @@ class MultidayEventService {
       }
     }
 
-    print(multidayEvent);
 
     for (int i = 0; i < mEventDateLists.length; i++) {
       List<int> eventIds = [];
@@ -177,6 +176,15 @@ class MultidayEventService {
     return;
   }
 
+  Future<void> putChecklistToDB(Checklist checklist) async {
+    final db = await isar;
+    await db.writeTxn(() async {
+      await db.checklists.put(checklist);
+    });
+
+    return;
+  }
+
   Stream<DateDetail?> watchDateDetailChange(String dateString) async* {
     final db = await isar;
     final dateDetail = db.dateDetails.watchObject(UtilFunctions.fastHash(dateString), fireImmediately: true);
@@ -193,6 +201,12 @@ class MultidayEventService {
     final db = await isar;
     final multidayEvent = db.multidayEvents.watchObject(multidayEventId, fireImmediately: true);
     yield* multidayEvent;
+  }
+
+  Stream<Checklist?> watchChecklistChange(int checklistId) async* {
+    final db = await isar;
+    final checklist = db.checklists.watchObject(checklistId, fireImmediately: true);
+    yield* checklist;
   }
 
   Future<DateDetail?> getDateDetailByDate(String dateString) async {

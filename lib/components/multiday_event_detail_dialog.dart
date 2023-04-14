@@ -294,8 +294,7 @@ class _MultidayEventDetailDialogState extends ConsumerState<MultidayEventDetailD
                 onTap: () {
                   ref.watch(multidayEventDetailProvider.notifier).setTitle(_controller.text);
                   if (widget.mode == "create") {
-                    print("Create");
-                    ref.watch(multidayEventDetailProvider.notifier).initMultidayEventDetailProp();
+                    // ref.watch(multidayEventDetailProvider.notifier).initMultidayEventDetailProp();
                     ref.watch(multidayEventDetailProvider.notifier).setDateList();
                     ref.watch(isSelectingDateRangeProvider.notifier).state = false;
                     context.go('/multidayEventEdit');

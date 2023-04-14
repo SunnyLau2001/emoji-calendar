@@ -160,14 +160,14 @@ Stream<MultidayEventStructured?> multidayEventStructuredWatcher(MultidayEventStr
             }
             final sticker = await StickerService().getStickerById(fetchedEvents[j]!.stickerId!);
             EventTemp eventTemp = EventTemp(
-              id: fetchedEvents[j]!.id,
-              title: fetchedEvents[j]!.title,
-              startHourMinute: fetchedEvents[j]!.startHourMinute,
-              endHourMinute: fetchedEvents[j]!.endHourMinute,
-              checklistTemp: checklistTemp,
-              dateId: fetchedEvents[j]!.dateId,
-              sticker: sticker
-            );
+                id: fetchedEvents[j]!.id,
+                title: fetchedEvents[j]!.title,
+                location: fetchedEvents[j]!.location,
+                startHourMinute: fetchedEvents[j]!.startHourMinute,
+                endHourMinute: fetchedEvents[j]!.endHourMinute,
+                checklistTemp: checklistTemp,
+                dateId: fetchedEvents[j]!.dateId,
+                sticker: sticker);
             eventTemps[i].add(eventTemp);
             // final eventTemp = EventTemp(
 
@@ -177,7 +177,6 @@ Stream<MultidayEventStructured?> multidayEventStructuredWatcher(MultidayEventStr
         }
       }
 
-      print("Loop");
       List<MultidayEventDateListProp> mEventDateListProps = [];
       for (int i = 0; i < steps; i++) {
         final dateTime = dateTimes[i];
@@ -198,7 +197,6 @@ Stream<MultidayEventStructured?> multidayEventStructuredWatcher(MultidayEventStr
           events: eventTemps[i],
         );
         mEventDateListProps.add(mEventDetailProp);
-        print(mEventDetailProp);
       }
 
       multidayEventStructured = MultidayEventStructured(
@@ -230,6 +228,14 @@ Stream<Event?> eventWatcher(EventWatcherRef ref, {required int eventIds}) async*
   final watcher = MultidayEventService().watchEventChange(eventIds);
   await for (final event in watcher) {
     yield event;
+  }
+}
+
+@riverpod
+Stream<Checklist?> checklistWatcher(ChecklistWatcherRef ref, {required int checklistId}) async* {
+  final watcher = MultidayEventService().watchChecklistChange(checklistId);
+  await for (final checklist in watcher) {
+    yield checklist;
   }
 }
 

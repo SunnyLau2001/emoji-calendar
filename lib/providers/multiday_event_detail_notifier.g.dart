@@ -7,7 +7,7 @@ part of 'multiday_event_detail_notifier.dart';
 // **************************************************************************
 
 String _$multidayEventDetailHash() =>
-    r'f2c66778f1d925d01d62bedaf4a3e658ce892fca';
+    r'e5d340dcc3c1744fe77f8d74eea8b6ff4d090738';
 
 /// See also [MultidayEventDetail].
 @ProviderFor(MultidayEventDetail)
