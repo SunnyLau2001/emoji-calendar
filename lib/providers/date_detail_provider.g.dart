@@ -30,9 +30,6 @@ class _SystemHash {
   }
 }
 
-typedef DateDetailStructuredWatcherRef
-    = AutoDisposeStreamProviderRef<DateDetailStructured?>;
-
 /// See also [dateDetailStructuredWatcher].
 @ProviderFor(dateDetailStructuredWatcher)
 const dateDetailStructuredWatcherProvider = DateDetailStructuredWatcherFamily();
@@ -81,10 +78,10 @@ class DateDetailStructuredWatcherProvider
     extends AutoDisposeStreamProvider<DateDetailStructured?> {
   /// See also [dateDetailStructuredWatcher].
   DateDetailStructuredWatcherProvider({
-    required this.dateString,
-  }) : super.internal(
+    required String dateString,
+  }) : this._internal(
           (ref) => dateDetailStructuredWatcher(
-            ref,
+            ref as DateDetailStructuredWatcherRef,
             dateString: dateString,
           ),
           from: dateDetailStructuredWatcherProvider,
@@ -96,9 +93,45 @@ class DateDetailStructuredWatcherProvider
           dependencies: DateDetailStructuredWatcherFamily._dependencies,
           allTransitiveDependencies:
               DateDetailStructuredWatcherFamily._allTransitiveDependencies,
+          dateString: dateString,
         );
 
+  DateDetailStructuredWatcherProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.dateString,
+  }) : super.internal();
+
   final String dateString;
+
+  @override
+  Override overrideWith(
+    Stream<DateDetailStructured?> Function(
+            DateDetailStructuredWatcherRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: DateDetailStructuredWatcherProvider._internal(
+        (ref) => create(ref as DateDetailStructuredWatcherRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        dateString: dateString,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<DateDetailStructured?> createElement() {
+    return _DateDetailStructuredWatcherProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -115,10 +148,24 @@ class DateDetailStructuredWatcherProvider
   }
 }
 
+mixin DateDetailStructuredWatcherRef
+    on AutoDisposeStreamProviderRef<DateDetailStructured?> {
+  /// The parameter `dateString` of this provider.
+  String get dateString;
+}
+
+class _DateDetailStructuredWatcherProviderElement
+    extends AutoDisposeStreamProviderElement<DateDetailStructured?>
+    with DateDetailStructuredWatcherRef {
+  _DateDetailStructuredWatcherProviderElement(super.provider);
+
+  @override
+  String get dateString =>
+      (origin as DateDetailStructuredWatcherProvider).dateString;
+}
+
 String _$multidayEventStructuredWatcherHash() =>
     r'ffec30dc79d4c667389f04f4b27a4011707af639';
-typedef MultidayEventStructuredWatcherRef
-    = AutoDisposeStreamProviderRef<MultidayEventStructured?>;
 
 /// See also [multidayEventStructuredWatcher].
 @ProviderFor(multidayEventStructuredWatcher)
@@ -169,10 +216,10 @@ class MultidayEventStructuredWatcherProvider
     extends AutoDisposeStreamProvider<MultidayEventStructured?> {
   /// See also [multidayEventStructuredWatcher].
   MultidayEventStructuredWatcherProvider({
-    required this.multidayEventId,
-  }) : super.internal(
+    required int multidayEventId,
+  }) : this._internal(
           (ref) => multidayEventStructuredWatcher(
-            ref,
+            ref as MultidayEventStructuredWatcherRef,
             multidayEventId: multidayEventId,
           ),
           from: multidayEventStructuredWatcherProvider,
@@ -184,9 +231,45 @@ class MultidayEventStructuredWatcherProvider
           dependencies: MultidayEventStructuredWatcherFamily._dependencies,
           allTransitiveDependencies:
               MultidayEventStructuredWatcherFamily._allTransitiveDependencies,
+          multidayEventId: multidayEventId,
         );
 
+  MultidayEventStructuredWatcherProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.multidayEventId,
+  }) : super.internal();
+
   final int multidayEventId;
+
+  @override
+  Override overrideWith(
+    Stream<MultidayEventStructured?> Function(
+            MultidayEventStructuredWatcherRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: MultidayEventStructuredWatcherProvider._internal(
+        (ref) => create(ref as MultidayEventStructuredWatcherRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        multidayEventId: multidayEventId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<MultidayEventStructured?> createElement() {
+    return _MultidayEventStructuredWatcherProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -203,8 +286,23 @@ class MultidayEventStructuredWatcherProvider
   }
 }
 
+mixin MultidayEventStructuredWatcherRef
+    on AutoDisposeStreamProviderRef<MultidayEventStructured?> {
+  /// The parameter `multidayEventId` of this provider.
+  int get multidayEventId;
+}
+
+class _MultidayEventStructuredWatcherProviderElement
+    extends AutoDisposeStreamProviderElement<MultidayEventStructured?>
+    with MultidayEventStructuredWatcherRef {
+  _MultidayEventStructuredWatcherProviderElement(super.provider);
+
+  @override
+  int get multidayEventId =>
+      (origin as MultidayEventStructuredWatcherProvider).multidayEventId;
+}
+
 String _$fetchDateDetailsHash() => r'b2e9ccd25974214f0be962a0ab837a4230733829';
-typedef FetchDateDetailsRef = AutoDisposeFutureProviderRef<List<DateDetail?>>;
 
 /// See also [fetchDateDetails].
 @ProviderFor(fetchDateDetails)
@@ -253,10 +351,10 @@ class FetchDateDetailsProvider
     extends AutoDisposeFutureProvider<List<DateDetail?>> {
   /// See also [fetchDateDetails].
   FetchDateDetailsProvider({
-    required this.dateStrings,
-  }) : super.internal(
+    required List<String> dateStrings,
+  }) : this._internal(
           (ref) => fetchDateDetails(
-            ref,
+            ref as FetchDateDetailsRef,
             dateStrings: dateStrings,
           ),
           from: fetchDateDetailsProvider,
@@ -268,9 +366,43 @@ class FetchDateDetailsProvider
           dependencies: FetchDateDetailsFamily._dependencies,
           allTransitiveDependencies:
               FetchDateDetailsFamily._allTransitiveDependencies,
+          dateStrings: dateStrings,
         );
 
+  FetchDateDetailsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.dateStrings,
+  }) : super.internal();
+
   final List<String> dateStrings;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<DateDetail?>> Function(FetchDateDetailsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FetchDateDetailsProvider._internal(
+        (ref) => create(ref as FetchDateDetailsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        dateStrings: dateStrings,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<DateDetail?>> createElement() {
+    return _FetchDateDetailsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -287,8 +419,22 @@ class FetchDateDetailsProvider
   }
 }
 
+mixin FetchDateDetailsRef on AutoDisposeFutureProviderRef<List<DateDetail?>> {
+  /// The parameter `dateStrings` of this provider.
+  List<String> get dateStrings;
+}
+
+class _FetchDateDetailsProviderElement
+    extends AutoDisposeFutureProviderElement<List<DateDetail?>>
+    with FetchDateDetailsRef {
+  _FetchDateDetailsProviderElement(super.provider);
+
+  @override
+  List<String> get dateStrings =>
+      (origin as FetchDateDetailsProvider).dateStrings;
+}
+
 String _$fetchEventsHash() => r'b83764d6e7ce3c870d1d0024f420048e001e315f';
-typedef FetchEventsRef = AutoDisposeFutureProviderRef<List<Event?>>;
 
 /// See also [fetchEvents].
 @ProviderFor(fetchEvents)
@@ -336,10 +482,10 @@ class FetchEventsFamily extends Family<AsyncValue<List<Event?>>> {
 class FetchEventsProvider extends AutoDisposeFutureProvider<List<Event?>> {
   /// See also [fetchEvents].
   FetchEventsProvider({
-    required this.eventIds,
-  }) : super.internal(
+    required List<int> eventIds,
+  }) : this._internal(
           (ref) => fetchEvents(
-            ref,
+            ref as FetchEventsRef,
             eventIds: eventIds,
           ),
           from: fetchEventsProvider,
@@ -351,9 +497,43 @@ class FetchEventsProvider extends AutoDisposeFutureProvider<List<Event?>> {
           dependencies: FetchEventsFamily._dependencies,
           allTransitiveDependencies:
               FetchEventsFamily._allTransitiveDependencies,
+          eventIds: eventIds,
         );
 
+  FetchEventsProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.eventIds,
+  }) : super.internal();
+
   final List<int> eventIds;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<Event?>> Function(FetchEventsRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FetchEventsProvider._internal(
+        (ref) => create(ref as FetchEventsRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        eventIds: eventIds,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<Event?>> createElement() {
+    return _FetchEventsProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -369,8 +549,20 @@ class FetchEventsProvider extends AutoDisposeFutureProvider<List<Event?>> {
   }
 }
 
+mixin FetchEventsRef on AutoDisposeFutureProviderRef<List<Event?>> {
+  /// The parameter `eventIds` of this provider.
+  List<int> get eventIds;
+}
+
+class _FetchEventsProviderElement
+    extends AutoDisposeFutureProviderElement<List<Event?>> with FetchEventsRef {
+  _FetchEventsProviderElement(super.provider);
+
+  @override
+  List<int> get eventIds => (origin as FetchEventsProvider).eventIds;
+}
+
 String _$eventWatcherHash() => r'656c371da07923fde5a63a3b4e388b20ed5768c3';
-typedef EventWatcherRef = AutoDisposeStreamProviderRef<Event?>;
 
 /// See also [eventWatcher].
 @ProviderFor(eventWatcher)
@@ -418,10 +610,10 @@ class EventWatcherFamily extends Family<AsyncValue<Event?>> {
 class EventWatcherProvider extends AutoDisposeStreamProvider<Event?> {
   /// See also [eventWatcher].
   EventWatcherProvider({
-    required this.eventIds,
-  }) : super.internal(
+    required int eventIds,
+  }) : this._internal(
           (ref) => eventWatcher(
-            ref,
+            ref as EventWatcherRef,
             eventIds: eventIds,
           ),
           from: eventWatcherProvider,
@@ -433,9 +625,43 @@ class EventWatcherProvider extends AutoDisposeStreamProvider<Event?> {
           dependencies: EventWatcherFamily._dependencies,
           allTransitiveDependencies:
               EventWatcherFamily._allTransitiveDependencies,
+          eventIds: eventIds,
         );
 
+  EventWatcherProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.eventIds,
+  }) : super.internal();
+
   final int eventIds;
+
+  @override
+  Override overrideWith(
+    Stream<Event?> Function(EventWatcherRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: EventWatcherProvider._internal(
+        (ref) => create(ref as EventWatcherRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        eventIds: eventIds,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<Event?> createElement() {
+    return _EventWatcherProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -451,8 +677,20 @@ class EventWatcherProvider extends AutoDisposeStreamProvider<Event?> {
   }
 }
 
+mixin EventWatcherRef on AutoDisposeStreamProviderRef<Event?> {
+  /// The parameter `eventIds` of this provider.
+  int get eventIds;
+}
+
+class _EventWatcherProviderElement
+    extends AutoDisposeStreamProviderElement<Event?> with EventWatcherRef {
+  _EventWatcherProviderElement(super.provider);
+
+  @override
+  int get eventIds => (origin as EventWatcherProvider).eventIds;
+}
+
 String _$checklistWatcherHash() => r'6cc5efc3cbce97caf5058a38a495ff877820c587';
-typedef ChecklistWatcherRef = AutoDisposeStreamProviderRef<Checklist?>;
 
 /// See also [checklistWatcher].
 @ProviderFor(checklistWatcher)
@@ -500,10 +738,10 @@ class ChecklistWatcherFamily extends Family<AsyncValue<Checklist?>> {
 class ChecklistWatcherProvider extends AutoDisposeStreamProvider<Checklist?> {
   /// See also [checklistWatcher].
   ChecklistWatcherProvider({
-    required this.checklistId,
-  }) : super.internal(
+    required int checklistId,
+  }) : this._internal(
           (ref) => checklistWatcher(
-            ref,
+            ref as ChecklistWatcherRef,
             checklistId: checklistId,
           ),
           from: checklistWatcherProvider,
@@ -515,9 +753,43 @@ class ChecklistWatcherProvider extends AutoDisposeStreamProvider<Checklist?> {
           dependencies: ChecklistWatcherFamily._dependencies,
           allTransitiveDependencies:
               ChecklistWatcherFamily._allTransitiveDependencies,
+          checklistId: checklistId,
         );
 
+  ChecklistWatcherProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.checklistId,
+  }) : super.internal();
+
   final int checklistId;
+
+  @override
+  Override overrideWith(
+    Stream<Checklist?> Function(ChecklistWatcherRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: ChecklistWatcherProvider._internal(
+        (ref) => create(ref as ChecklistWatcherRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        checklistId: checklistId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeStreamProviderElement<Checklist?> createElement() {
+    return _ChecklistWatcherProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -534,10 +806,22 @@ class ChecklistWatcherProvider extends AutoDisposeStreamProvider<Checklist?> {
   }
 }
 
+mixin ChecklistWatcherRef on AutoDisposeStreamProviderRef<Checklist?> {
+  /// The parameter `checklistId` of this provider.
+  int get checklistId;
+}
+
+class _ChecklistWatcherProviderElement
+    extends AutoDisposeStreamProviderElement<Checklist?>
+    with ChecklistWatcherRef {
+  _ChecklistWatcherProviderElement(super.provider);
+
+  @override
+  int get checklistId => (origin as ChecklistWatcherProvider).checklistId;
+}
+
 String _$fetchMultidayEventsDetailHash() =>
     r'2a61c509d6a98ca8e1640e8ff828f4d9565cb31e';
-typedef FetchMultidayEventsDetailRef
-    = AutoDisposeFutureProviderRef<List<MultidayEvent?>>;
 
 /// See also [fetchMultidayEventsDetail].
 @ProviderFor(fetchMultidayEventsDetail)
@@ -587,10 +871,10 @@ class FetchMultidayEventsDetailProvider
     extends AutoDisposeFutureProvider<List<MultidayEvent?>> {
   /// See also [fetchMultidayEventsDetail].
   FetchMultidayEventsDetailProvider({
-    required this.multidayEventsIds,
-  }) : super.internal(
+    required List<int> multidayEventsIds,
+  }) : this._internal(
           (ref) => fetchMultidayEventsDetail(
-            ref,
+            ref as FetchMultidayEventsDetailRef,
             multidayEventsIds: multidayEventsIds,
           ),
           from: fetchMultidayEventsDetailProvider,
@@ -602,9 +886,45 @@ class FetchMultidayEventsDetailProvider
           dependencies: FetchMultidayEventsDetailFamily._dependencies,
           allTransitiveDependencies:
               FetchMultidayEventsDetailFamily._allTransitiveDependencies,
+          multidayEventsIds: multidayEventsIds,
         );
 
+  FetchMultidayEventsDetailProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.multidayEventsIds,
+  }) : super.internal();
+
   final List<int> multidayEventsIds;
+
+  @override
+  Override overrideWith(
+    FutureOr<List<MultidayEvent?>> Function(
+            FetchMultidayEventsDetailRef provider)
+        create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FetchMultidayEventsDetailProvider._internal(
+        (ref) => create(ref as FetchMultidayEventsDetailRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        multidayEventsIds: multidayEventsIds,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<List<MultidayEvent?>> createElement() {
+    return _FetchMultidayEventsDetailProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -620,4 +940,21 @@ class FetchMultidayEventsDetailProvider
     return _SystemHash.finish(hash);
   }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+
+mixin FetchMultidayEventsDetailRef
+    on AutoDisposeFutureProviderRef<List<MultidayEvent?>> {
+  /// The parameter `multidayEventsIds` of this provider.
+  List<int> get multidayEventsIds;
+}
+
+class _FetchMultidayEventsDetailProviderElement
+    extends AutoDisposeFutureProviderElement<List<MultidayEvent?>>
+    with FetchMultidayEventsDetailRef {
+  _FetchMultidayEventsDetailProviderElement(super.provider);
+
+  @override
+  List<int> get multidayEventsIds =>
+      (origin as FetchMultidayEventsDetailProvider).multidayEventsIds;
+}
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

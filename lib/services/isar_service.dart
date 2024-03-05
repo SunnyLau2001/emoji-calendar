@@ -11,9 +11,9 @@ class IsarService {
   static Future<void> initIsar() async {
     final dir = await getApplicationDocumentsDirectory();
     await Isar.open(
+      directory: dir.path,
       [StickerSchema, DateDetailSchema, MultidayEventSchema, EventSchema, ChecklistSchema],
       inspector: true,
-      directory: dir.path,
     );
   }
 }

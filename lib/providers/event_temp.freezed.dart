@@ -12,7 +12,7 @@ part of 'event_temp.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$EventTemp {
@@ -151,10 +151,11 @@ class _$EventTempCopyWithImpl<$Res, $Val extends EventTemp>
 }
 
 /// @nodoc
-abstract class _$$_EventTempCopyWith<$Res> implements $EventTempCopyWith<$Res> {
-  factory _$$_EventTempCopyWith(
-          _$_EventTemp value, $Res Function(_$_EventTemp) then) =
-      __$$_EventTempCopyWithImpl<$Res>;
+abstract class _$$EventTempImplCopyWith<$Res>
+    implements $EventTempCopyWith<$Res> {
+  factory _$$EventTempImplCopyWith(
+          _$EventTempImpl value, $Res Function(_$EventTempImpl) then) =
+      __$$EventTempImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -177,11 +178,11 @@ abstract class _$$_EventTempCopyWith<$Res> implements $EventTempCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_EventTempCopyWithImpl<$Res>
-    extends _$EventTempCopyWithImpl<$Res, _$_EventTemp>
-    implements _$$_EventTempCopyWith<$Res> {
-  __$$_EventTempCopyWithImpl(
-      _$_EventTemp _value, $Res Function(_$_EventTemp) _then)
+class __$$EventTempImplCopyWithImpl<$Res>
+    extends _$EventTempCopyWithImpl<$Res, _$EventTempImpl>
+    implements _$$EventTempImplCopyWith<$Res> {
+  __$$EventTempImplCopyWithImpl(
+      _$EventTempImpl _value, $Res Function(_$EventTempImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -201,7 +202,7 @@ class __$$_EventTempCopyWithImpl<$Res>
     Object? multidayEventId = freezed,
     Object? dateId = null,
   }) {
-    return _then(_$_EventTemp(
+    return _then(_$EventTempImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -260,8 +261,8 @@ class __$$_EventTempCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_EventTemp implements _EventTemp {
-  _$_EventTemp(
+class _$EventTempImpl implements _EventTemp {
+  _$EventTempImpl(
       {required this.id,
       required this.title,
       required final List<int> startHourMinute,
@@ -332,10 +333,10 @@ class _$_EventTemp implements _EventTemp {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EventTemp &&
+            other is _$EventTempImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             const DeepCollectionEquality()
@@ -378,8 +379,8 @@ class _$_EventTemp implements _EventTemp {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EventTempCopyWith<_$_EventTemp> get copyWith =>
-      __$$_EventTempCopyWithImpl<_$_EventTemp>(this, _$identity);
+  _$$EventTempImplCopyWith<_$EventTempImpl> get copyWith =>
+      __$$EventTempImplCopyWithImpl<_$EventTempImpl>(this, _$identity);
 }
 
 abstract class _EventTemp implements EventTemp {
@@ -396,7 +397,7 @@ abstract class _EventTemp implements EventTemp {
       final DateTime? weatherLastUpdate,
       required final ChecklistTemp checklistTemp,
       final int? multidayEventId,
-      required final String dateId}) = _$_EventTemp;
+      required final String dateId}) = _$EventTempImpl;
 
   @override
   int get id;
@@ -426,6 +427,6 @@ abstract class _EventTemp implements EventTemp {
   String get dateId;
   @override
   @JsonKey(ignore: true)
-  _$$_EventTempCopyWith<_$_EventTemp> get copyWith =>
+  _$$EventTempImplCopyWith<_$EventTempImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

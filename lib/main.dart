@@ -6,7 +6,6 @@ import 'package:fyp_our_sky_new/pages/single_date_view_page.dart';
 import 'package:fyp_our_sky_new/services/isar_service.dart';
 import 'package:fyp_our_sky_new/services/sticker_service.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_map_tile_caching/flutter_map_tile_caching.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,10 +14,10 @@ void main() async {
   await IsarService.initIsar();
   await StickerService.initSticker();
 
-  await FlutterMapTileCaching.initialise(
-    rootDirectory: null,
-  );
-  FlutterMapTileCaching.instance('MapTileStore').manage.create();
+  // await FlutterMapTileCaching.initialise(
+  //   rootDirectory: null,
+  // );
+  // FlutterMapTileCaching.instance('MapTileStore').manage.create();
 
   runApp(ProviderScope(child: const OurTimeApp()));
 }

@@ -12,7 +12,7 @@ part of 'checklist_temp_prop.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$ChecklistTemp {
@@ -69,22 +69,22 @@ class _$ChecklistTempCopyWithImpl<$Res, $Val extends ChecklistTemp>
 }
 
 /// @nodoc
-abstract class _$$_ChecklistTempCopyWith<$Res>
+abstract class _$$ChecklistTempImplCopyWith<$Res>
     implements $ChecklistTempCopyWith<$Res> {
-  factory _$$_ChecklistTempCopyWith(
-          _$_ChecklistTemp value, $Res Function(_$_ChecklistTemp) then) =
-      __$$_ChecklistTempCopyWithImpl<$Res>;
+  factory _$$ChecklistTempImplCopyWith(
+          _$ChecklistTempImpl value, $Res Function(_$ChecklistTempImpl) then) =
+      __$$ChecklistTempImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int id, String title, List<ChecklistItemTemp> items});
 }
 
 /// @nodoc
-class __$$_ChecklistTempCopyWithImpl<$Res>
-    extends _$ChecklistTempCopyWithImpl<$Res, _$_ChecklistTemp>
-    implements _$$_ChecklistTempCopyWith<$Res> {
-  __$$_ChecklistTempCopyWithImpl(
-      _$_ChecklistTemp _value, $Res Function(_$_ChecklistTemp) _then)
+class __$$ChecklistTempImplCopyWithImpl<$Res>
+    extends _$ChecklistTempCopyWithImpl<$Res, _$ChecklistTempImpl>
+    implements _$$ChecklistTempImplCopyWith<$Res> {
+  __$$ChecklistTempImplCopyWithImpl(
+      _$ChecklistTempImpl _value, $Res Function(_$ChecklistTempImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -94,7 +94,7 @@ class __$$_ChecklistTempCopyWithImpl<$Res>
     Object? title = null,
     Object? items = null,
   }) {
-    return _then(_$_ChecklistTemp(
+    return _then(_$ChecklistTempImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -113,8 +113,8 @@ class __$$_ChecklistTempCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_ChecklistTemp implements _ChecklistTemp {
-  _$_ChecklistTemp(
+class _$ChecklistTempImpl implements _ChecklistTemp {
+  _$ChecklistTempImpl(
       {required this.id,
       required this.title,
       required final List<ChecklistItemTemp> items})
@@ -138,10 +138,10 @@ class _$_ChecklistTemp implements _ChecklistTemp {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ChecklistTemp &&
+            other is _$ChecklistTempImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             const DeepCollectionEquality().equals(other._items, _items));
@@ -154,15 +154,15 @@ class _$_ChecklistTemp implements _ChecklistTemp {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ChecklistTempCopyWith<_$_ChecklistTemp> get copyWith =>
-      __$$_ChecklistTempCopyWithImpl<_$_ChecklistTemp>(this, _$identity);
+  _$$ChecklistTempImplCopyWith<_$ChecklistTempImpl> get copyWith =>
+      __$$ChecklistTempImplCopyWithImpl<_$ChecklistTempImpl>(this, _$identity);
 }
 
 abstract class _ChecklistTemp implements ChecklistTemp {
   factory _ChecklistTemp(
       {required final int id,
       required final String title,
-      required final List<ChecklistItemTemp> items}) = _$_ChecklistTemp;
+      required final List<ChecklistItemTemp> items}) = _$ChecklistTempImpl;
 
   @override
   int get id;
@@ -172,7 +172,7 @@ abstract class _ChecklistTemp implements ChecklistTemp {
   List<ChecklistItemTemp> get items;
   @override
   @JsonKey(ignore: true)
-  _$$_ChecklistTempCopyWith<_$_ChecklistTemp> get copyWith =>
+  _$$ChecklistTempImplCopyWith<_$ChecklistTempImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -225,22 +225,22 @@ class _$ChecklistItemTempCopyWithImpl<$Res, $Val extends ChecklistItemTemp>
 }
 
 /// @nodoc
-abstract class _$$_ChecklistItemTempCopyWith<$Res>
+abstract class _$$ChecklistItemTempImplCopyWith<$Res>
     implements $ChecklistItemTempCopyWith<$Res> {
-  factory _$$_ChecklistItemTempCopyWith(_$_ChecklistItemTemp value,
-          $Res Function(_$_ChecklistItemTemp) then) =
-      __$$_ChecklistItemTempCopyWithImpl<$Res>;
+  factory _$$ChecklistItemTempImplCopyWith(_$ChecklistItemTempImpl value,
+          $Res Function(_$ChecklistItemTempImpl) then) =
+      __$$ChecklistItemTempImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String detail, bool checked});
 }
 
 /// @nodoc
-class __$$_ChecklistItemTempCopyWithImpl<$Res>
-    extends _$ChecklistItemTempCopyWithImpl<$Res, _$_ChecklistItemTemp>
-    implements _$$_ChecklistItemTempCopyWith<$Res> {
-  __$$_ChecklistItemTempCopyWithImpl(
-      _$_ChecklistItemTemp _value, $Res Function(_$_ChecklistItemTemp) _then)
+class __$$ChecklistItemTempImplCopyWithImpl<$Res>
+    extends _$ChecklistItemTempCopyWithImpl<$Res, _$ChecklistItemTempImpl>
+    implements _$$ChecklistItemTempImplCopyWith<$Res> {
+  __$$ChecklistItemTempImplCopyWithImpl(_$ChecklistItemTempImpl _value,
+      $Res Function(_$ChecklistItemTempImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -249,7 +249,7 @@ class __$$_ChecklistItemTempCopyWithImpl<$Res>
     Object? detail = null,
     Object? checked = null,
   }) {
-    return _then(_$_ChecklistItemTemp(
+    return _then(_$ChecklistItemTempImpl(
       detail: null == detail
           ? _value.detail
           : detail // ignore: cast_nullable_to_non_nullable
@@ -264,8 +264,8 @@ class __$$_ChecklistItemTempCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_ChecklistItemTemp implements _ChecklistItemTemp {
-  _$_ChecklistItemTemp({required this.detail, required this.checked});
+class _$ChecklistItemTempImpl implements _ChecklistItemTemp {
+  _$ChecklistItemTempImpl({required this.detail, required this.checked});
 
   @override
   final String detail;
@@ -278,10 +278,10 @@ class _$_ChecklistItemTemp implements _ChecklistItemTemp {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_ChecklistItemTemp &&
+            other is _$ChecklistItemTempImpl &&
             (identical(other.detail, detail) || other.detail == detail) &&
             (identical(other.checked, checked) || other.checked == checked));
   }
@@ -292,15 +292,15 @@ class _$_ChecklistItemTemp implements _ChecklistItemTemp {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_ChecklistItemTempCopyWith<_$_ChecklistItemTemp> get copyWith =>
-      __$$_ChecklistItemTempCopyWithImpl<_$_ChecklistItemTemp>(
+  _$$ChecklistItemTempImplCopyWith<_$ChecklistItemTempImpl> get copyWith =>
+      __$$ChecklistItemTempImplCopyWithImpl<_$ChecklistItemTempImpl>(
           this, _$identity);
 }
 
 abstract class _ChecklistItemTemp implements ChecklistItemTemp {
   factory _ChecklistItemTemp(
       {required final String detail,
-      required final bool checked}) = _$_ChecklistItemTemp;
+      required final bool checked}) = _$ChecklistItemTempImpl;
 
   @override
   String get detail;
@@ -308,6 +308,6 @@ abstract class _ChecklistItemTemp implements ChecklistItemTemp {
   bool get checked;
   @override
   @JsonKey(ignore: true)
-  _$$_ChecklistItemTempCopyWith<_$_ChecklistItemTemp> get copyWith =>
+  _$$ChecklistItemTempImplCopyWith<_$ChecklistItemTempImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

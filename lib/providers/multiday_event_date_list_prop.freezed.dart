@@ -12,7 +12,7 @@ part of 'multiday_event_date_list_prop.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$MultidayEventDateListProp {
@@ -80,12 +80,12 @@ class _$MultidayEventDateListPropCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_MultidayEventDateListPropCopyWith<$Res>
+abstract class _$$MultidayEventDateListPropImplCopyWith<$Res>
     implements $MultidayEventDateListPropCopyWith<$Res> {
-  factory _$$_MultidayEventDateListPropCopyWith(
-          _$_MultidayEventDateListProp value,
-          $Res Function(_$_MultidayEventDateListProp) then) =
-      __$$_MultidayEventDateListPropCopyWithImpl<$Res>;
+  factory _$$MultidayEventDateListPropImplCopyWith(
+          _$MultidayEventDateListPropImpl value,
+          $Res Function(_$MultidayEventDateListPropImpl) then) =
+      __$$MultidayEventDateListPropImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -96,13 +96,13 @@ abstract class _$$_MultidayEventDateListPropCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_MultidayEventDateListPropCopyWithImpl<$Res>
+class __$$MultidayEventDateListPropImplCopyWithImpl<$Res>
     extends _$MultidayEventDateListPropCopyWithImpl<$Res,
-        _$_MultidayEventDateListProp>
-    implements _$$_MultidayEventDateListPropCopyWith<$Res> {
-  __$$_MultidayEventDateListPropCopyWithImpl(
-      _$_MultidayEventDateListProp _value,
-      $Res Function(_$_MultidayEventDateListProp) _then)
+        _$MultidayEventDateListPropImpl>
+    implements _$$MultidayEventDateListPropImplCopyWith<$Res> {
+  __$$MultidayEventDateListPropImplCopyWithImpl(
+      _$MultidayEventDateListPropImpl _value,
+      $Res Function(_$MultidayEventDateListPropImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -113,7 +113,7 @@ class __$$_MultidayEventDateListPropCopyWithImpl<$Res>
     Object? dateDetail = null,
     Object? events = null,
   }) {
-    return _then(_$_MultidayEventDateListProp(
+    return _then(_$MultidayEventDateListPropImpl(
       dateString: null == dateString
           ? _value.dateString
           : dateString // ignore: cast_nullable_to_non_nullable
@@ -136,8 +136,8 @@ class __$$_MultidayEventDateListPropCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_MultidayEventDateListProp implements _MultidayEventDateListProp {
-  _$_MultidayEventDateListProp(
+class _$MultidayEventDateListPropImpl implements _MultidayEventDateListProp {
+  _$MultidayEventDateListPropImpl(
       {required this.dateString,
       required this.dateTime,
       required this.dateDetail,
@@ -164,10 +164,10 @@ class _$_MultidayEventDateListProp implements _MultidayEventDateListProp {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MultidayEventDateListProp &&
+            other is _$MultidayEventDateListPropImpl &&
             (identical(other.dateString, dateString) ||
                 other.dateString == dateString) &&
             (identical(other.dateTime, dateTime) ||
@@ -184,9 +184,9 @@ class _$_MultidayEventDateListProp implements _MultidayEventDateListProp {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MultidayEventDateListPropCopyWith<_$_MultidayEventDateListProp>
-      get copyWith => __$$_MultidayEventDateListPropCopyWithImpl<
-          _$_MultidayEventDateListProp>(this, _$identity);
+  _$$MultidayEventDateListPropImplCopyWith<_$MultidayEventDateListPropImpl>
+      get copyWith => __$$MultidayEventDateListPropImplCopyWithImpl<
+          _$MultidayEventDateListPropImpl>(this, _$identity);
 }
 
 abstract class _MultidayEventDateListProp implements MultidayEventDateListProp {
@@ -194,7 +194,7 @@ abstract class _MultidayEventDateListProp implements MultidayEventDateListProp {
       {required final String dateString,
       required final DateTime dateTime,
       required final DateDetail dateDetail,
-      required final List<EventTemp> events}) = _$_MultidayEventDateListProp;
+      required final List<EventTemp> events}) = _$MultidayEventDateListPropImpl;
 
   @override
   String get dateString;
@@ -206,6 +206,6 @@ abstract class _MultidayEventDateListProp implements MultidayEventDateListProp {
   List<EventTemp> get events;
   @override
   @JsonKey(ignore: true)
-  _$$_MultidayEventDateListPropCopyWith<_$_MultidayEventDateListProp>
+  _$$MultidayEventDateListPropImplCopyWith<_$MultidayEventDateListPropImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

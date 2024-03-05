@@ -44,8 +44,6 @@ class _SystemHash {
   }
 }
 
-typedef FetchStickerByIdRef = AutoDisposeFutureProviderRef<Sticker?>;
-
 /// See also [fetchStickerById].
 @ProviderFor(fetchStickerById)
 const fetchStickerByIdProvider = FetchStickerByIdFamily();
@@ -92,10 +90,10 @@ class FetchStickerByIdFamily extends Family<AsyncValue<Sticker?>> {
 class FetchStickerByIdProvider extends AutoDisposeFutureProvider<Sticker?> {
   /// See also [fetchStickerById].
   FetchStickerByIdProvider({
-    required this.stickerId,
-  }) : super.internal(
+    required String stickerId,
+  }) : this._internal(
           (ref) => fetchStickerById(
-            ref,
+            ref as FetchStickerByIdRef,
             stickerId: stickerId,
           ),
           from: fetchStickerByIdProvider,
@@ -107,9 +105,43 @@ class FetchStickerByIdProvider extends AutoDisposeFutureProvider<Sticker?> {
           dependencies: FetchStickerByIdFamily._dependencies,
           allTransitiveDependencies:
               FetchStickerByIdFamily._allTransitiveDependencies,
+          stickerId: stickerId,
         );
 
+  FetchStickerByIdProvider._internal(
+    super._createNotifier, {
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.debugGetCreateSourceHash,
+    required super.from,
+    required this.stickerId,
+  }) : super.internal();
+
   final String stickerId;
+
+  @override
+  Override overrideWith(
+    FutureOr<Sticker?> Function(FetchStickerByIdRef provider) create,
+  ) {
+    return ProviderOverride(
+      origin: this,
+      override: FetchStickerByIdProvider._internal(
+        (ref) => create(ref as FetchStickerByIdRef),
+        from: from,
+        name: null,
+        dependencies: null,
+        allTransitiveDependencies: null,
+        debugGetCreateSourceHash: null,
+        stickerId: stickerId,
+      ),
+    );
+  }
+
+  @override
+  AutoDisposeFutureProviderElement<Sticker?> createElement() {
+    return _FetchStickerByIdProviderElement(this);
+  }
 
   @override
   bool operator ==(Object other) {
@@ -124,4 +156,19 @@ class FetchStickerByIdProvider extends AutoDisposeFutureProvider<Sticker?> {
     return _SystemHash.finish(hash);
   }
 }
-// ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions
+
+mixin FetchStickerByIdRef on AutoDisposeFutureProviderRef<Sticker?> {
+  /// The parameter `stickerId` of this provider.
+  String get stickerId;
+}
+
+class _FetchStickerByIdProviderElement
+    extends AutoDisposeFutureProviderElement<Sticker?>
+    with FetchStickerByIdRef {
+  _FetchStickerByIdProviderElement(super.provider);
+
+  @override
+  String get stickerId => (origin as FetchStickerByIdProvider).stickerId;
+}
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

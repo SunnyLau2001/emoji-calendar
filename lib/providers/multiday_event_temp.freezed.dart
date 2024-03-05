@@ -12,7 +12,7 @@ part of 'multiday_event_temp.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$MultidayEventTemp {
@@ -100,11 +100,11 @@ class _$MultidayEventTempCopyWithImpl<$Res, $Val extends MultidayEventTemp>
 }
 
 /// @nodoc
-abstract class _$$_MultidayEventTempCopyWith<$Res>
+abstract class _$$MultidayEventTempImplCopyWith<$Res>
     implements $MultidayEventTempCopyWith<$Res> {
-  factory _$$_MultidayEventTempCopyWith(_$_MultidayEventTemp value,
-          $Res Function(_$_MultidayEventTemp) then) =
-      __$$_MultidayEventTempCopyWithImpl<$Res>;
+  factory _$$MultidayEventTempImplCopyWith(_$MultidayEventTempImpl value,
+          $Res Function(_$MultidayEventTempImpl) then) =
+      __$$MultidayEventTempImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -118,11 +118,11 @@ abstract class _$$_MultidayEventTempCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_MultidayEventTempCopyWithImpl<$Res>
-    extends _$MultidayEventTempCopyWithImpl<$Res, _$_MultidayEventTemp>
-    implements _$$_MultidayEventTempCopyWith<$Res> {
-  __$$_MultidayEventTempCopyWithImpl(
-      _$_MultidayEventTemp _value, $Res Function(_$_MultidayEventTemp) _then)
+class __$$MultidayEventTempImplCopyWithImpl<$Res>
+    extends _$MultidayEventTempCopyWithImpl<$Res, _$MultidayEventTempImpl>
+    implements _$$MultidayEventTempImplCopyWith<$Res> {
+  __$$MultidayEventTempImplCopyWithImpl(_$MultidayEventTempImpl _value,
+      $Res Function(_$MultidayEventTempImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -136,7 +136,7 @@ class __$$_MultidayEventTempCopyWithImpl<$Res>
     Object? bookmarkColorInt = null,
     Object? eventIds = null,
   }) {
-    return _then(_$_MultidayEventTemp(
+    return _then(_$MultidayEventTempImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -171,8 +171,8 @@ class __$$_MultidayEventTempCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_MultidayEventTemp implements _MultidayEventTemp {
-  _$_MultidayEventTemp(
+class _$MultidayEventTempImpl implements _MultidayEventTemp {
+  _$MultidayEventTempImpl(
       {required this.id,
       required this.title,
       required this.startDate,
@@ -208,10 +208,10 @@ class _$_MultidayEventTemp implements _MultidayEventTemp {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MultidayEventTemp &&
+            other is _$MultidayEventTempImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.startDate, startDate) ||
@@ -238,8 +238,8 @@ class _$_MultidayEventTemp implements _MultidayEventTemp {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MultidayEventTempCopyWith<_$_MultidayEventTemp> get copyWith =>
-      __$$_MultidayEventTempCopyWithImpl<_$_MultidayEventTemp>(
+  _$$MultidayEventTempImplCopyWith<_$MultidayEventTempImpl> get copyWith =>
+      __$$MultidayEventTempImplCopyWithImpl<_$MultidayEventTempImpl>(
           this, _$identity);
 }
 
@@ -251,7 +251,7 @@ abstract class _MultidayEventTemp implements MultidayEventTemp {
       required final DateTime? endDate,
       required final String bookmarkStickerId,
       required final int bookmarkColorInt,
-      required final List<int> eventIds}) = _$_MultidayEventTemp;
+      required final List<int> eventIds}) = _$MultidayEventTempImpl;
 
   @override
   int get id;
@@ -269,6 +269,6 @@ abstract class _MultidayEventTemp implements MultidayEventTemp {
   List<int> get eventIds;
   @override
   @JsonKey(ignore: true)
-  _$$_MultidayEventTempCopyWith<_$_MultidayEventTemp> get copyWith =>
+  _$$MultidayEventTempImplCopyWith<_$MultidayEventTempImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -12,7 +12,7 @@ part of 'date_detail_structured.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$DateDetailStructured {
@@ -73,11 +73,11 @@ class _$DateDetailStructuredCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_DateDetailStructuredCopyWith<$Res>
+abstract class _$$DateDetailStructuredImplCopyWith<$Res>
     implements $DateDetailStructuredCopyWith<$Res> {
-  factory _$$_DateDetailStructuredCopyWith(_$_DateDetailStructured value,
-          $Res Function(_$_DateDetailStructured) then) =
-      __$$_DateDetailStructuredCopyWithImpl<$Res>;
+  factory _$$DateDetailStructuredImplCopyWith(_$DateDetailStructuredImpl value,
+          $Res Function(_$DateDetailStructuredImpl) then) =
+      __$$DateDetailStructuredImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -87,11 +87,11 @@ abstract class _$$_DateDetailStructuredCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_DateDetailStructuredCopyWithImpl<$Res>
-    extends _$DateDetailStructuredCopyWithImpl<$Res, _$_DateDetailStructured>
-    implements _$$_DateDetailStructuredCopyWith<$Res> {
-  __$$_DateDetailStructuredCopyWithImpl(_$_DateDetailStructured _value,
-      $Res Function(_$_DateDetailStructured) _then)
+class __$$DateDetailStructuredImplCopyWithImpl<$Res>
+    extends _$DateDetailStructuredCopyWithImpl<$Res, _$DateDetailStructuredImpl>
+    implements _$$DateDetailStructuredImplCopyWith<$Res> {
+  __$$DateDetailStructuredImplCopyWithImpl(_$DateDetailStructuredImpl _value,
+      $Res Function(_$DateDetailStructuredImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -101,7 +101,7 @@ class __$$_DateDetailStructuredCopyWithImpl<$Res>
     Object? events = null,
     Object? multidayEvents = null,
   }) {
-    return _then(_$_DateDetailStructured(
+    return _then(_$DateDetailStructuredImpl(
       dateDetail: freezed == dateDetail
           ? _value.dateDetail
           : dateDetail // ignore: cast_nullable_to_non_nullable
@@ -120,8 +120,8 @@ class __$$_DateDetailStructuredCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_DateDetailStructured implements _DateDetailStructured {
-  _$_DateDetailStructured(
+class _$DateDetailStructuredImpl implements _DateDetailStructured {
+  _$DateDetailStructuredImpl(
       {required this.dateDetail,
       required final List<Event?> events,
       required final List<MultidayEvent?> multidayEvents})
@@ -152,10 +152,10 @@ class _$_DateDetailStructured implements _DateDetailStructured {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_DateDetailStructured &&
+            other is _$DateDetailStructuredImpl &&
             (identical(other.dateDetail, dateDetail) ||
                 other.dateDetail == dateDetail) &&
             const DeepCollectionEquality().equals(other._events, _events) &&
@@ -173,9 +173,10 @@ class _$_DateDetailStructured implements _DateDetailStructured {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_DateDetailStructuredCopyWith<_$_DateDetailStructured> get copyWith =>
-      __$$_DateDetailStructuredCopyWithImpl<_$_DateDetailStructured>(
-          this, _$identity);
+  _$$DateDetailStructuredImplCopyWith<_$DateDetailStructuredImpl>
+      get copyWith =>
+          __$$DateDetailStructuredImplCopyWithImpl<_$DateDetailStructuredImpl>(
+              this, _$identity);
 }
 
 abstract class _DateDetailStructured implements DateDetailStructured {
@@ -183,7 +184,7 @@ abstract class _DateDetailStructured implements DateDetailStructured {
           {required final DateDetail? dateDetail,
           required final List<Event?> events,
           required final List<MultidayEvent?> multidayEvents}) =
-      _$_DateDetailStructured;
+      _$DateDetailStructuredImpl;
 
   @override
   DateDetail? get dateDetail;
@@ -193,6 +194,6 @@ abstract class _DateDetailStructured implements DateDetailStructured {
   List<MultidayEvent?> get multidayEvents;
   @override
   @JsonKey(ignore: true)
-  _$$_DateDetailStructuredCopyWith<_$_DateDetailStructured> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$DateDetailStructuredImplCopyWith<_$DateDetailStructuredImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

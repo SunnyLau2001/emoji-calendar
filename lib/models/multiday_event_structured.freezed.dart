@@ -12,7 +12,7 @@ part of 'multiday_event_structured.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$MultidayEventStructured {
@@ -93,11 +93,12 @@ class _$MultidayEventStructuredCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_MultidayEventStructuredCopyWith<$Res>
+abstract class _$$MultidayEventStructuredImplCopyWith<$Res>
     implements $MultidayEventStructuredCopyWith<$Res> {
-  factory _$$_MultidayEventStructuredCopyWith(_$_MultidayEventStructured value,
-          $Res Function(_$_MultidayEventStructured) then) =
-      __$$_MultidayEventStructuredCopyWithImpl<$Res>;
+  factory _$$MultidayEventStructuredImplCopyWith(
+          _$MultidayEventStructuredImpl value,
+          $Res Function(_$MultidayEventStructuredImpl) then) =
+      __$$MultidayEventStructuredImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -111,12 +112,13 @@ abstract class _$$_MultidayEventStructuredCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$_MultidayEventStructuredCopyWithImpl<$Res>
+class __$$MultidayEventStructuredImplCopyWithImpl<$Res>
     extends _$MultidayEventStructuredCopyWithImpl<$Res,
-        _$_MultidayEventStructured>
-    implements _$$_MultidayEventStructuredCopyWith<$Res> {
-  __$$_MultidayEventStructuredCopyWithImpl(_$_MultidayEventStructured _value,
-      $Res Function(_$_MultidayEventStructured) _then)
+        _$MultidayEventStructuredImpl>
+    implements _$$MultidayEventStructuredImplCopyWith<$Res> {
+  __$$MultidayEventStructuredImplCopyWithImpl(
+      _$MultidayEventStructuredImpl _value,
+      $Res Function(_$MultidayEventStructuredImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -127,7 +129,7 @@ class __$$_MultidayEventStructuredCopyWithImpl<$Res>
     Object? mEventDetailProp = null,
     Object? mEventDateListProps = null,
   }) {
-    return _then(_$_MultidayEventStructured(
+    return _then(_$MultidayEventStructuredImpl(
       multidayEvents: freezed == multidayEvents
           ? _value.multidayEvents
           : multidayEvents // ignore: cast_nullable_to_non_nullable
@@ -150,8 +152,8 @@ class __$$_MultidayEventStructuredCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_MultidayEventStructured implements _MultidayEventStructured {
-  _$_MultidayEventStructured(
+class _$MultidayEventStructuredImpl implements _MultidayEventStructured {
+  _$MultidayEventStructuredImpl(
       {required this.multidayEvents,
       required final List<Event?> events,
       required this.mEventDetailProp,
@@ -186,10 +188,10 @@ class _$_MultidayEventStructured implements _MultidayEventStructured {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_MultidayEventStructured &&
+            other is _$MultidayEventStructuredImpl &&
             (identical(other.multidayEvents, multidayEvents) ||
                 other.multidayEvents == multidayEvents) &&
             const DeepCollectionEquality().equals(other._events, _events) &&
@@ -210,10 +212,9 @@ class _$_MultidayEventStructured implements _MultidayEventStructured {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_MultidayEventStructuredCopyWith<_$_MultidayEventStructured>
-      get copyWith =>
-          __$$_MultidayEventStructuredCopyWithImpl<_$_MultidayEventStructured>(
-              this, _$identity);
+  _$$MultidayEventStructuredImplCopyWith<_$MultidayEventStructuredImpl>
+      get copyWith => __$$MultidayEventStructuredImplCopyWithImpl<
+          _$MultidayEventStructuredImpl>(this, _$identity);
 }
 
 abstract class _MultidayEventStructured implements MultidayEventStructured {
@@ -222,7 +223,7 @@ abstract class _MultidayEventStructured implements MultidayEventStructured {
           required final List<Event?> events,
           required final MultidayEventDetailProp mEventDetailProp,
           required final List<MultidayEventDateListProp> mEventDateListProps}) =
-      _$_MultidayEventStructured;
+      _$MultidayEventStructuredImpl;
 
   @override
   MultidayEvent? get multidayEvents;
@@ -234,6 +235,6 @@ abstract class _MultidayEventStructured implements MultidayEventStructured {
   List<MultidayEventDateListProp> get mEventDateListProps;
   @override
   @JsonKey(ignore: true)
-  _$$_MultidayEventStructuredCopyWith<_$_MultidayEventStructured>
+  _$$MultidayEventStructuredImplCopyWith<_$MultidayEventStructuredImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
