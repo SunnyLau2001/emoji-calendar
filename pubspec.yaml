@@ -48,6 +48,7 @@ dependencies:
   latlong2: ^0.8.1
   http: ^0.13.5
   flutter_launcher_icons: ^0.13.0
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -88,6 +89,7 @@ flutter:
     - assets/images/background/
     - assets/images/stickers/
     - assets/images/stickers/sticker_data.json
+    - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

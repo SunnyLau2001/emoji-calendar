@@ -498,6 +498,7 @@ class SingleDateLocationWeatherInfo extends ConsumerWidget {
                     type: MaterialType.transparency,
                     child: InkWell(
                       onTap: () async {
+                        print("Hello");
                         if (data == null) return;
                         await OpenWeatherService().updateWeatherByEventId(data.id);
                         // if (data.latlng != null) {

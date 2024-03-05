@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fyp_our_sky_new/pages/main_page.dart';
 import 'package:fyp_our_sky_new/pages/multiday_event_edit_page.dart';
@@ -18,6 +19,8 @@ void main() async {
   //   rootDirectory: null,
   // );
   // FlutterMapTileCaching.instance('MapTileStore').manage.create();
+
+  await dotenv.load(fileName: ".env");
 
   runApp(ProviderScope(child: const OurTimeApp()));
 }

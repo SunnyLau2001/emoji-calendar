@@ -1,16 +1,13 @@
-# fyp_our_sky_new
+# Emoji Calendar
 
-A new Flutter project.
+A Emoji calendar hobby project build by Flutter.
 
-## Getting Started
+#### Details
 
-This project is a starting point for a Flutter application.
+This app using `Isar DB` as the local storage method to store the calendar event; using `riverpod` to handle the state management.
 
-A few resources to get you started if this is your first Flutter project:
+#### Open Weather Map API
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The weather broadcasting using API from Open Weather Map, please add your API key to the `.env` file.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+API key managed through `.env` file. Please add a `.env` file at the root of the project with the key `API_KEY=yourapikeyrighthere`.
