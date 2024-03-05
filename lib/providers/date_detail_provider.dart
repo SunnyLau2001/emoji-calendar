@@ -69,6 +69,7 @@ Stream<MultidayEventStructured?> multidayEventStructuredWatcher(MultidayEventStr
     if (multidayEvent != null) {
       // List<Event?> events = [];
       final fetchedEvents = await MultidayEventService().getEventsByIds(multidayEvent.eventsId);
+
       // List<String> dateStrings = fetchedEvents.map((e) => e == null ? "" : e.dateId).toSet().toList();
       // print(dateStrings);
       fetchedEvents.sort(

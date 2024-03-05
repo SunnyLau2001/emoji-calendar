@@ -122,24 +122,6 @@ class MonthViewBottomPanelDetails extends ConsumerWidget {
                     return SizedBox();
                   },
                 );
-
-                return Container(
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  height: 40,
-                  width: 40,
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: InkWell(
-                      onTap: () async {
-                        // ref.watch(showBottomPanelProvider.notifier).state = false;
-                      },
-                      child: Icon(Icons.edit),
-                    ),
-                  ),
-                );
               },
             ),
           ),
@@ -408,6 +390,65 @@ class BottomPanelEventListTile extends ConsumerWidget {
     return Container();
   }
 
+  Widget _buildChecklistIndicator(int? checklistId) {
+    if (checklistId == null) return SizedBox();
+    return Consumer(
+      builder: (context, ref, child) {
+        final checklistWatch = ref.watch(checklistWatcherProvider(checklistId: checklistId));
+        return checklistWatch.when(
+          data: (data) {
+            if (data == null) return SizedBox();
+            int notCheckCount = 0;
+            bool allChecked = true;
+            for (int i = 0; i < data.checklist.length; i++) {
+              if (data.checklist[i].checked == false) {
+                allChecked = false;
+                notCheckCount++;
+              }
+            }
+            return Container(
+              clipBehavior: Clip.none,
+              // padding: EdgeInsets.only(right: 20),
+              height: 40,
+              width: 40,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Icon(Icons.checklist),
+                  !allChecked
+                      ? Positioned(
+                          top: -14,
+                          left: -14,
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: Colors.black,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              notCheckCount.toString(),
+                              style: FontSettings.primaryFont,
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
+                ],
+              ),
+            );
+          },
+          error: (error, stackTrace) {
+            return SizedBox();
+          },
+          loading: () {
+            return SizedBox();
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (event == null) return SizedBox();
@@ -426,7 +467,7 @@ class BottomPanelEventListTile extends ConsumerWidget {
         child: InkWell(
           onTap: () async {
             if (event!.checklistId != null)
-              await viewChecklistOfEvent(context: context, checklistId: event!.checklistId!);
+              await viewChecklistOfEvent(context: context, checklistId: event!.checklistId!, eventId: event!.id);
           },
           child: Container(
             alignment: Alignment.center,
@@ -454,6 +495,10 @@ class BottomPanelEventListTile extends ConsumerWidget {
                       ],
                     ),
                     Spacer(),
+                    _buildChecklistIndicator(event!.id),
+                    SizedBox(
+                      width: 6,
+                    ),
                   ],
                 ),
               ],

@@ -48,6 +48,7 @@ dependencies:
     latlong2: ^0.8.1
     flutter_map_tile_caching: ^7.2.0
     http: ^0.13.5
+    flutter_launcher_icons: ^0.13.0
 
 dev_dependencies:
     flutter_test:
@@ -66,6 +67,10 @@ dev_dependencies:
     freezed: ^2.3.2
     isar_generator: ^3.0.5
 
+flutter_icons:
+    android: "launcher_icon"
+    ios: true
+    image_path: "assets/icons/icon.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

@@ -1,4 +1,3 @@
-import 'package:fyp_our_sky_new/models/multiday_event.dart';
 import 'package:fyp_our_sky_new/services/multiday_event_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,10 +12,10 @@ class PutChecklist extends _$PutChecklist {
     return;
   }
 
-  Future<void> putChecklistToDB(Checklist? checklist) async {
+  Future<void> putChecklistToDB(Checklist? checklist, int eventId) async {
     if (checklist == null) return;
 
-    await MultidayEventService().putChecklistToDB(checklist);
+    await MultidayEventService().putChecklistToDB(checklist, eventId);
 
     // final result = ref.watch(multidayEventDateListProvider);
     // final mEventDateLists = [...result];

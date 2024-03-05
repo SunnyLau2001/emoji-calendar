@@ -12,9 +12,11 @@ class ViewChecklistDialog extends ConsumerWidget {
   const ViewChecklistDialog({
     super.key,
     required this.checklistId,
+    required this.eventId,
   });
 
   final int checklistId;
+  final int eventId;
 
   Widget _buildChecklistTitle() {
     return Container();
@@ -38,6 +40,7 @@ class ViewChecklistDialog extends ConsumerWidget {
           ),
           child: ViewChecklistDialogContent(
             checklistId: checklistId,
+            eventId: eventId,
           ),
         ),
       ),
@@ -49,9 +52,11 @@ class ViewChecklistDialogContent extends ConsumerStatefulWidget {
   const ViewChecklistDialogContent({
     super.key,
     required this.checklistId,
+    required this.eventId,
   });
 
   final int checklistId;
+  final int eventId;
 
   @override
   ConsumerState<ViewChecklistDialogContent> createState() => _ViewChecklistDialogContentState();
@@ -108,7 +113,7 @@ class _ViewChecklistDialogContentState extends ConsumerState<ViewChecklistDialog
             onTap: () async {
               final newCheck = !tempChecklist!.checklist[index].checked;
               tempChecklist!.checklist[index].checked = newCheck;
-              await ref.read(putChecklistProvider.notifier).putChecklistToDB(tempChecklist);
+              await ref.read(putChecklistProvider.notifier).putChecklistToDB(tempChecklist, widget.eventId);
               // onChanged(!value);
             },
             child: Padding(
@@ -155,7 +160,7 @@ class _ViewChecklistDialogContentState extends ConsumerState<ViewChecklistDialog
                 editMode = false;
               });
               final newChecklist = tempChecklist;
-              ref.read(putChecklistProvider.notifier).putChecklistToDB(newChecklist);
+              ref.read(putChecklistProvider.notifier).putChecklistToDB(newChecklist, widget.eventId);
             }
             if (!edit) {
               setState(() {
@@ -410,12 +415,14 @@ class _ViewChecklistDialogContentState extends ConsumerState<ViewChecklistDialog
 Future<void> viewChecklistOfEvent({
   required BuildContext context,
   required int checklistId,
+  required int eventId,
 }) {
   return showDialog(
     context: context,
     builder: (context) {
       return ViewChecklistDialog(
         checklistId: checklistId,
+        eventId: eventId,
       );
     },
   );

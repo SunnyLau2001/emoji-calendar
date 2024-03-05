@@ -99,7 +99,6 @@ class MultidayEventService {
       }
     }
 
-
     for (int i = 0; i < mEventDateLists.length; i++) {
       List<int> eventIds = [];
       List<Event> events = [];
@@ -176,10 +175,21 @@ class MultidayEventService {
     return;
   }
 
-  Future<void> putChecklistToDB(Checklist checklist) async {
+  Future<void> putChecklistToDB(Checklist checklist, int eventId) async {
     final db = await isar;
+    // int eventId
     await db.writeTxn(() async {
       await db.checklists.put(checklist);
+    });
+
+    final event = await db.events.get(eventId);
+    if (event == null) return;
+
+    final multidayEvent = await db.multidayEvents.get(event.multidayEventId);
+    if (multidayEvent == null) return;
+
+    await db.writeTxn(() async {
+      await db.multidayEvents.put(multidayEvent);
     });
 
     return;
@@ -250,5 +260,15 @@ class MultidayEventService {
     final db = await isar;
     final checklist = await db.checklists.get(checklistId);
     return checklist;
+  }
+
+  Future<void> initDatabase() async {
+    final db = await isar;
+    await db.writeTxn(() async {
+      await db.dateDetails.clear();
+      await db.multidayEvents.clear();
+      await db.events.clear();
+      await db.checklists.clear();
+    });
   }
 }
